@@ -1,50 +1,39 @@
 import { useState } from 'react';
 import { TopAppBar } from '../components/TopAppBar';
-import { User, Mail, LockKeyhole, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { InputField } from '@/components/InputField';
+import { LoginForm } from '@/components/auth/LoginForm';
+import { SignupForm } from '@/components/auth/SignupForm';
 
-const GoogleIcon = () => (
-  <svg
-    viewBox="0 0 24 24"
-    className="w-5 h-5"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-      fill="#4285F4"
-    />
-    <path
-      d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-      fill="#34A853"
-    />
-    <path
-      d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"
-      fill="#FBBC05"
-    />
-    <path
-      d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-      fill="#EA4335"
-    />
-  </svg>
-);
-
-const Divider = ({ text }: { text: string }) => (
-  <div className="flex items-center gap-3">
-    <hr className="flex-1 border-[#C3C6D0]" />
-    <span className="text-sm text-[#9CA3AF]">{text}</span>
-    <hr className="flex-1 border-[#C3C6D0]" />
-  </div>
-);
-
-const GoogleButton = ({ label }: { label: string }) => (
+// Boton y funcionalidad de registro con Google
+export const GoogleButton = ({ label }: { label: string }) => (
   <Button variant="outline" className="h-12 cursor-pointer">
-    <GoogleIcon />
+    <svg
+      viewBox="0 0 24 24"
+      className="w-5 h-5"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+        fill="#4285F4"
+      />
+      <path
+        d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+        fill="#34A853"
+      />
+      <path
+        d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"
+        fill="#FBBC05"
+      />
+      <path
+        d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+        fill="#EA4335"
+      />
+    </svg>
     {label}
   </Button>
 );
 
-const HeaderForm = ({
+export const HeaderForm = ({
   title,
   subtitle,
 }: {
@@ -57,95 +46,6 @@ const HeaderForm = ({
     </h1>
     <p className="text-sm text-[#595F64]">{subtitle}</p>
   </section>
-);
-
-// Formularios
-const LoginForm = ({ onToggle }: { onToggle: () => void }) => (
-  <div className="flex flex-col gap-8">
-    <HeaderForm
-      title="Bienvenido de nuevo"
-      subtitle="Inicia sesión para continuar tu experiencia"
-    />
-    <form className="flex flex-col gap-5">
-      <InputField
-        id="email"
-        label="Correo electrónico"
-        placeholder="ejemplo@crave.com"
-        icon={Mail}
-      />
-      <InputField
-        id="password"
-        label="Contraseña"
-        type="password"
-        placeholder="••••••••"
-        icon={LockKeyhole}
-        suffix={
-          <Eye className="text-[#6B7280] w-5 h-5 shrink-0 cursor-pointer" />
-        }
-      />
-      <Button variant="default" className="h-12 cursor-pointer">
-        Inicia Sesión
-      </Button>
-    </form>
-    <p className="text-sm text-center font-semibold">
-      ¿Aun no tienes una cuenta?{' '}
-      <span
-        onClick={onToggle}
-        className="text-primary cursor-pointer underline"
-      >
-        Crear Cuenta
-      </span>
-    </p>
-    <Divider text="O iniciar sesión con" />
-    <GoogleButton label="Iniciar sesión con Google" />
-  </div>
-);
-
-const SignupForm = ({ onToggle }: { onToggle: () => void }) => (
-  <div className="flex flex-col gap-8">
-    <HeaderForm
-      title="Crear Cuenta"
-      subtitle="Únete a nosotros para empezar a pedir"
-    />
-    <form className="flex flex-col gap-5">
-      <InputField
-        id="name"
-        label="Nombre Completo"
-        placeholder="Ej: Juan Pérez"
-        icon={User}
-      />
-      <InputField
-        id="email"
-        label="Correo electrónico"
-        placeholder="ejemplo@crave.com"
-        icon={Mail}
-      />
-      <InputField
-        id="password"
-        label="Contraseña"
-        type="password"
-        placeholder="••••••••"
-        icon={LockKeyhole}
-        suffix={
-          <Eye className="text-[#6B7280] w-5 h-5 shrink-0 cursor-pointer" />
-        }
-      />
-      <Button variant="default" className="h-12 cursor-pointer">
-        Crear Cuenta
-      </Button>
-    </form>
-    <p className="text-sm text-center font-semibold">
-      ¿Ya tienes una cuenta?{' '}
-      <span
-        onClick={onToggle}
-        className="text-primary cursor-pointer underline"
-      >
-        Inicia Sesión
-      </span>
-    </p>
-    <Divider text="o regístrate con" />
-    <GoogleButton label="Regístrate con Google" />
-  </div>
 );
 
 // main page

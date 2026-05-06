@@ -6,7 +6,7 @@ import './index.css';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <section className="max-w-md mx-auto min-h-screen">
+    <section className="max-w-md mx-auto min-h-screen outline bg-white">
       <RouterProvider router={router} />
     </section>
   </StrictMode>
