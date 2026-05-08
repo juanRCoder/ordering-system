@@ -10,6 +10,8 @@ export default tseslint.config({
     '*.spec.ts',
     '*.test.ts',
     '*.d.ts',
+    'prisma.config.ts',
+    'prisma/migrations',
   ],
 
   extends: [eslint.configs.recommended, ...tseslint.configs.recommended],
