@@ -1,18 +1,23 @@
 import { Button } from '../ui/button';
 import { GoogleButton, HeaderForm } from '@/pages/Auth';
 import { InputField } from '../InputField';
-import { Eye, LockKeyhole, Mail, User } from 'lucide-react';
+import { LockKeyhole, Mail, User } from 'lucide-react';
 import { useRegister } from '@/hooks/useRegister';
 import { useForm } from 'react-hook-form';
-import type { RegisterFormType } from '@/schemas/auth.schema';
+import { registerSchema, type RegisterFormType } from '@/schemas/auth.schema';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { defaultRegisterFormValues } from '@/lib/default';
 
-export const SignupForm = ({ onToggle }: { onToggle: () => void }) => {
+export const RegisterForm = ({ onToggle }: { onToggle: () => void }) => {
   const registerMutation = useRegister();
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<RegisterFormType>();
+  } = useForm<RegisterFormType>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: defaultRegisterFormValues,
+  });
 
   const onSubmit = (data: RegisterFormType) => registerMutation.mutate(data);
 
@@ -46,13 +51,15 @@ export const SignupForm = ({ onToggle }: { onToggle: () => void }) => {
           type="password"
           placeholder="••••••••"
           icon={LockKeyhole}
-          suffix={
-            <Eye className="text-[#6B7280] w-5 h-5 shrink-0 cursor-pointer" />
-          }
           error={errors.password?.message}
         />
-        <Button variant="default" className="h-12 cursor-pointer mt-4">
-          Crear Cuenta
+        <Button
+          type="submit"
+          variant="default"
+          className="h-12 cursor-pointer mt-4"
+          disabled={registerMutation.isPending}
+        >
+          {registerMutation.isPending ? 'Creando...' : 'Crear Cuenta'}
         </Button>
       </form>
       <p className="text-sm text-center font-semibold">

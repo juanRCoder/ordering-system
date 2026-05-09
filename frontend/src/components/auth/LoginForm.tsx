@@ -1,21 +1,40 @@
-import { Eye, LockKeyhole, Mail } from 'lucide-react';
+import { LockKeyhole, Mail } from 'lucide-react';
 import { InputField } from '../InputField';
 import { Button } from '../ui/button';
 import { GoogleButton, HeaderForm } from '@/pages/Auth';
+import { loginSchema, type LoginFormType } from '@/schemas/auth.schema';
+import { defaultLoginFormValues } from '@/lib/default';
+import { useLogin } from '@/hooks/useLogin';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
 
 export const LoginForm = ({ onToggle }: { onToggle: () => void }) => {
+  const login = useLogin();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormType>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: defaultLoginFormValues,
+  });
+
+  const onSubmit = (data: LoginFormType) => login.mutate(data);
+
   return (
     <div className="flex flex-col gap-8">
       <HeaderForm
         title="Bienvenido de nuevo"
         subtitle="Inicia sesión para continuar tu experiencia"
       />
-      <form className="flex flex-col gap-4">
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
         <InputField
           id="email"
           label="Correo electrónico"
           placeholder="ejemplo@crave.com"
           icon={Mail}
+          {...register('email')}
+          error={errors.email?.message}
         />
         <InputField
           id="password"
@@ -23,12 +42,16 @@ export const LoginForm = ({ onToggle }: { onToggle: () => void }) => {
           type="password"
           placeholder="••••••••"
           icon={LockKeyhole}
-          suffix={
-            <Eye className="text-[#6B7280] w-5 h-5 shrink-0 cursor-pointer" />
-          }
+          {...register('password')}
+          error={errors.password?.message}
         />
-        <Button variant="default" className="h-12 cursor-pointer">
-          Inicia Sesión
+        <Button
+          type="submit"
+          variant="default"
+          disabled={login.isPending}
+          className="h-12 cursor-pointer"
+        >
+          {login.isPending ? 'Iniciando Sesión...' : 'Inicia Sesión'}
         </Button>
       </form>
       <p className="text-sm text-center font-semibold">

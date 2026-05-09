@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { TopAppBar } from '../components/TopAppBar';
 import { Button } from '@/components/ui/button';
 import { LoginForm } from '@/components/auth/LoginForm';
-import { SignupForm } from '@/components/auth/SignupForm';
+import { RegisterForm } from '@/components/auth/RegisterForm';
 
 // Boton y funcionalidad de registro con Google
 export const GoogleButton = ({ label }: { label: string }) => (
@@ -60,7 +60,7 @@ function Auth() {
           {isLogin ? (
             <LoginForm onToggle={() => setIsLogin(false)} />
           ) : (
-            <SignupForm onToggle={() => setIsLogin(true)} />
+            <RegisterForm onToggle={() => setIsLogin(true)} />
           )}
         </div>
       </div>
