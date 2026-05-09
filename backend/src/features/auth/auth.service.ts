@@ -1,9 +1,10 @@
 import {
   ConflictException,
+  HttpStatus,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+// import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../../prisma.service';
 import { LoginDto } from './dto/login.dto';
@@ -12,8 +13,8 @@ import { RegisterDto } from './dto/register.dto';
 @Injectable()
 export class AuthService {
   constructor(
-    private prisma: PrismaService,
-    private jwtService: JwtService
+    private prisma: PrismaService
+    // private jwtService: JwtService
   ) {}
 
   async register(registerDto: RegisterDto) {
@@ -24,7 +25,10 @@ export class AuthService {
     });
 
     if (userExists) {
-      throw new ConflictException('User already exists');
+      throw new ConflictException({
+        code: 'EMAIL_ALREADY_IN_USE',
+        message: 'Email already in use',
+      });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -37,7 +41,10 @@ export class AuthService {
       },
     });
 
-    return { id: user.id, email: user.email, name: user.name };
+    return {
+      status: HttpStatus.CREATED,
+      data: { sub: user.id, name: user.name },
+    };
   }
 
   async login(loginDto: LoginDto) {
@@ -48,19 +55,29 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedException({
+        code: 'USER_NOT_FOUND',
+        message: 'User not found',
+      });
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedException({
+        code: 'INVALID_PASSWORD',
+        message: 'Invalid password',
+      });
     }
 
-    const payload = { sub: user.id };
+    // const payload = { sub: user.id };
 
     return {
-      access_token: await this.jwtService.signAsync(payload),
+      status: HttpStatus.OK,
+      data: { sub: user.id, name: user.name },
     };
+    // return {
+    //   access_token: await this.jwtService.signAsync(payload),
+    // };
   }
 }
