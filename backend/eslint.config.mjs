@@ -22,6 +22,9 @@ export default tseslint.config({
       ...globals.jest,
     },
     sourceType: 'commonjs',
+    parserOptions: {
+      tsconfigRootDir: import.meta.dirname,
+    },
   },
 
   rules: {

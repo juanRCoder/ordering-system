@@ -10,7 +10,7 @@ export const LoginForm = ({ onToggle }: { onToggle: () => void }) => {
         title="Bienvenido de nuevo"
         subtitle="Inicia sesión para continuar tu experiencia"
       />
-      <form className="flex flex-col gap-5">
+      <form className="flex flex-col gap-4">
         <InputField
           id="email"
           label="Correo electrónico"
