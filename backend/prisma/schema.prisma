@@ -12,11 +12,85 @@ datasource db {
   provider = "postgresql"
 }
 
+enum Roles {
+  USER
+  ADMIN
+}
+
+enum StatusSupply {
+  AVAILABLE
+  UNAVAILABLE
+}
+
+enum StatusOrder {
+  PENDING
+  FINISHED
+}
+
+enum TypePayment {
+  CASH
+  YAPE
+}
+
 model Users {
   id        String   @id @default(uuid())
   email     String   @unique
   name      String?
-  password  String
+  role      Roles?   @default(USER)
+  password  String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  orders Orders[]
+}
+
+model TypesSupplies {
+  id        String   @id @default(uuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  supplies Supplies[]
+}
+
+model Supplies {
+  id             String       @id @default(uuid())
+  name           String
+  description    String?
+  price          Decimal      @default(0)
+  status         StatusSupply @default(AVAILABLE)
+  imagen_url     String?
+  type_supply_id String
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  type           TypesSupplies    @relation(fields: [type_supply_id], references: [id])
+  suppliesOrders SuppliesOrders[]
+}
+
+model Orders {
+  id           String       @id @default(uuid())
+  user_id      String?
+  guest_name   String
+  status       StatusOrder  @default(PENDING)
+  observations String?
+  type_payment TypePayment? @default(CASH)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  user           Users?           @relation(fields: [user_id], references: [id])
+  suppliesOrders SuppliesOrders[]
+}
+
+model SuppliesOrders {
+  id        String   @id @default(uuid())
+  order_id  String
+  supply_id String
+  price     Decimal  @default(0)
+  quantity  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  order  Orders   @relation(fields: [order_id], references: [id])
+  supply Supplies @relation(fields: [supply_id], references: [id])
 }
