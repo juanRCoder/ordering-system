@@ -1,4 +1,7 @@
-import type { LoginFormType, RegisterFormType } from '@/schemas/auth.schema';
+import type {
+  LoginFormType,
+  RegisterFormType,
+} from '@/interfaces/auth.interface';
 
 class AuthService {
   private API = import.meta.env.VITE_API_DEV;
@@ -41,6 +44,7 @@ class AuthService {
         message: result.message,
       };
     }
+    console.log(result);
     return result;
   }
 }

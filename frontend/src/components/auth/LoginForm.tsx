@@ -1,12 +1,13 @@
 import { LockKeyhole, Mail } from 'lucide-react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import type { LoginFormType } from '@/interfaces/auth.interface';
+import { loginSchema } from '@/schemas/auth.schema';
+import { useLogin } from '@/hooks/useLogin';
+import { defaultLoginFormValues } from '@/lib/default';
 import { InputField } from '../InputField';
 import { Button } from '../ui/button';
 import { GoogleButton, HeaderForm } from '@/pages/Auth';
-import { loginSchema, type LoginFormType } from '@/schemas/auth.schema';
-import { defaultLoginFormValues } from '@/lib/default';
-import { useLogin } from '@/hooks/useLogin';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
 
 export const LoginForm = ({ onToggle }: { onToggle: () => void }) => {
   const login = useLogin();

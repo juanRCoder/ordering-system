@@ -1,8 +1,7 @@
-import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import type { RegisterFormType } from '@/schemas/auth.schema';
 import authService from '@/services/auth.service';
-import { useQueryClient } from '@tanstack/react-query';
+import { useQueryClient, useMutation } from '@tanstack/react-query';
+import type { RegisterFormType } from '@/interfaces/auth.interface';
 import { UsersKeys } from '@/lib/querykeys';
 
 export function useRegister() {

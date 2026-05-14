@@ -1,12 +1,13 @@
-import { Button } from '../ui/button';
-import { GoogleButton, HeaderForm } from '@/pages/Auth';
-import { InputField } from '../InputField';
-import { LockKeyhole, Mail, User } from 'lucide-react';
-import { useRegister } from '@/hooks/useRegister';
 import { useForm } from 'react-hook-form';
-import { registerSchema, type RegisterFormType } from '@/schemas/auth.schema';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { registerSchema } from '@/schemas/auth.schema';
+import { useRegister } from '@/hooks/useRegister';
+import { InputField } from '@/components/InputField';
+import type { RegisterFormType } from '@/interfaces/auth.interface';
 import { defaultRegisterFormValues } from '@/lib/default';
+import { GoogleButton, HeaderForm } from '@/pages/Auth';
+import { Button } from '@/components/ui/button';
+import { LockKeyhole, Mail, User } from 'lucide-react';
 
 export const RegisterForm = ({ onToggle }: { onToggle: () => void }) => {
   const registerMutation = useRegister();

@@ -1,10 +1,9 @@
-import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import type { LoginFormType } from '@/schemas/auth.schema';
-import authService from '@/services/auth.service';
-import { useQueryClient } from '@tanstack/react-query';
-import { UsersKeys } from '@/lib/querykeys';
+import { useQueryClient, useMutation } from '@tanstack/react-query';
 import type { ErrorResponse } from '@/interfaces/errors.interface';
+import type { LoginFormType } from '@/interfaces/auth.interface';
+import authService from '@/services/auth.service';
+import { UsersKeys } from '@/lib/querykeys';
 
 export function useLogin() {
   const queryClient = useQueryClient();
