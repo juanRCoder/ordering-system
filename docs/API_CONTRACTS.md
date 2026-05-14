@@ -8,8 +8,11 @@ Prefijo base: `/api`
 
 | Método | Ruta             | Descripción                |
 | :----- | :--------------- | :------------------------- |
-| POST   | `/auth/register` | Registra un nuevo usuario. |
-| POST   | `/auth/login`    | Inicia sesión un usuario.  |
+| POST   | `/auth/register`        | Registra un nuevo usuario.             |
+| POST   | `/auth/login`           | Inicia sesión un usuario.               |
+| POST   | `/types-supplies`       | Crea una nueva categoría de insumo.     |
+| POST   | `/supplies`             | Crea un nuevo insumo.                   |
+| GET    | `/supplies/:type_id`    | Lista los insumos por ID de categoría.  |
 
 ## Detalle de Endpoints
 
@@ -91,3 +94,97 @@ Prefijo base: `/api`
   "message": "User not found"
 }
 ```
+
+### 3. Crear Categoría de Insumo
+
+**Endpoint:** `POST /types-supplies`
+
+**Description:** Crea una nueva categoría para agrupar insumos.
+
+**Request Body:**
+
+```json
+{
+  "name": "string" // Nombre de la categoría
+}
+```
+
+**Response:**
+
+### Success
+
+```json
+{
+  "status": 201,
+  "data": {
+    "ok": true
+  }
+}
+```
+
+### 4. Crear Insumo
+
+**Endpoint:** `POST /supplies`
+
+**Description:** Crea un nuevo insumo asociado a una categoría.
+
+**Request Body:**
+
+```json
+{
+  "name": "string",
+  "description": "string", // Opcional
+  "price": "number",
+  "image_url": "string", // Opcional
+  "type_supply_id": "string" // UUID de la categoría
+}
+```
+
+**Response:**
+
+### Success
+
+```json
+{
+  "status": 201,
+  "data": {
+    "ok": true
+  }
+}
+```
+
+### 5. Listar Insumos por Categoría
+
+**Endpoint:** `GET /supplies/:type_id`
+
+**Description:** Obtiene todos los insumos que pertenecen a una categoría específica.
+
+**Response:**
+
+### Success
+
+```json
+{
+  "status": 200,
+  "data": [
+    {
+      "id": "string",
+      "image_url": "string",
+      "name": "string",
+      "description": "string",
+      "price": 0
+    }
+  ]
+}
+```
+
+### Error
+
+```json
+{
+  "status": 400,
+  "code": "CATEGORY_NOT_FOUND",
+  "message": "La categoría especificada no existe"
+}
+```
+
