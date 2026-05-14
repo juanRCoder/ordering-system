@@ -53,7 +53,7 @@ function Auth() {
   const [isLogin, setIsLogin] = useState(true);
 
   return (
-    <div className="bg-[#F8F9FF] min-h-screen flex flex-col">
+    <section className="bg-[#F8F9FF] min-h-screen flex flex-col">
       <TopAppBar />
       <div className="flex-1 flex flex-col items-center justify-center p-5">
         <div className="w-full px-4 sm:px-8 py-12 bg-white rounded-xl">
@@ -67,7 +67,7 @@ function Auth() {
       <p className="text-center text-xs pb-8 pt-4 text-[#595F64]">
         © 2026 CraveFlow. Todos los derechos reservados.
       </p>
-    </div>
+    </section>
   );
 }
 
