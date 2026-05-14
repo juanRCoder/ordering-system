@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 
 type props = React.InputHTMLAttributes<HTMLInputElement> & {
   label: string;
-  icon: LucideIcon;
+  icon?: LucideIcon;
   suffix?: React.ReactNode;
   error?: string;
 };
@@ -35,7 +35,7 @@ export const InputField = ({
         {label}
       </label>
       <div className="flex items-center gap-2 border border-[#C3C6D0] rounded-lg h-11 px-4 bg-[#F8F9FA] relative">
-        <Icon className="text-[#6B7280] w-5 h-5 shrink-0" />
+        {Icon && <Icon className="text-[#6B7280] w-5 h-5 shrink-0" />}
         <input
           className="flex-1 min-w-0 truncate outline-none bg-transparent text-[#6B7280] placeholder:text-[#9CA3AF]"
           type={toggleInputType()}
