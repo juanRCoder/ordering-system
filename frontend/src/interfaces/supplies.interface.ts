@@ -6,7 +6,7 @@ export type SupplyType = z.infer<typeof supplySchema>;
 export interface SupplyResponse {
   id: string;
   name: string;
-  description: string;
+  description?: string;
   price: number;
-  image_url: string;
+  imagen_url?: string;
 }
