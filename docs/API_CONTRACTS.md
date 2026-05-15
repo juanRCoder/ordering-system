@@ -6,13 +6,13 @@ Este documento detalla los endpoints disponibles.
 
 Prefijo base: `/api`
 
-| Método | Ruta             | Descripción                |
-| :----- | :--------------- | :------------------------- |
-| POST   | `/auth/register`        | Registra un nuevo usuario.             |
-| POST   | `/auth/login`           | Inicia sesión un usuario.               |
-| POST   | `/types-supplies`       | Crea una nueva categoría de insumo.     |
-| POST   | `/supplies`             | Crea un nuevo insumo.                   |
-| GET    | `/supplies/:type_id`    | Lista los insumos por ID de categoría.  |
+| Método | Ruta                 | Descripción                            |
+| :----- | :------------------- | :------------------------------------- |
+| POST   | `/auth/register`     | Registra un nuevo usuario.             |
+| POST   | `/auth/login`        | Inicia sesión un usuario.              |
+| POST   | `/types-supplies`    | Crea una nueva categoría de insumo.    |
+| POST   | `/supplies`          | Crea un nuevo insumo.                  |
+| GET    | `/supplies/:type_id` | Lista los insumos por ID de categoría. |
 
 ## Detalle de Endpoints
 
@@ -187,4 +187,3 @@ Prefijo base: `/api`
   "message": "La categoría especificada no existe"
 }
 ```
-
