@@ -6,17 +6,18 @@ Este documento detalla los endpoints disponibles.
 
 Prefijo base: `/api`
 
-| Método | Ruta                 | Descripción                            |
-| :----- | :------------------- | :------------------------------------- |
-| POST   | `/auth/register`     | Registra un nuevo usuario.             |
-| POST   | `/auth/login`        | Inicia sesión un usuario.              |
-| POST   | `/types-supplies`    | Crea una nueva categoría de insumo.    |
-| POST   | `/supplies`          | Crea un nuevo insumo.                  |
-| GET    | `/supplies/:type_id` | Lista los insumos por ID de categoría. |
+| Método | Ruta                 | Descripción                                 |
+| :----- | :------------------- | :------------------------------------------ |
+| POST   | `/auth/register`     | Registra un nuevo usuario.                  |
+| POST   | `/auth/login`        | Inicia sesión un usuario.                   |
+| GET    | `/types-supplies`    | Obtiene todos los tipos de insumos.         |
+| POST   | `/types-supplies`    | Crea un nuevo tipo de insumo.               |
+| POST   | `/supplies`          | Crea un nuevo insumo.                       |
+| GET    | `/supplies/:type_id` | Lista los insumos por ID de tipo de insumo. |
 
 ## Detalle de Endpoints
 
-### 1. Registrar Usuario
+## 1. Registrar Usuario
 
 **Endpoint:** `POST /auth/register`
 
@@ -56,7 +57,7 @@ Prefijo base: `/api`
 }
 ```
 
-### 2. Iniciar Sesión
+## 2. Iniciar Sesión
 
 **Endpoint:** `POST /auth/login`
 
@@ -95,7 +96,40 @@ Prefijo base: `/api`
 }
 ```
 
-### 3. Crear Categoría de Insumo
+## 3. Obtener todas las categorías de insumos
+
+**Endpoint:** `GET /types-supplies`
+
+**Description:** Obtiene todas las categorías de insumos.
+
+**Response:**
+
+### Success
+
+```json
+{
+  "status": 200,
+  "data": [
+    {
+      "id": "string",
+      "name": "string",
+      "layout": "string"
+    }
+  ]
+}
+```
+
+### Error
+
+```json
+{
+  "status": 400,
+  "code": "CATEGORY_NOT_FOUND",
+  "message": "La categoría especificada no existe"
+}
+```
+
+## 4. Crear Tipo de Insumo
 
 **Endpoint:** `POST /types-supplies`
 
@@ -105,7 +139,8 @@ Prefijo base: `/api`
 
 ```json
 {
-  "name": "string" // Nombre de la categoría
+  "name": "string", // Nombre de la categoría
+  "layout": "string" // FULL o HALF (opcional)
 }
 ```
 
@@ -122,7 +157,7 @@ Prefijo base: `/api`
 }
 ```
 
-### 4. Crear Insumo
+## 5. Crear Insumo
 
 **Endpoint:** `POST /supplies`
 
@@ -153,7 +188,7 @@ Prefijo base: `/api`
 }
 ```
 
-### 5. Listar Insumos por Categoría
+## 6. Listar Insumos por Categoría
 
 **Endpoint:** `GET /supplies/:type_id`
 
