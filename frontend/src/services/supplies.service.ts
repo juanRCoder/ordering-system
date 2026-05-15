@@ -36,6 +36,7 @@ class SuppliesService {
     }
     return result;
   }
+  // more services
 }
 
 export default new SuppliesService();

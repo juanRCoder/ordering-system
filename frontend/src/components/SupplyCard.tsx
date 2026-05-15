@@ -8,6 +8,7 @@ import {
 } from '@/components/ui/card';
 import type { SupplyResponse } from '@/interfaces/supplies.interface';
 import type { TypeSupplyResponse } from '@/interfaces/typesSupplies.interface';
+import { useCartStore } from '@/stores/cart.store';
 import { Plus } from 'lucide-react';
 
 type props = {
@@ -16,8 +17,12 @@ type props = {
 };
 
 export const SupplyCard = ({ supplyType, data }: props) => {
+  const { items, addItem, removeItem } = useCartStore();
+
   if (!supplyType) return null;
   const onlyDishes = supplyType.layout !== 'HALF';
+
+  const disabledItem = items.find((i) => i.id === data.id);
 
   return (
     <Card className="relative w-full pt-0 rounded-[12px] gap-0 p-0">
@@ -46,9 +51,23 @@ export const SupplyCard = ({ supplyType, data }: props) => {
           S/ {data.price.toFixed(2)}
         </p>
         {onlyDishes ? (
-          <Button className="w-32 bg-[#254875] cursor-pointer font-semibold">
-            AGREGAR
-          </Button>
+          <>
+            {!disabledItem ? (
+              <Button
+                onClick={() => addItem(data)}
+                className="w-32 bg-[#254875] cursor-pointer font-semibold"
+              >
+                AGREGAR
+              </Button>
+            ) : (
+              <Button
+                onClick={() => removeItem(data.id)}
+                className="w-32 cursor-pointer font-semibold bg-primary/60"
+              >
+                REMOVER
+              </Button>
+            )}
+          </>
         ) : (
           <button className="w-10 h-10 rounded-full cursor-pointer bg-[#254875] font-semibold flex items-center justify-center">
             <Plus className="text-card w-7 h-7" />

@@ -5,13 +5,13 @@ import { TopAppBar } from '@/components/TopAppBar';
 import { InputSearch } from '@/components/InputSearch';
 import { Button } from '@/components/ui/button';
 import { BottomAppBar } from '@/components/BottomAppBar';
-import { Link } from 'react-router-dom';
 import { useTypesSupplies } from '@/hooks/useTypesSupplies';
 import type { TypeSupplyResponse } from '@/interfaces/typesSupplies.interface';
 import { CategorySkeleton } from '@/skeletons/CategorySkeleton';
 import { useSuppliesByTypeId } from '@/hooks/useSupplies';
 import type { SupplyResponse } from '@/interfaces/supplies.interface';
 import { SupplyCardSkeleton } from '@/skeletons/SupplyCardSkeleton';
+import { CartBadget } from '@/components/cart/CartBadget';
 
 function Menu() {
   const [changeCategory, setChangeCategory] =
@@ -29,18 +29,7 @@ function Menu() {
 
   return (
     <section className="bg-[#F8F9FF] min-h-screen flex flex-col">
-      <TopAppBar
-        itemHeader={
-          <Link to="/cart">
-            <div className="relative cursor-pointer">
-              <ShoppingBag className="h-6 w-6 text-primary" />
-              <span className="absolute -top-2.5 -right-2.5 text-xs text-white bg-primary rounded-full w-6 h-6 grid place-items-center">
-                0
-              </span>
-            </div>
-          </Link>
-        }
-      />
+      <TopAppBar itemHeader={<CartBadget />} />
       <div className="flex-1 flex flex-col p-5">
         <div className="flex flex-col gap-3">
           <InputSearch />

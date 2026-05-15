@@ -23,7 +23,7 @@ export function useCreateSupply() {
 export function useSuppliesByTypeId(type_id: string) {
   return useQuery({
     queryKey: SuppliesKeys.byTypeId(type_id),
-    queryFn: () => suppliesService.getByTypeId(type_id),
+    queryFn: () => suppliesService.getByTypeId(type_id!),
     enabled: !!type_id,
   });
 }

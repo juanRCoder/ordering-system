@@ -1,7 +1,20 @@
+import type { CartItemType } from '@/interfaces/cart.interface';
 import { Minus, Plus } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
+import { useCartStore } from '@/stores/cart.store';
 
-export const CartItem = () => {
+interface CartItemProps {
+  item: CartItemType;
+}
+
+export const CartItem = ({ item }: CartItemProps) => {
+  const { incrementQuantity, decrementQuantity, removeItem } = useCartStore();
+
+  const handleRemoveItem = (item: CartItemType) => {
+    if (item.quantity > 1) decrementQuantity(item.id);
+    else removeItem(item.id);
+  };
+
   return (
     <Card className="py-3 w-full rounded-[12px]">
       <CardContent className="flex flex-wrap items-center gap-4 px-4 py-0">
@@ -15,20 +28,26 @@ export const CartItem = () => {
         <div className="flex flex-col justify-between gap-2 flex-1 self-stretch">
           <div className="flex items-start justify-between gap-1">
             <p className="text-[15px] font-semibold text-card-foreground leading-tight">
-              Combinado de Pescado
+              {item.name}
             </p>
             <span className="whitespace-nowrap text-end font-bold text-primary">
-              S/ 99.99
+              S/ {(item.price * item.quantity).toFixed(2)}
             </span>
           </div>
           <div className="flex items-center gap-3">
-            <button className="w-8 h-8 rounded-full cursor-pointer bg-[#D8E9FF] font-semibold flex items-center justify-center">
+            <button
+              onClick={() => handleRemoveItem(item)}
+              className="w-8 h-8 rounded-full cursor-pointer bg-[#D8E9FF] font-semibold flex items-center justify-center"
+            >
               <Minus className="text-[#151C23] w-5 h-5" />
             </button>
             <span className="text-sm font-medium text-gray-800 w-4 text-center">
-              1
+              {item.quantity}
             </span>
-            <button className="w-8 h-8 rounded-full cursor-pointer bg-[#254875] font-semibold flex items-center justify-center">
+            <button
+              onClick={() => incrementQuantity(item.id)}
+              className="w-8 h-8 rounded-full cursor-pointer bg-[#254875] font-semibold flex items-center justify-center"
+            >
               <Plus className="text-card w-5 h-5" />
             </button>
           </div>
