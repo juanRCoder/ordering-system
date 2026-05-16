@@ -14,6 +14,7 @@ Prefijo base: `/api`
 | POST   | `/types-supplies`    | Crea un nuevo tipo de insumo.               |
 | POST   | `/supplies`          | Crea un nuevo insumo.                       |
 | GET    | `/supplies/:type_id` | Lista los insumos por ID de tipo de insumo. |
+| POST   | `/orders`            | Crea un nuevo pedido.                       |
 
 ## Detalle de Endpoints
 
@@ -220,5 +221,41 @@ Prefijo base: `/api`
   "status": 400,
   "code": "CATEGORY_NOT_FOUND",
   "message": "La categoría especificada no existe"
+}
+```
+
+## 7. Crear Pedido
+
+**Endpoint:** `POST /orders`
+
+**Description:** Crea un nuevo pedido.
+
+**Request Body:**
+
+```json
+{
+  "name": "string",
+  "observations": "string", // Opcional
+  "total": "number",
+  "supplies": [
+    {
+      "id": "string",
+      "quantity": "number",
+      "price": "number"
+    }
+  ]
+}
+```
+
+**Response:**
+
+### Success
+
+```json
+{
+  "status": 201,
+  "data": {
+    "id": "string"
+  }
 }
 ```
