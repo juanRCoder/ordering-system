@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
 import OrderReceived from './pages/OrderReceived.tsx';
 
@@ -19,5 +19,6 @@ export const router = createBrowserRouter([
   { path: '/auth', element: <Auth /> },
   { path: '/menu', element: <Menu /> },
   { path: '/cart', element: <Cart /> },
-  { path: '/order-received', element: <OrderReceived /> },
+  { path: '/order-received/:orderId', element: <OrderReceived /> },
+  { path: '*', element: <Navigate to="/" replace /> },
 ]);

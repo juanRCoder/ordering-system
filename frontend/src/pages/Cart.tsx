@@ -7,14 +7,41 @@ import { BottomAppBar } from '@/components/BottomAppBar';
 import { useCartStore } from '@/stores/cart.store';
 import { CartBadget } from '@/components/cart/CartBadget';
 import { ShoppingBag } from 'lucide-react';
+import { useCreateOrder } from '@/hooks/useOrders';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { orderSchema } from '@/schemas/orders.schema';
+import type { OrderType } from '@/interfaces/orders.interface';
+import { defaultNewOrder } from '@/lib/default';
 
 function Cart() {
   const { items } = useCartStore();
+  const newOrder = useCreateOrder();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<OrderType>({
+    resolver: zodResolver(orderSchema),
+    defaultValues: defaultNewOrder,
+  });
 
   const total = items
     .reduce((acc, item) => acc + item.price * item.quantity, 0)
     .toFixed(2);
   const totalQuantity = items.reduce((acc, item) => acc + item.quantity, 0);
+
+  const onSubmit = (data: OrderType) => {
+    newOrder.mutate({
+      ...data,
+      total: parseFloat(total),
+      supplies: items.map((item) => ({
+        id: item.id,
+        price: item.price,
+        quantity: item.quantity,
+      })),
+    });
+  };
 
   return (
     <section className="bg-[#F8F9FF] min-h-screen flex flex-col">
@@ -34,7 +61,7 @@ function Cart() {
             {totalQuantity} cantidades
           </span>
         </div>
-        {items.length > 1 ? (
+        {items.length > 0 ? (
           <div className="flex flex-col gap-4 mt-4">
             {items.map((item) => (
               <CartItem key={item.id} item={item} />
@@ -46,12 +73,13 @@ function Cart() {
             <p className="text-border">No hay items</p>
           </div>
         )}
-        <form>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <Card className="px-0 pb-0 pt-4 flex flex-col gap-2 mt-6">
             <h2 className="text-xl font-semibold text-[#161D17] pl-4">
               Observaciones
             </h2>
             <textarea
+              {...register('observations')}
               placeholder="Escribe aquí tus observaciones"
               className="text-sm w-full h-24 rounded-bl-lg rounded-br-lg p-4 outline-none resize-none border-none bg-[#F8F9FA] text-[#6B7280]"
             />
@@ -63,17 +91,20 @@ function Cart() {
             <InputField
               label="Nombre y Apellido"
               placeholder="Ingrese su nombre y apellido"
+              {...register('guest_name')}
+              error={errors.guest_name?.message}
             />
           </Card>
           <div className="flex justify-between items-center p-6 rounded-2xl bg-[#E8F0E5] mt-6">
             <p className="text-[#161D17] font-semibold text-xl">Total</p>
-            <p className="text-primary text-2xl font-bold">$ {total}</p>
+            <p className="text-primary text-2xl font-bold">S/ {total}</p>
           </div>
           <Button
             className="w-full mt-6 h-16 rounded-xl font-semibold text-lg cursor-pointer"
-            disabled={items.length === 0}
+            disabled={items.length === 0 || newOrder.isPending}
+            type="submit"
           >
-            Realizar Pedido
+            {newOrder.isPending ? 'Creando pedido...' : 'Realizar Pedido'}
           </Button>
         </form>
       </div>
