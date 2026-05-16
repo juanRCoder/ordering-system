@@ -63,7 +63,7 @@ model Supplies {
   id             String       @id @default(uuid())
   name           String
   description    String?
-  price          Decimal      @default(0)
+  price          Decimal      @default(0) @db.Decimal(10, 2)
   status         StatusSupply @default(AVAILABLE)
   imagen_url     String?
   type_supply_id String
@@ -80,7 +80,8 @@ model Orders {
   guest_name   String
   status       StatusOrder  @default(PENDING)
   observations String?
-  type_payment TypePayment? @default(CASH)
+  type_pay     TypePayment? @default(CASH)
+  total        Decimal      @default(0) @db.Decimal(10, 2)
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
 
@@ -92,7 +93,7 @@ model SuppliesOrders {
   id        String   @id @default(uuid())
   order_id  String
   supply_id String
-  price     Decimal  @default(0)
+  price     Decimal  @default(0) @db.Decimal(10, 2)
   quantity  Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
