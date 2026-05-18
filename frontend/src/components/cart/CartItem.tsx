@@ -18,13 +18,13 @@ export const CartItem = ({ item }: CartItemProps) => {
   return (
     <Card className="py-3 w-full rounded-[12px]">
       <CardContent className="flex flex-wrap items-center gap-4 px-4 py-0">
-        <div className="shrink-0 w-20 h-20 rounded-[8px] overflow-hidden">
+        {/* <div className="shrink-0 w-20 h-20 rounded-[8px] overflow-hidden">
           <img
             src="./insumo.jpg"
             alt="insumo"
             className="w-full h-full object-cover"
           />
-        </div>
+        </div> */}
         <div className="flex flex-col justify-between gap-2 flex-1 self-stretch">
           <div className="flex items-start justify-between gap-1">
             <p className="text-[15px] font-semibold text-card-foreground leading-tight">

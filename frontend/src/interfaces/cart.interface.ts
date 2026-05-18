@@ -11,4 +11,6 @@ export interface CartStore {
   incrementQuantity: (id: string) => void;
   decrementQuantity: (id: string) => void;
   clear: () => void;
+  totalSupplies: number;
+  totalPrice: number;
 }

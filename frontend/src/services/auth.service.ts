@@ -23,7 +23,6 @@ class AuthService {
         message: result.message,
       };
     }
-    console.log(result);
     return result;
   }
 
@@ -44,7 +43,6 @@ class AuthService {
         message: result.message,
       };
     }
-    console.log(result);
     return result;
   }
 }

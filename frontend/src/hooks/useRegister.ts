@@ -27,7 +27,6 @@ export function useRegister() {
       } else {
         toast.error('Error al registrarse', toastStyles.error);
       }
-      console.error(error);
     },
   });
 }

@@ -15,7 +15,7 @@ import type { OrderType } from '@/interfaces/orders.interface';
 import { defaultNewOrder } from '@/lib/default';
 
 function Cart() {
-  const { items } = useCartStore();
+  const { items, totalPrice, totalSupplies } = useCartStore();
   const newOrder = useCreateOrder();
   const {
     register,
@@ -26,15 +26,10 @@ function Cart() {
     defaultValues: defaultNewOrder,
   });
 
-  const total = items
-    .reduce((acc, item) => acc + item.price * item.quantity, 0)
-    .toFixed(2);
-  const totalQuantity = items.reduce((acc, item) => acc + item.quantity, 0);
-
   const onSubmit = (data: OrderType) => {
     newOrder.mutate({
       ...data,
-      total: parseFloat(total),
+      total: totalPrice,
       supplies: items.map((item) => ({
         id: item.id,
         price: item.price,
@@ -58,7 +53,7 @@ function Cart() {
             Tus Insumos
           </p>
           <span className="text-xs tracking-wide font-semibold text-muted-foreground bg-[#D8E9FF] px-4 py-2 rounded-lg">
-            {totalQuantity} cantidades
+            {totalSupplies} cantidades
           </span>
         </div>
         {items.length > 0 ? (
@@ -97,7 +92,9 @@ function Cart() {
           </Card>
           <div className="flex justify-between items-center p-6 rounded-2xl bg-[#E8F0E5] mt-6">
             <p className="text-[#161D17] font-semibold text-xl">Total</p>
-            <p className="text-primary text-2xl font-bold">S/ {total}</p>
+            <p className="text-primary text-2xl font-bold">
+              S/ {totalPrice.toFixed(2)}
+            </p>
           </div>
           <Button
             className="w-full mt-6 h-16 rounded-xl font-semibold text-lg cursor-pointer"

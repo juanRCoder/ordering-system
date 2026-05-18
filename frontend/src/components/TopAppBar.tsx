@@ -21,7 +21,7 @@ export const TopAppBar = ({
           </Link>
         )}
         <h1 className="text-2xl font-extrabold text-primary tracking-tighter drop-shadow-sm">
-          CraveFlow
+          CaveFlow
         </h1>
       </div>
       {itemHeader}

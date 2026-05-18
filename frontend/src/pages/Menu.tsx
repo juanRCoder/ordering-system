@@ -12,8 +12,11 @@ import { useSuppliesByTypeId } from '@/hooks/useSupplies';
 import type { SupplyResponse } from '@/interfaces/supplies.interface';
 import { SupplyCardSkeleton } from '@/skeletons/SupplyCardSkeleton';
 import { CartBadget } from '@/components/cart/CartBadget';
+import { useCartStore } from '@/stores/cart.store';
+import { Link } from 'react-router-dom';
 
 function Menu() {
+  const { items, totalPrice, totalSupplies } = useCartStore();
   const [changeCategory, setChangeCategory] =
     useState<TypeSupplyResponse | null>(null);
   const typesSupplies = useTypesSupplies();
@@ -82,21 +85,30 @@ function Menu() {
                 ))}
           </div>
         </div>
-        {/*  */}
-        {/* <div className="h-[80px]" /> */}
-        <div className="h-[170px]" />
-        {/*  */}
+        {items.length > 0 ? (
+          <div className="h-[170px]" />
+        ) : (
+          <div className="h-[80px]" />
+        )}
         <div className="fixed w-full max-w-md mx-auto bottom-0 left-0 right-0 z-50 flex flex-col gap-4">
-          <div className="flex items-center justify-between bg-primary h-[77px] px-6 rounded-md mx-2 cursor-pointer shadow-md">
-            <div className="flex items-end justify-center gap-2">
-              <ShoppingBag className="w-7 h-7 text-card shrink-0" />
-              <p className="text-card text-[17px]">2 artículos añadidos</p>
-            </div>
-            <div className="flex items-center justify-center gap-2">
-              <p className="text-card text-xl">S/ 40.00</p>
-              <ChevronRight className="w-6 h-6 text-card" />
-            </div>
-          </div>
+          {items.length > 0 && (
+            <Link
+              to="/cart"
+              className="flex items-center justify-between bg-primary h-[77px] px-6 rounded-md mx-2 cursor-pointer shadow-md"
+            >
+              <div className="flex items-end justify-center gap-2">
+                <ShoppingBag className="w-7 h-7 text-card shrink-0" />
+                <p className="text-card text-[17px]">
+                  {totalSupplies} artículo{totalSupplies > 1 ? 's' : ''}{' '}
+                  añadidos
+                </p>
+              </div>
+              <div className="flex items-center justify-center gap-2">
+                <p className="text-card text-xl">S/ {totalPrice.toFixed(2)}</p>
+                <ChevronRight className="w-6 h-6 text-card" />
+              </div>
+            </Link>
+          )}
           <BottomAppBar />
         </div>
       </div>
