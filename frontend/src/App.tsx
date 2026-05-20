@@ -16,6 +16,10 @@ function App() {
       <Link to="/order-received" className="block">
         Order Received
       </Link>
+      {/* Admin routes */}
+      <Link to="/admin/dashboard" className="block">
+        Admin Dashboard
+      </Link>
     </div>
   );
 }

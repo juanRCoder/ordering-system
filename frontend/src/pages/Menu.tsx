@@ -1,5 +1,6 @@
 import { ChevronRight, ShoppingBag } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { SupplyCard } from '@/components/SupplyCard';
 import { TopAppBar } from '@/components/TopAppBar';
 import { InputSearch } from '@/components/InputSearch';
@@ -13,12 +14,12 @@ import type { SupplyResponse } from '@/interfaces/supplies.interface';
 import { SupplyCardSkeleton } from '@/skeletons/SupplyCardSkeleton';
 import { CartBadget } from '@/components/cart/CartBadget';
 import { useCartStore } from '@/stores/cart.store';
-import { Link } from 'react-router-dom';
 
 function Menu() {
-  const { items, totalPrice, totalSupplies } = useCartStore();
   const [changeCategory, setChangeCategory] =
     useState<TypeSupplyResponse | null>(null);
+  const { items, totalPrice, totalSupplies } = useCartStore();
+
   const typesSupplies = useTypesSupplies();
   const allSupplies = useSuppliesByTypeId(changeCategory?.id || '');
 
@@ -46,7 +47,7 @@ function Menu() {
                   variant={
                     changeCategory?.id === type.id ? 'secondary' : 'outline'
                   }
-                  className="h-11.5 w-32 rounded-[12px] cursor-pointer text-[17px]"
+                  className="px-4 py-6 font-normal min-w-32 rounded-[12px] cursor-pointer text-[17px]"
                   onClick={() => setChangeCategory(type)}
                 >
                   {type.name}

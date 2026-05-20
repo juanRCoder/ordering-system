@@ -6,11 +6,6 @@ import { Check } from 'lucide-react';
 
 function OrderReceived() {
   const { orderId } = useParams<{ orderId: string }>();
-  const { clear } = useCartStore();
-
-  const handleNewOrder = () => {
-    clear();
-  };
 
   return (
     <section className="bg-[#F8F9FF] min-h-screen flex flex-col">
@@ -32,7 +27,7 @@ function OrderReceived() {
             </span>{' '}
             ha sido agendado para su preparacion por nuestro equipo de cocina.
           </p>
-          <Link to="/menu" onClick={handleNewOrder}>
+          <Link to="/menu" onClick={useCartStore.getState().clear}>
             <button className="bg-primary text-white px-6 py-3 rounded-lg w-full mt-6 cursor-pointer">
               Regresar al Menú
             </button>
