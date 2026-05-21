@@ -5,6 +5,7 @@ import { OrdersKeys } from '@/lib/querykeys';
 import ordersService from '@/services/orders.service';
 import { toast } from 'sonner';
 import { toastStyles } from '@/lib/toast';
+import { useCartStore } from '@/stores/cart.store';
 
 export function useCreateOrder() {
   const queryClient = useQueryClient();
@@ -14,6 +15,7 @@ export function useCreateOrder() {
     mutationFn: (data: OrderType) => ordersService.create(data),
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: OrdersKeys.all });
+      useCartStore.getState().clear();
       navigate(`/order-received/${response.data.id}`);
     },
     onError: () => {

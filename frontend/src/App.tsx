@@ -17,6 +17,7 @@ function App() {
         Order Received
       </Link>
       {/* Admin routes */}
+      <hr className="my-4 border" />
       <Link to="/admin/dashboard" className="block">
         Admin Dashboard
       </Link>
