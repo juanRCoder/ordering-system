@@ -8,9 +8,38 @@ import {
 } from '@/components/ui/drawer';
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { Field, FieldContent, FieldLabel, FieldTitle } from '../ui/field';
-import { Coins, CreditCard } from 'lucide-react';
+import { Coins, CreditCard, ChevronsUpDown } from 'lucide-react';
 import { Button } from '../ui/button';
 import { ScrollArea } from '../ui/scroll-area';
+import { useState } from 'react';
+import {
+  Collapsible,
+  CollapsibleTrigger,
+  CollapsibleContent,
+} from '../ui/collapsible';
+
+type propsOrderDetailItem = {
+  quantity: number;
+  product: string;
+  price: number;
+};
+export const OrderDetailItem = ({
+  quantity,
+  product,
+  price,
+}: propsOrderDetailItem) => {
+  return (
+    <div className="flex justify-between items-center">
+      <div className="flex items-center gap-4">
+        <span className="shrink-0 h-8 w-8 rounded-lg bg-[#D8E9FF]/50 grid place-items-center">
+          {quantity}
+        </span>
+        <p>{product}</p>
+      </div>
+      <span className="text-primary font-medium">${price}</span>
+    </div>
+  );
+};
 
 type props = {
   externalTrigger?: boolean;
@@ -21,6 +50,7 @@ export const OrderDetailsDrawer = ({
   externalTrigger,
   setExternalTrigger,
 }: props) => {
+  const [openPaymentMethods, setOpenPaymentMethods] = useState<boolean>(false);
   return (
     <Drawer
       direction="bottom"
@@ -45,84 +75,85 @@ export const OrderDetailsDrawer = ({
             </span>
             <ScrollArea className="h-40 max-h-40 w-full mt-3">
               <div className="flex flex-col gap-3">
-                <div className="flex justify-between items-center">
-                  <div className="flex items-center gap-4">
-                    <span className="shrink-0 h-8 w-8 rounded-lg bg-[#D8E9FF]/50 grid place-items-center">
-                      2
-                    </span>
-                    <p>
-                      Combiando de Pescado Combiando as de Pescado Combiando de
-                    </p>
-                  </div>
-                  <span className="text-primary font-medium">$12.00</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <div className="flex items-center gap-4">
-                    <span className="shrink-0 h-8 w-8 rounded-lg bg-[#D8E9FF]/50 grid place-items-center">
-                      2
-                    </span>
-                    <p>
-                      Combiando de Pescado Combiando as de Pescado Combiando de
-                    </p>
-                  </div>
-                  <span className="text-primary font-medium">$12.00</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <div className="flex items-center gap-4">
-                    <span className="h-8 w-8 rounded-lg bg-[#D8E9FF]/50 grid place-items-center">
-                      2
-                    </span>
-                    <p>Combiando de Pescado</p>
-                  </div>
-                  <span className="text-primary font-medium">$12.00</span>
-                </div>
+                <OrderDetailItem
+                  quantity={1}
+                  product={'Combinado de Pescado'}
+                  price={12.0}
+                />
+                <OrderDetailItem
+                  quantity={1}
+                  product={'Combinado de Pescado'}
+                  price={12.0}
+                />
+                <OrderDetailItem
+                  quantity={1}
+                  product={'Limonada'}
+                  price={5.0}
+                />
               </div>
             </ScrollArea>
           </div>
-          <div className="py-4 outline outline-border">
+          <div className="py-4 border-t">
             <p className="text-base font-semibold text-[#031C30]">
               Observaciones:
             </p>
             <textarea
+              disabled
+              value="Sin observaciones"
               placeholder="Escribe aquí tus observaciones"
               className="mt-2 text-sm w-full h-24 rounded-lg p-4 outline-none resize-none border bg-[#F8F9FA] text-[#6B7280]"
             />
           </div>
-          <div className="flex flex-col gap-4 py-4 border-b border-border">
-            <p className="text-base font-semibold text-[#031C30]">
-              Metodos de Pago:
-            </p>
-            <RadioGroup defaultValue="efectivo" className="w-full">
-              <FieldLabel htmlFor="efectivo" className="rounded-xl!">
-                <Field
-                  orientation="horizontal"
-                  className="py-4! cursor-pointer"
-                >
-                  <FieldContent className="flex flex-row items-center gap-2">
-                    <Coins />
-                    <FieldTitle className="text-[#161D17] text-base font-normal">
-                      Efectivo
-                    </FieldTitle>
-                  </FieldContent>
-                  <RadioGroupItem value="efectivo" id="efectivo" />
-                </Field>
-              </FieldLabel>
-              <FieldLabel htmlFor="yape-plin" className="rounded-xl!">
-                <Field
-                  orientation="horizontal"
-                  className="py-4! cursor-pointer"
-                >
-                  <FieldContent className="flex flex-row items-center gap-2">
-                    <CreditCard />
-                    <FieldTitle className="text-[#161D17] text-base font-normal">
-                      Yape / Plin
-                    </FieldTitle>
-                  </FieldContent>
-                  <RadioGroupItem value="yape-plin" id="yape-plin" />
-                </Field>
-              </FieldLabel>
-            </RadioGroup>
-          </div>
+          <Collapsible
+            open={openPaymentMethods}
+            onOpenChange={setOpenPaymentMethods}
+          >
+            <div className="flex items-center justify-between gap-4">
+              <p className="text-base font-semibold text-[#031C30]">
+                Metodos de Pago:
+              </p>
+              <CollapsibleTrigger
+                render={
+                  <Button variant="ghost" size="icon" className="size-8">
+                    <ChevronsUpDown />
+                    <span className="sr-only">Toggle details</span>
+                  </Button>
+                }
+              />
+            </div>
+            <CollapsibleContent className="flex flex-col gap-4 py-4">
+              <RadioGroup defaultValue="efectivo" className="w-full">
+                <FieldLabel htmlFor="efectivo" className="rounded-xl!">
+                  <Field
+                    orientation="horizontal"
+                    className="py-4! cursor-pointer"
+                  >
+                    <FieldContent className="flex flex-row items-center gap-2">
+                      <Coins />
+                      <FieldTitle className="text-[#161D17] text-base font-normal">
+                        Efectivo
+                      </FieldTitle>
+                    </FieldContent>
+                    <RadioGroupItem value="efectivo" id="efectivo" />
+                  </Field>
+                </FieldLabel>
+                <FieldLabel htmlFor="yape-plin" className="rounded-xl!">
+                  <Field
+                    orientation="horizontal"
+                    className="py-4! cursor-pointer"
+                  >
+                    <FieldContent className="flex flex-row items-center gap-2">
+                      <CreditCard />
+                      <FieldTitle className="text-[#161D17] text-base font-normal">
+                        Yape / Plin
+                      </FieldTitle>
+                    </FieldContent>
+                    <RadioGroupItem value="yape-plin" id="yape-plin" />
+                  </Field>
+                </FieldLabel>
+              </RadioGroup>
+            </CollapsibleContent>
+          </Collapsible>
           <div className="flex justify-between items-center py-4">
             <p className="font-semibold text-lg text-muted-foreground">
               Monto Total:
@@ -132,10 +163,11 @@ export const OrderDetailsDrawer = ({
         </ScrollArea>
         <DrawerFooter>
           <Button className="w-full cursor-pointer rounded-[12px] py-6! text-base">
-            Mostrar metodos de pagos
+            Finalizar Pedido
           </Button>
           <DrawerClose asChild>
             <Button
+              type="button"
               className="w-full cursor-pointer rounded-[12px] text-base py-6! outline-none text-[#43474F] font-bold"
               variant="outline"
             >

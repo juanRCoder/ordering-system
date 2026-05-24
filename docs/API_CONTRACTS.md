@@ -12,8 +12,8 @@ Prefijo base: `/api`
 | POST   | `/auth/login`        | Inicia sesión un usuario.                   |
 | GET    | `/types-supplies`    | Obtiene todos los tipos de insumos.         |
 | POST   | `/types-supplies`    | Crea un nuevo tipo de insumo.               |
-| POST   | `/supplies`          | Crea un nuevo insumo.                       |
 | GET    | `/supplies/:type_id` | Lista los insumos por ID de tipo de insumo. |
+| POST   | `/supplies`          | Crea un nuevo insumo.                       |
 | POST   | `/orders`            | Crea un nuevo pedido.                       |
 
 ## Detalle de Endpoints
@@ -158,38 +158,7 @@ Prefijo base: `/api`
 }
 ```
 
-## 5. Crear Insumo
-
-**Endpoint:** `POST /supplies`
-
-**Description:** Crea un nuevo insumo asociado a una categoría.
-
-**Request Body:**
-
-```json
-{
-  "name": "string",
-  "description": "string", // Opcional
-  "price": "number",
-  "image_url": "string", // Opcional
-  "type_supply_id": "string" // UUID de la categoría
-}
-```
-
-**Response:**
-
-### Success
-
-```json
-{
-  "status": 201,
-  "data": {
-    "ok": true
-  }
-}
-```
-
-## 6. Listar Insumos por Categoría
+## 5. Listar Insumos por Categoría
 
 **Endpoint:** `GET /supplies/:type_id`
 
@@ -221,6 +190,37 @@ Prefijo base: `/api`
   "status": 400,
   "code": "CATEGORY_NOT_FOUND",
   "message": "La categoría especificada no existe"
+}
+```
+
+## 6. Crear Insumo
+
+**Endpoint:** `POST /supplies`
+
+**Description:** Crea un nuevo insumo asociado a una categoría.
+
+**Request Body:**
+
+```json
+{
+  "name": "string",
+  "description": "string", // Opcional
+  "price": "number",
+  "image_url": "string", // Opcional
+  "type_supply_id": "string" // UUID de la categoría
+}
+```
+
+**Response:**
+
+### Success
+
+```json
+{
+  "status": 201,
+  "data": {
+    "ok": true
+  }
 }
 ```
 
