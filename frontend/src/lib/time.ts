@@ -9,7 +9,7 @@ export const relativeTime = (fechaISO: string) => {
   const dias = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
   if (minutos < 1) {
-    return 'ahora';
+    return 'segundos';
   }
 
   if (minutos < 60) {

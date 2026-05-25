@@ -13,7 +13,7 @@ export const OrderDetailItem = ({ quantity, product, price }: props) => {
         </span>
         <p>{product}</p>
       </div>
-      <span className="text-primary font-medium">${price}</span>
+      <span className="text-primary font-medium">S/ {price}</span>
     </div>
   );
 };

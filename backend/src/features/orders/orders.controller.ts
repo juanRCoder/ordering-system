@@ -1,13 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Param,
-  Patch,
-  Post,
-} from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
@@ -26,8 +17,12 @@ export class OrdersController {
     return this.ordersService.findAll();
   }
 
+  @Get(':id')
+  async findOne(@Param('id') id: string) {
+    return this.ordersService.findOne(id);
+  }
+
   @Patch(':id')
-  @HttpCode(HttpStatus.CREATED)
   async update(
     @Param('id') id: string,
     @Body() updateOrderDto: UpdateOrderDto

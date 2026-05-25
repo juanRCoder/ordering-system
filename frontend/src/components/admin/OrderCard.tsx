@@ -1,22 +1,24 @@
 import { ScrollText } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
+import type { OrderListResponseType } from '@/interfaces/orders.interface';
+import { relativeTime } from '@/lib/time';
 
 type props = {
-  type: 'pending' | 'completed';
-  abrir: () => void;
+  data: OrderListResponseType;
+  handlerEvents: () => void;
 };
 
-export const OrderCard = ({ type, abrir }: props) => {
-  const isOrderCompleted = type === 'completed';
+export const OrderCard = ({ data, handlerEvents }: props) => {
+  const isOrderCompleted = data.status === 'FINISHED';
 
   return (
     <Card className="relative p-4 gap-3">
       <div>
         <div className="flex flex-col">
-          <h2 className="text-lg font-semibold">Jose Estrada</h2>
+          <h2 className="text-lg font-semibold">{data.guest_name}</h2>
           <p className="text-muted-foreground text-sm">
-            Order #241250 • Hace 12 minutos
+            Order #{data.id?.slice(0, 6)} • Hace {relativeTime(data.created_at)}
           </p>
         </div>
         <span
@@ -35,11 +37,11 @@ export const OrderCard = ({ type, abrir }: props) => {
           <p
             className={`font-bold text-xl text-primary ${isOrderCompleted && 'line-through'}`}
           >
-            S/ 20.00
+            S/ {data.total.toFixed(2)}
           </p>
         </div>
         <Button
-          onClick={abrir}
+          onClick={handlerEvents}
           className={`w-full cursor-pointer rounded-[12px] py-6 flex justify-center items-center gap-3
 						${isOrderCompleted && 'bg-muted-foreground/20 text-[#42474F]/70 font-bold hover:bg-muted-foreground/10 hover:text-[#42474F]/70 hover:font-bold'}
 						`}

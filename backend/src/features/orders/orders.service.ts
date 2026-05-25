@@ -41,8 +41,9 @@ export class OrdersService {
     };
   }
 
-  async findAll() {
-    const orders = await this.prisma.orders.findMany({
+  async findOne(id: string) {
+    const order = await this.prisma.orders.findUnique({
+      where: { id },
       include: {
         suppliesOrders: {
           include: {
@@ -50,6 +51,36 @@ export class OrdersService {
           },
         },
       },
+    });
+
+    if (!order) {
+      throw new NotFoundException({
+        code: 'ORDER_NOT_FOUND',
+        message: `El pedido con ID ${id} no existe`,
+      });
+    }
+
+    return {
+      status: HttpStatus.OK,
+      data: {
+        id: order.id,
+        guest_name: order.guest_name,
+        created_at: order.createdAt,
+        status: order.status,
+        supplies: order.suppliesOrders.map((so) => ({
+          quantity: so.quantity,
+          name: so.supply.name,
+          price: so.price.toNumber(),
+        })),
+        observations: order.observations,
+        total: order.total.toNumber(),
+        type_pay: order.type_pay,
+      },
+    };
+  }
+
+  async findAll() {
+    const orders = await this.prisma.orders.findMany({
       orderBy: {
         createdAt: 'desc',
       },
@@ -62,19 +93,13 @@ export class OrdersService {
         guest_name: order.guest_name,
         created_at: order.createdAt,
         status: order.status,
-        supplies: order.suppliesOrders.map((so) => ({
-          quantity: so.quantity,
-          name: so.supply.name,
-          price: so.price.toNumber(),
-        })),
-        observations: order.observations || null,
         total: order.total.toNumber(),
       })),
     };
   }
 
   async update(id: string, updateOrderDto: UpdateOrderDto) {
-    const { status } = updateOrderDto;
+    const { status, type_pay } = updateOrderDto;
 
     const existingOrder = await this.prisma.orders.findUnique({
       where: { id },
@@ -91,6 +116,7 @@ export class OrdersService {
       where: { id },
       data: {
         status,
+        type_pay,
       },
     });
 

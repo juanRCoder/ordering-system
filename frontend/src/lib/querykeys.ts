@@ -22,4 +22,5 @@ export const SuppliesKeys = {
 
 export const OrdersKeys = {
   all: baseKeys.orders,
+  byId: (id: string) => [...baseKeys.orders, 'id', id] as const,
 };

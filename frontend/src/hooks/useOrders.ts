@@ -1,6 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import type { NewOrderType } from '@/interfaces/orders.interface';
+import type {
+  NewOrderType,
+  updateOrder,
+  // OrderDetailResponseType,
+} from '@/interfaces/orders.interface';
 import { OrdersKeys } from '@/lib/querykeys';
 import ordersService from '@/services/orders.service';
 import { toast } from 'sonner';
@@ -31,18 +35,25 @@ export function useOrdersQuery() {
   });
 }
 
+export function useOrderByIdQuery(id: string) {
+  return useQuery({
+    queryKey: OrdersKeys.byId(id),
+    queryFn: () => ordersService.getById(id),
+    enabled: !!id,
+  });
+}
+
 export function useUpdateOrderStatus() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, status }: { id: string; status: 'FINISHED' }) =>
-      ordersService.updateStatus(id, { status }),
+    mutationFn: (data: updateOrder) => ordersService.updateStatus(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: OrdersKeys.all });
-      toast.success('Pedido actualizado con éxito', toastStyles.success);
+      toast.success('Pedido finalizado con éxito', toastStyles.success);
     },
     onError: () => {
-      toast.error('Error al actualizar el pedido', toastStyles.error);
+      toast.error('Error al finalizar el pedido', toastStyles.error);
     },
   });
 }

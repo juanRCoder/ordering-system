@@ -1,7 +1,4 @@
-import type {
-  NewOrderType,
-  OrderListResponseType,
-} from '@/interfaces/orders.interface';
+import type { NewOrderType, updateOrder } from '@/interfaces/orders.interface';
 
 class OrdersService {
   private API = import.meta.env.VITE_API_DEV;
@@ -26,7 +23,7 @@ class OrdersService {
     return result;
   }
 
-  async getAll(): Promise<OrderListResponseType> {
+  async getAll() {
     const response = await fetch(`${this.API}/orders`);
 
     const result = await response.json();
@@ -38,16 +35,34 @@ class OrdersService {
       };
     }
 
-    return result;
+    return result.data;
   }
 
-  async updateStatus(id: string, data: { status: 'FINISHED' }) {
-    const response = await fetch(`${this.API}/orders/${id}`, {
+  async getById(id: string) {
+    const response = await fetch(`${this.API}/orders/${id}`);
+
+    const result = await response.json();
+    if (!response.ok) {
+      throw {
+        status: response.status,
+        code: result.code,
+        message: result.message,
+      };
+    }
+    console.log(result.data);
+    return result.data;
+  }
+
+  async updateStatus(data: updateOrder) {
+    const response = await fetch(`${this.API}/orders/${data.id}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify({
+        status: data.status,
+        type_pay: data.type_pay,
+      }),
     });
 
     const result = await response.json();
