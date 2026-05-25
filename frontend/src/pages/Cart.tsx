@@ -11,7 +11,7 @@ import { useCreateOrder } from '@/hooks/useOrders';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { orderSchema } from '@/schemas/orders.schema';
-import type { OrderType } from '@/interfaces/orders.interface';
+import type { NewOrderType } from '@/interfaces/orders.interface';
 import { defaultNewOrder } from '@/lib/default';
 
 function Cart() {
@@ -21,12 +21,12 @@ function Cart() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<OrderType>({
+  } = useForm<NewOrderType>({
     resolver: zodResolver(orderSchema),
     defaultValues: defaultNewOrder,
   });
 
-  const onSubmit = (data: OrderType) => {
+  const onSubmit = (data: NewOrderType) => {
     newOrder.mutate({
       ...data,
       total: totalPrice,
