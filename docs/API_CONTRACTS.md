@@ -14,7 +14,9 @@ Prefijo base: `/api`
 | POST   | `/types-supplies`    | Crea un nuevo tipo de insumo.               |
 | GET    | `/supplies/:type_id` | Lista los insumos por ID de tipo de insumo. |
 | POST   | `/supplies`          | Crea un nuevo insumo.                       |
+| GET    | `/orders`            | Obtiene todos los pedidos.                  |
 | POST   | `/orders`            | Crea un nuevo pedido.                       |
+| PATCH  | `/orders/:id`        | Actualiza el estado de un pedido.           |
 
 ## Detalle de Endpoints
 
@@ -224,7 +226,38 @@ Prefijo base: `/api`
 }
 ```
 
-## 7. Crear Pedido
+## 7. Obtener todos los pedidos
+
+**Endpoint:** `GET /orders`
+
+**Response:**
+
+### Success
+
+```json
+{
+  "status": 200,
+  "data": [
+    {
+      "id": "string",
+      "guest_name": "string",
+      "created_at": "string",
+      "status": "string",
+      "supplies": [
+        {
+          "quantity": "number",
+          "name": "string",
+          "price": "number"
+        }
+      ],
+      "observations": "string",
+      "total": "number"
+    }
+  ]
+}
+```
+
+## 8. Crear Pedido
 
 **Endpoint:** `POST /orders`
 
@@ -256,6 +289,33 @@ Prefijo base: `/api`
   "status": 201,
   "data": {
     "id": "string"
+  }
+}
+```
+
+## 9. Actualizar estado de un pedido
+
+**Endpoint:** `PATCH /orders/:id`
+
+**Description:** Actualiza el estado de un pedido.
+
+**Request Body:**
+
+```json
+{
+  "status": "FINISHED"
+}
+```
+
+**Response:**
+
+### Success
+
+```json
+{
+  "status": 200,
+  "data": {
+    "ok": true
   }
 }
 ```
