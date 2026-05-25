@@ -3,11 +3,11 @@ import { Minus, Plus } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { useCartStore } from '@/stores/cart.store';
 
-interface CartItemProps {
+interface props {
   item: CartItemType;
 }
 
-export const CartItem = ({ item }: CartItemProps) => {
+export const CartItem = ({ item }: props) => {
   const { incrementQuantity, decrementQuantity, removeItem } = useCartStore();
 
   const handleRemoveItem = (item: CartItemType) => {

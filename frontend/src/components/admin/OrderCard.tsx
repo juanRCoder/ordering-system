@@ -2,12 +2,12 @@ import { ScrollText } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
 
-type Props = {
+type props = {
   type: 'pending' | 'completed';
   abrir: () => void;
 };
 
-export const OrderCard = ({ type, abrir }: Props) => {
+export const OrderCard = ({ type, abrir }: props) => {
   const isOrderCompleted = type === 'completed';
 
   return (

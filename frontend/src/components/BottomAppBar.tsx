@@ -1,11 +1,11 @@
 import { Bolt, Utensils, UserStar, type LucideIcon } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
-type Props = {
+type props = {
   statusAdmin?: boolean;
 };
 
-export const BottomAppBar = ({ statusAdmin }: Props) => {
+export const BottomAppBar = ({ statusAdmin }: props) => {
   const location = useLocation();
 
   const items = [
