@@ -7,6 +7,9 @@ const Auth = lazy(() => import('./pages/Auth.tsx'));
 const Menu = lazy(() => import('./pages/Menu.tsx'));
 const Cart = lazy(() => import('./pages/Cart.tsx'));
 const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard.tsx'));
+const AdminSupplySetup = lazy(
+  () => import('./pages/admin/AdminSupplySetup.tsx')
+);
 
 export const router = createBrowserRouter([
   {
@@ -27,6 +30,7 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <Navigate to="dashboard" replace /> },
       { path: 'dashboard', element: <AdminDashboard /> },
+      { path: 'supply-setup', element: <AdminSupplySetup /> },
     ],
   },
   { path: '*', element: <Navigate to="/" replace /> },

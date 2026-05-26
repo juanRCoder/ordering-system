@@ -49,7 +49,6 @@ class OrdersService {
         message: result.message,
       };
     }
-    console.log(result.data);
     return result.data;
   }
 

@@ -9,8 +9,10 @@ import type { OrderListResponseType } from '@/interfaces/orders.interface';
 import { OrderCardSkeleton } from '@/skeletons/OrderCardSkeleton';
 import { Plus, RefreshCcw } from 'lucide-react';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function AdminDashboard() {
+  const navigate = useNavigate();
   const [filter, setFilter] = useState<'PENDING' | 'FINISHED'>('PENDING');
   const [open, setOpen] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
@@ -30,6 +32,7 @@ function AdminDashboard() {
           <Button
             variant="outline"
             className="cursor-pointer rounded-lg py-5.5"
+            onClick={() => navigate('/admin/supply-setup')}
           >
             <Plus className="h-6! w-6!" strokeWidth={1.5} />
             Agregar Insumo

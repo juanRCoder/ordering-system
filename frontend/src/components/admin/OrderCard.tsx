@@ -18,7 +18,8 @@ export const OrderCard = ({ data, handlerEvents }: props) => {
         <div className="flex flex-col">
           <h2 className="text-lg font-semibold">{data.guest_name}</h2>
           <p className="text-muted-foreground text-sm">
-            Order #{data.id?.slice(0, 6)} • Hace {relativeTime(data.created_at)}
+            Pedido #{data.id?.slice(0, 6)} • Hace{' '}
+            {relativeTime(data.created_at)}
           </p>
         </div>
         <span

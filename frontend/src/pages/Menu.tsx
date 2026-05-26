@@ -1,7 +1,7 @@
 import { ChevronRight, ShoppingBag } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { SupplyCard } from '@/components/SupplyCard';
+import { SupplyCard } from '@/components/menu/SupplyCard';
 import { TopAppBar } from '@/components/TopAppBar';
 import { InputSearch } from '@/components/InputSearch';
 import { Button } from '@/components/ui/button';

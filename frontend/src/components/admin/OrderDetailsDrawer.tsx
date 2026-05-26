@@ -89,18 +89,16 @@ export const OrderDetailsDrawer = ({
                 <span className="absolute top-0 right-0 text-xs font-medium px-3 py-1 rounded-full text-[#43474F] border border-0.5">
                   {isOrderCompleted ? 'Finalizado' : 'Pendiente'}
                 </span>
-                <ScrollArea className="w-full mt-3">
-                  <div className="flex flex-col gap-3">
-                    {orderDetail?.data?.supplies?.map((supply) => (
-                      <OrderDetailItem
-                        key={`${supply.name}-${supply.quantity}-${supply.price}`}
-                        quantity={supply.quantity}
-                        product={supply.name}
-                        price={supply.price}
-                      />
-                    ))}
-                  </div>
-                </ScrollArea>
+                <div className="flex flex-col gap-3 mt-3">
+                  {orderDetail?.data?.supplies?.map((supply) => (
+                    <OrderDetailItem
+                      key={`${supply.name}-${supply.quantity}-${supply.price}`}
+                      quantity={supply.quantity}
+                      product={supply.name}
+                      price={supply.price}
+                    />
+                  ))}
+                </div>
               </div>
               <div className="py-4 border-t">
                 <p className="text-base font-semibold text-[#031C30]">
@@ -144,12 +142,12 @@ export const OrderDetailsDrawer = ({
                     className="py-4! cursor-pointer"
                   >
                     <FieldContent className="flex flex-row items-center gap-2">
+                      <RadioGroupItem value="CASH" id="CASH" />
                       <Coins />
                       <FieldTitle className="text-[#161D17] text-base font-normal">
                         Efectivo
                       </FieldTitle>
                     </FieldContent>
-                    <RadioGroupItem value="CASH" id="CASH" />
                   </Field>
                 </FieldLabel>
                 <FieldLabel htmlFor="YAPE" className="rounded-xl!">
@@ -158,12 +156,12 @@ export const OrderDetailsDrawer = ({
                     className="py-4! cursor-pointer"
                   >
                     <FieldContent className="flex flex-row items-center gap-2">
+                      <RadioGroupItem value="YAPE" id="YAPE" />
                       <CreditCard />
                       <FieldTitle className="text-[#161D17] text-base font-normal">
                         Yape
                       </FieldTitle>
                     </FieldContent>
-                    <RadioGroupItem value="YAPE" id="YAPE" />
                   </Field>
                 </FieldLabel>
               </RadioGroup>

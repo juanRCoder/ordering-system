@@ -21,6 +21,9 @@ function App() {
       <Link to="/admin/dashboard" className="block">
         Admin Dashboard
       </Link>
+      <Link to="/admin/supply-setup" className="block">
+        Admin Supply Setup
+      </Link>
     </div>
   );
 }
