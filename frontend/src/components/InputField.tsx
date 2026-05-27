@@ -4,14 +4,16 @@ import React, { useState } from 'react';
 type props = React.InputHTMLAttributes<HTMLInputElement> & {
   label: string;
   icon?: LucideIcon;
-  suffix?: React.ReactNode;
+  leftSuffix?: React.ReactNode;
+  rightSuffix?: React.ReactNode;
   error?: string;
 };
 
 export const InputField = ({
   label,
   icon: Icon,
-  suffix,
+  leftSuffix,
+  rightSuffix,
   error,
   type,
   ...inputProps
@@ -36,6 +38,7 @@ export const InputField = ({
       </label>
       <div className="flex items-center gap-2 border border-[#C3C6D0] rounded-lg h-11 px-4 bg-[#F8F9FA] relative">
         {Icon && <Icon className="text-[#6B7280] w-5 h-5 shrink-0" />}
+        {leftSuffix}
         <input
           className="flex-1 min-w-0 truncate outline-none bg-transparent text-[#6B7280] placeholder:text-[#9CA3AF]"
           type={toggleInputType()}
@@ -54,7 +57,7 @@ export const InputField = ({
             )}
           </button>
         ) : (
-          suffix
+          rightSuffix
         )}
       </div>
       {error && <p className="text-sm text-red-500 pt-0.5">{error}</p>}

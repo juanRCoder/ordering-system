@@ -14,3 +14,10 @@ export const defaultNewOrder = {
   guest_name: '',
   total: 0,
 };
+
+export const supplyFormValues = {
+  name: '',
+  description: '',
+  price: 1,
+  status: 'AVAILABLE',
+};

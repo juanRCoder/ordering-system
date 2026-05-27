@@ -20,7 +20,7 @@ class TypeSuppliesService {
         message: result.message,
       };
     }
-    return result;
+    return result.data;
   }
 
   async getAll() {
@@ -34,7 +34,7 @@ class TypeSuppliesService {
         message: result.message,
       };
     }
-    return result;
+    return result.data;
   }
 }
 

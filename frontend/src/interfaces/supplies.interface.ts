@@ -1,7 +1,7 @@
-import { supplySchema } from '@/schemas/supplies.schema';
+import { createSupplySchema } from '@/schemas/supplies.schema';
 import type z from 'zod';
 
-export type SupplyType = z.infer<typeof supplySchema>;
+export type CreateSupplyType = z.infer<typeof createSupplySchema>;
 
 export interface SupplyResponse {
   id: string;

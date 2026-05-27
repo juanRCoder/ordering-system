@@ -1,9 +1,9 @@
-import type { SupplyType } from '@/interfaces/supplies.interface';
+import type { CreateSupplyType } from '@/interfaces/supplies.interface';
 
 class SuppliesService {
   private API = import.meta.env.VITE_API_DEV;
 
-  async create(data: SupplyType) {
+  async create(data: CreateSupplyType) {
     const response = await fetch(`${this.API}/supplies`, {
       method: 'POST',
       headers: {
@@ -34,7 +34,7 @@ class SuppliesService {
         message: result.message,
       };
     }
-    return result;
+    return result.data;
   }
 }
 
