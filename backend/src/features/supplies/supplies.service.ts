@@ -7,7 +7,7 @@ export class SuppliesService {
   constructor(private prisma: PrismaService) {}
 
   async create(createSupplyDto: CreateSupplyDto) {
-    const { name, description, price, image_url, type_supply_id } =
+    const { name, description, price, image_url, type_supply_id, status } =
       createSupplyDto;
 
     // Validate category exists
@@ -27,8 +27,9 @@ export class SuppliesService {
         name,
         description,
         price,
-        imagen_url: image_url,
+        imagen_url: image_url || null,
         type_supply_id,
+        status,
       },
     });
 

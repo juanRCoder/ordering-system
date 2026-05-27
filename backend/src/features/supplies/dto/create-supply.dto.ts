@@ -1,10 +1,12 @@
 import {
+  IsEnum,
   IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
   IsUUID,
 } from 'class-validator';
+import { StatusSupply } from '../../../generated/prisma/enums';
 
 export class CreateSupplyDto {
   @IsNotEmpty()
@@ -26,4 +28,8 @@ export class CreateSupplyDto {
   @IsNotEmpty()
   @IsUUID()
   type_supply_id!: string;
+
+  @IsOptional()
+  @IsEnum(StatusSupply)
+  status?: StatusSupply;
 }

@@ -24,7 +24,7 @@ function Menu() {
   const allSupplies = useSuppliesByTypeId(changeCategory?.id || '');
 
   useEffect(() => {
-    if (typesSupplies.data) setChangeCategory(typesSupplies.data.data[0]);
+    if (typesSupplies.data) setChangeCategory(typesSupplies.data[0]);
   }, [typesSupplies.data]);
 
   const firstLetterUpper = (name: string) => {
@@ -41,7 +41,7 @@ function Menu() {
             {typesSupplies.isLoading ? (
               <CategorySkeleton />
             ) : (
-              typesSupplies.data?.data?.map((type: TypeSupplyResponse) => (
+              typesSupplies?.data?.map((type: TypeSupplyResponse) => (
                 <Button
                   key={type.id}
                   variant={
@@ -77,7 +77,7 @@ function Menu() {
                     layout={changeCategory?.layout || 'FULL'}
                   />
                 ))
-              : allSupplies.data?.data?.map((supply: SupplyResponse) => (
+              : allSupplies?.data?.map((supply: SupplyResponse) => (
                   <SupplyCard
                     key={supply.id}
                     supplyType={changeCategory}

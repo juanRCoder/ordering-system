@@ -210,7 +210,8 @@ Prefijo base: `/api`
   "description": "string", // Opcional
   "price": "number",
   "image_url": "string", // Opcional
-  "type_supply_id": "string" // UUID de la categoría
+  "type_supply_id": "string", // UUID de la categoría
+  "status": "string" // AVAILABLE o UNAVAILABLE (opcional)
 }
 ```
 

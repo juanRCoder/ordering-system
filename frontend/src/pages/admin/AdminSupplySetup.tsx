@@ -66,7 +66,7 @@ function AdminSupplySetup() {
           <Button
             variant="outline"
             className="cursor-pointer rounded-lg py-5.5"
-            onClick={() => navigate('/supply-setup')}
+            onClick={() => navigate('/admin/supply-setup')}
           >
             <Plus className="h-6! w-6!" strokeWidth={1.5} />
             Agregar Insumo
