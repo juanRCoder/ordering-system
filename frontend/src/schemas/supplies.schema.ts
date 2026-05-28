@@ -9,4 +9,5 @@ export const createSupplySchema = z.object({
     })
     .min(1, 'El precio mínimo es S/. 1'),
   status: z.string().optional(),
+  type_supply_id: z.string().uuidv4().optional(),
 });

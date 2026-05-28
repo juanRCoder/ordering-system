@@ -55,7 +55,7 @@ function Auth() {
   return (
     <section className="bg-[#F8F9FF] min-h-screen flex flex-col">
       <TopAppBar />
-      <div className="flex-1 flex flex-col items-center justify-center p-5">
+      <div className="flex-1 flex flex-col items-center justify-center p-3">
         <div className="w-full px-4 sm:px-8 py-12 bg-white rounded-xl">
           {isLogin ? (
             <LoginForm onToggle={() => setIsLogin(false)} />

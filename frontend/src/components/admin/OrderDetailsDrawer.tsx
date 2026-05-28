@@ -21,6 +21,7 @@ import { OrderDetailItem } from './OrderDetailItem';
 import { useOrderByIdQuery, useUpdateOrderStatus } from '@/hooks/useOrders';
 import { relativeTime } from '@/lib/time';
 import { OrderDetailSkeleton } from '@/skeletons/OrderDetailSkeleton';
+import type { OrderDetailSupply } from '@/interfaces/orders.interface';
 
 type props = {
   externalTrigger?: boolean;
@@ -90,14 +91,16 @@ export const OrderDetailsDrawer = ({
                   {isOrderCompleted ? 'Finalizado' : 'Pendiente'}
                 </span>
                 <div className="flex flex-col gap-3 mt-3">
-                  {orderDetail?.data?.supplies?.map((supply) => (
-                    <OrderDetailItem
-                      key={`${supply.name}-${supply.quantity}-${supply.price}`}
-                      quantity={supply.quantity}
-                      product={supply.name}
-                      price={supply.price}
-                    />
-                  ))}
+                  {orderDetail?.data?.supplies?.map(
+                    (supply: OrderDetailSupply) => (
+                      <OrderDetailItem
+                        key={`${supply.name}-${supply.quantity}-${supply.price}`}
+                        quantity={supply.quantity}
+                        product={supply.name}
+                        price={supply.price}
+                      />
+                    )
+                  )}
                 </div>
               </div>
               <div className="py-4 border-t">

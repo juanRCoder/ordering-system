@@ -21,12 +21,14 @@ export type OrderListResponseType = {
   total: number;
 };
 
+export type OrderDetailSupply = {
+  quantity: number;
+  name: string;
+  price: number;
+};
+
 export type OrderDetailResponseType = OrderListResponseType & {
-  supplies: {
-    quantity: number;
-    name: string;
-    price: number;
-  }[];
+  supplies: OrderDetailSupply[];
   observations: string | null;
   type_pay: 'CASH' | 'YAPE';
 };

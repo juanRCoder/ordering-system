@@ -1,21 +1,26 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import type { ErrorResponse } from '@/interfaces/errors.interface';
-import type { SupplyType } from '@/interfaces/supplies.interface';
+import type { CreateSupplyType } from '@/interfaces/supplies.interface';
 import { SuppliesKeys } from '@/lib/querykeys';
 import suppliesService from '@/services/supplies.service';
+import { toast } from 'sonner';
+import { toastStyles } from '@/lib/toast';
+import { useNavigate } from 'react-router-dom';
 
 export function useCreateSupply() {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   return useMutation({
-    mutationFn: (data: SupplyType) => suppliesService.create(data),
+    mutationFn: (data: CreateSupplyType) => suppliesService.create(data),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
-        queryKey: SuppliesKeys.byTypeId(variables.type_supply_id),
+        queryKey: SuppliesKeys.byTypeId(String(variables.type_supply_id ?? '')),
       });
+      toast.success('Insumo agregado con éxito', toastStyles.success);
+      navigate('/admin');
     },
-    onError: (error: ErrorResponse) => {
-      console.error(error);
+    onError: () => {
+      toast.error('Error al agregar insumo', toastStyles.error);
     },
   });
 }

@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { useOrdersQuery } from '@/hooks/useOrders';
 import type { OrderListResponseType } from '@/interfaces/orders.interface';
 import { OrderCardSkeleton } from '@/skeletons/OrderCardSkeleton';
-import { Plus, RefreshCcw } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -39,9 +39,23 @@ function AdminDashboard() {
           </Button>
         }
       />
-      <div className="flex-1 flex flex-col p-5 pb-24">
+      <div className="flex-1 flex flex-col p-3 pb-24">
         <div className="flex flex-col gap-4">
-          <h2 className="text-2xl font-bold text-[#031C30]">Pedidos del dia</h2>
+          <div className="flex items-center justify-between">
+            <h2 className="text-2xl font-bold text-[#031C30]">
+              Pedidos del dia
+            </h2>
+            <Button
+              onClick={() => {
+                allOrders.refetch();
+                setRefreshKey((prev) => prev + 1);
+              }}
+              disabled={allOrders.isLoading}
+              className="px-4 py-6 font-normal rounded-[12px] cursor-pointer text-[17px]"
+            >
+              Actualizar
+            </Button>
+          </div>
           <InputSearch />
           <div className="flex items-center justify-between gap-3">
             <div className="flex flex-1 gap-3">
@@ -70,16 +84,6 @@ function AdminDashboard() {
                 Finalizados
               </Button>
             </div>
-            <Button
-              onClick={() => {
-                allOrders.refetch();
-                setRefreshKey((prev) => prev + 1);
-              }}
-              disabled={allOrders.isLoading}
-              className="px-4 py-6 font-normal rounded-[12px] cursor-pointer text-[17px]"
-            >
-              <RefreshCcw className="h-7! w-7!" strokeWidth={1.5} />
-            </Button>
           </div>
         </div>
         <div className="mt-4">

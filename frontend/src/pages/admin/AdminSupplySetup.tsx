@@ -12,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { useCreateSupply } from '@/hooks/useSupplies';
 import { useTypesSupplies } from '@/hooks/useTypesSupplies';
 import type { CreateSupplyType } from '@/interfaces/supplies.interface';
 import type { TypeSupplyResponse } from '@/interfaces/typesSupplies.interface';
@@ -26,6 +27,7 @@ import { useNavigate } from 'react-router-dom';
 function AdminSupplySetup() {
   const navigate = useNavigate();
   const typesSupplies = useTypesSupplies();
+  const createSupply = useCreateSupply();
 
   const [status, setStatus] = useState<string>('AVAILABLE');
   const [typeSupply, setTypeSupply] = useState<string>('');
@@ -50,8 +52,11 @@ function AdminSupplySetup() {
   );
 
   const onSubmit = (data: CreateSupplyType) => {
-    console.log('DATA:');
-    console.log({ ...data, type_supply_id: typeSupply, status });
+    createSupply.mutate({
+      ...data,
+      type_supply_id: typeSupply,
+      status,
+    });
   };
 
   return (
@@ -75,7 +80,7 @@ function AdminSupplySetup() {
       />
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex-1 flex flex-col p-5 pb-24"
+        className="flex-1 flex flex-col p-3 pb-24"
       >
         <h2 className="text-2xl font-bold text-[#031C30]">Nuevo Insumo</h2>
         <Card className="flex flex-col gap-4 mt-3 p-4">
@@ -104,7 +109,10 @@ function AdminSupplySetup() {
                 Estado
               </label>
               <div className="w-full">
-                <Select value={status} onValueChange={setStatus}>
+                <Select
+                  value={status}
+                  onValueChange={(value) => setStatus(value ?? '')}
+                >
                   <SelectTrigger className="w-full bg-[#F8F9FA] border border-gray-300 rounded-lg px-3">
                     <SelectValue>
                       {status === 'AVAILABLE' ? 'Disponible' : 'No disponible'}
@@ -128,7 +136,10 @@ function AdminSupplySetup() {
               Tipo de Insumo*
             </label>
             <div className="w-full">
-              <Select value={typeSupply} onValueChange={setTypeSupply}>
+              <Select
+                value={typeSupply}
+                onValueChange={(value) => setTypeSupply(value ?? '')}
+              >
                 <SelectTrigger className="w-full bg-[#F8F9FA] border border-gray-300 rounded-lg px-3">
                   <SelectValue>{selectedTypeSupply?.name}</SelectValue>
                 </SelectTrigger>

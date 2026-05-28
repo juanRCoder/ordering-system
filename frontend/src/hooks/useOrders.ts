@@ -20,6 +20,7 @@ export function useCreateOrder() {
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: OrdersKeys.all });
       useCartStore.getState().clear();
+      toast.success('Pedido creado con éxito', toastStyles.success);
       navigate(`/order-received/${response.data.id}`);
     },
     onError: () => {

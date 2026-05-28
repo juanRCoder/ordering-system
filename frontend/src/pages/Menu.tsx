@@ -34,7 +34,7 @@ function Menu() {
   return (
     <section className="bg-[#F8F9FF] min-h-screen flex flex-col">
       <TopAppBar itemHeader={<CartBadget />} />
-      <div className="flex-1 flex flex-col p-5">
+      <div className="flex-1 flex flex-col p-3">
         <div className="flex flex-col gap-3">
           <InputSearch />
           <div className="flex gap-3 overflow-x-auto">
@@ -95,17 +95,18 @@ function Menu() {
           {items.length > 0 && (
             <Link
               to="/cart"
-              className="flex items-center justify-between bg-primary h-[77px] px-6 rounded-md mx-2 cursor-pointer shadow-md"
+              className="flex items-center justify-between bg-primary h-[77px] px-3 rounded-md mx-2 cursor-pointer shadow-md"
             >
               <div className="flex items-end justify-center gap-2">
-                <ShoppingBag className="w-7 h-7 text-card shrink-0" />
-                <p className="text-card text-[17px]">
-                  {totalSupplies} artículo{totalSupplies > 1 ? 's' : ''}{' '}
-                  añadidos
+                <ShoppingBag className="w-6 h-6 text-card shrink-0" />
+                <p className="text-card text-[15px]">
+                  {totalSupplies} insumo{totalSupplies > 1 ? 's' : ''} añadidos
                 </p>
               </div>
               <div className="flex items-center justify-center gap-2">
-                <p className="text-card text-xl">S/ {totalPrice.toFixed(2)}</p>
+                <p className="text-card text-[15px]]">
+                  S/ {totalPrice.toFixed(2)}
+                </p>
                 <ChevronRight className="w-6 h-6 text-card" />
               </div>
             </Link>

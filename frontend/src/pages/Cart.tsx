@@ -41,7 +41,7 @@ function Cart() {
   return (
     <section className="bg-[#F8F9FF] min-h-screen flex flex-col">
       <TopAppBar leftArrowEnable leftPath="/menu" itemHeader={<CartBadget />} />
-      <div className="flex-1 flex flex-col p-5 pb-24">
+      <div className="flex-1 flex flex-col p-3 pb-24">
         <h2 className="text-[32px] font-bold text-primary tracking-tighter">
           Resumen del Pedido
         </h2>
