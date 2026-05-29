@@ -1,11 +1,13 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { SuppliesService } from './supplies.service';
 import { CreateSupplyDto } from './dto/create-supply.dto';
+import { AdminGuard } from '../auth/auth.guard';
 
 @Controller('api/supplies')
 export class SuppliesController {
   constructor(private suppliesService: SuppliesService) {}
 
+  @UseGuards(AdminGuard)
   @Post()
   async create(@Body() createSupplyDto: CreateSupplyDto) {
     return this.suppliesService.create(createSupplyDto);

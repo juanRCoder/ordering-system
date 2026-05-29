@@ -4,7 +4,7 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-// import { JwtService } from '@nestjs/jwt';
+import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../../prisma.service';
 import { LoginDto } from './dto/login.dto';
@@ -13,8 +13,8 @@ import { RegisterDto } from './dto/register.dto';
 @Injectable()
 export class AuthService {
   constructor(
-    private prisma: PrismaService
-    // private jwtService: JwtService
+    private prisma: PrismaService,
+    private jwtService: JwtService
   ) {}
 
   async register(registerDto: RegisterDto) {
@@ -70,14 +70,35 @@ export class AuthService {
       });
     }
 
-    // const payload = { sub: user.id };
+    const payload = { sub: user.id, role: user.role };
 
     return {
       status: HttpStatus.OK,
-      data: { sub: user.id, name: user.name },
+      data: {
+        sub: user.id,
+        name: user.name,
+        access_token: await this.jwtService.signAsync(payload),
+      },
     };
-    // return {
-    //   access_token: await this.jwtService.signAsync(payload),
-    // };
+  }
+
+  async createAdmin(registerDto: RegisterDto) {
+    const { email, name, password } = registerDto;
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const user = await this.prisma.users.create({
+      data: {
+        email,
+        name: name || 'Unknown',
+        password: hashedPassword,
+        role: 'ADMIN',
+      },
+    });
+
+    return {
+      status: HttpStatus.CREATED,
+      data: { sub: user.id, name: user.name, role: user.role },
+    };
   }
 }

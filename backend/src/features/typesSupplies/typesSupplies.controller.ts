@@ -1,6 +1,7 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { TypeSuppliesService } from './typesSupplies.service';
 import { CreateTypeSupplyDto } from './dto/create-type-supply.dto';
+import { AdminGuard } from '../auth/auth.guard';
 
 @Controller('api/types-supplies')
 export class TypeSuppliesController {
@@ -11,6 +12,7 @@ export class TypeSuppliesController {
     return this.typeSuppliesService.findAll();
   }
 
+  @UseGuards(AdminGuard)
   @Post()
   async create(@Body() createTypeSupplyDto: CreateTypeSupplyDto) {
     return this.typeSuppliesService.create(createTypeSupplyDto);
