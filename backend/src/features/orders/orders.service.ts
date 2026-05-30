@@ -56,7 +56,7 @@ export class OrdersService {
     if (!order) {
       throw new NotFoundException({
         code: 'ORDER_NOT_FOUND',
-        message: `El pedido con ID ${id} no existe`,
+        message: `The order with ID ${id} does not exist`,
       });
     }
 
@@ -108,7 +108,7 @@ export class OrdersService {
     if (!existingOrder) {
       throw new NotFoundException({
         code: 'ORDER_NOT_FOUND',
-        message: `El pedido con ID ${id} no existe`,
+        message: `The order with ID ${id} does not exist`,
       });
     }
 

@@ -18,7 +18,7 @@ export class SuppliesService {
     if (!category) {
       throw new BadRequestException({
         code: 'CATEGORY_NOT_FOUND',
-        message: 'La categoría especificada no existe',
+        message: 'The specified category does not exist',
       });
     }
 
@@ -50,7 +50,7 @@ export class SuppliesService {
     if (!category) {
       throw new BadRequestException({
         code: 'CATEGORY_NOT_FOUND',
-        message: 'La categoría especificada no existe',
+        message: 'The specified category does not exist',
       });
     }
 

@@ -96,9 +96,15 @@ export class AuthService {
       },
     });
 
+    const payload = { sub: user.id, role: user.role };
+
     return {
       status: HttpStatus.CREATED,
-      data: { sub: user.id, name: user.name, role: user.role },
+      data: {
+        sub: user.id,
+        name: user.name,
+        access_token: await this.jwtService.signAsync(payload),
+      },
     };
   }
 }
