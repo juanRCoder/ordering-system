@@ -43,7 +43,7 @@ class AuthService {
         message: result.message,
       };
     }
-    return result;
+    return result.data;
   }
 }
 
