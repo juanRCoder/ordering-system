@@ -20,10 +20,7 @@ export function useRegister() {
     },
     onError: (error: ErrorResponse) => {
       if (error?.status === 409) {
-        toast.error(
-          'Error: El correo ya se encuentra registrado',
-          toastStyles.error
-        );
+        toast.error('El correo ya se encuentra registrado', toastStyles.error);
       } else {
         toast.error('Error al registrarse', toastStyles.error);
       }

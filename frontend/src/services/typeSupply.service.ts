@@ -6,6 +6,7 @@ class TypeSuppliesService {
   async create(data: TypeSupplyType) {
     const response = await fetch(`${this.API}/types-supplies`, {
       method: 'POST',
+      credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
       },
