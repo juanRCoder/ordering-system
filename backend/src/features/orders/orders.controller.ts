@@ -12,7 +12,7 @@ import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { AdminGuard } from '../auth/auth.guard';
 
-@Controller('api/orders')
+@Controller('orders')
 export class OrdersController {
   constructor(private ordersService: OrdersService) {}
 

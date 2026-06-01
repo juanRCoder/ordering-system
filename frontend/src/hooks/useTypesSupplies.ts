@@ -1,8 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import type { ErrorResponse } from '@/interfaces/errors.interface';
+import { toast } from 'sonner';
 import type { TypeSupplyType } from '@/interfaces/typesSupplies.interface';
 import { TypesSuppliesKeys } from '@/lib/querykeys';
 import typeSuppliesService from '@/services/typeSupply.service';
+import { toastStyles } from '@/lib/toast';
 
 export function useCreateTypeSupply() {
   const queryClient = useQueryClient();
@@ -12,8 +13,8 @@ export function useCreateTypeSupply() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: TypesSuppliesKeys.all });
     },
-    onError: (error: ErrorResponse) => {
-      console.error(error);
+    onError: () => {
+      toast.error('Error al crear una nuevo tipo de insumo', toastStyles.error);
     },
   });
 }

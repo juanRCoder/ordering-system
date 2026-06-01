@@ -6,11 +6,13 @@ import { AuthModule } from './features/auth/auth.module';
 import { SuppliesModule } from './features/supplies/supplies.module';
 import { TypeSuppliesModule } from './features/typesSupplies/typesSupplies.module';
 import { OrdersModule } from './features/orders/orders.module';
+import appConfig from './config/app.config';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      load: [appConfig],
     }),
     AuthModule,
     TypeSuppliesModule,

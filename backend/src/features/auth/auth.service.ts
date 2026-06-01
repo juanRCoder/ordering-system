@@ -57,7 +57,7 @@ export class AuthService {
     if (!user) {
       throw new UnauthorizedException({
         code: 'USER_NOT_FOUND',
-        message: 'User not found',
+        message: 'Invalid credentials',
       });
     }
 
@@ -66,7 +66,7 @@ export class AuthService {
     if (!isPasswordValid) {
       throw new UnauthorizedException({
         code: 'INVALID_PASSWORD',
-        message: 'Invalid password',
+        message: 'Invalid credentials',
       });
     }
 
@@ -78,6 +78,7 @@ export class AuthService {
         sub: user.id,
         name: user.name,
         access_token: await this.jwtService.signAsync(payload),
+        role: user.role,
       },
     };
   }

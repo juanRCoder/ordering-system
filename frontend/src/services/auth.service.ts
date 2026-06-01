@@ -29,6 +29,7 @@ class AuthService {
   async login(data: LoginFormType) {
     const response = await fetch(`${this.API}/auth/login`, {
       method: 'POST',
+      credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
       },

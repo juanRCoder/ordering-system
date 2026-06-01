@@ -24,7 +24,9 @@ class OrdersService {
   }
 
   async getAll() {
-    const response = await fetch(`${this.API}/orders`);
+    const response = await fetch(`${this.API}/orders`, {
+      credentials: 'include',
+    });
 
     const result = await response.json();
     if (!response.ok) {
@@ -39,7 +41,9 @@ class OrdersService {
   }
 
   async getById(id: string) {
-    const response = await fetch(`${this.API}/orders/${id}`);
+    const response = await fetch(`${this.API}/orders/${id}`, {
+      credentials: 'include',
+    });
 
     const result = await response.json();
     if (!response.ok) {
@@ -55,6 +59,7 @@ class OrdersService {
   async updateStatus(data: updateOrder) {
     const response = await fetch(`${this.API}/orders/${data.id}`, {
       method: 'PATCH',
+      credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
       },

@@ -1,10 +1,12 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, Res, UseGuards } from '@nestjs/common';
+import { Response } from 'express';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { AdminGuard } from './auth.guard';
+import appConfig from '../../config/app.config';
 
-@Controller('api/auth')
+@Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
@@ -14,8 +16,30 @@ export class AuthController {
   }
 
   @Post('login')
-  async login(@Body() loginDto: LoginDto) {
-    return this.authService.login(loginDto);
+  async login(
+    @Body() loginDto: LoginDto,
+    @Res({ passthrough: true }) res: Response
+  ) {
+    const configService = appConfig();
+
+    const result = await this.authService.login(loginDto);
+    const isProduction = configService.nodeEnv === 'production';
+
+    res.cookie('auth-token', result.data.access_token, {
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: 'lax',
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+    });
+
+    return {
+      status: result.status,
+      data: {
+        sub: result.data.sub,
+        name: result.data.name,
+        role: result.data.role,
+      },
+    };
   }
 
   @UseGuards(AdminGuard)

@@ -13,21 +13,25 @@ export function useLogin() {
 
   return useMutation({
     mutationFn: (data: LoginFormType) => authService.login(data),
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: UsersKeys.me });
-      toast.success('Inicio de sesión exitoso!', toastStyles.success);
-      navigate('/menu');
+      toast.success('Inicio de sesión exitoso', toastStyles.success);
+
+      if (data.role === 'ADMIN') {
+        navigate('/admin/dashboard');
+      } else {
+        navigate('/menu');
+      }
     },
     onError: (error: ErrorResponse) => {
-      if (error?.status === 401) {
-        toast.error(
-          'Error: Usuario o contraseña incorrectos',
-          toastStyles.error
-        );
+      if (
+        error?.code === 'USER_NOT_FOUND' ||
+        error?.code === 'INVALID_PASSWORD'
+      ) {
+        toast.error('Usuario o contraseña incorrectos', toastStyles.error);
       } else {
         toast.error('Error al iniciar sesión', toastStyles.error);
       }
-      console.error(error);
     },
   });
 }

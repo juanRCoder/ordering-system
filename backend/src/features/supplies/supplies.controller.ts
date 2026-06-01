@@ -3,7 +3,7 @@ import { SuppliesService } from './supplies.service';
 import { CreateSupplyDto } from './dto/create-supply.dto';
 import { AdminGuard } from '../auth/auth.guard';
 
-@Controller('api/supplies')
+@Controller('supplies')
 export class SuppliesController {
   constructor(private suppliesService: SuppliesService) {}
 
