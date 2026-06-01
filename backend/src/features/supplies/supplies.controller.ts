@@ -7,14 +7,14 @@ import { AdminGuard } from '../auth/auth.guard';
 export class SuppliesController {
   constructor(private suppliesService: SuppliesService) {}
 
+  @Get(':type_id')
+  async findByCategoryId(@Param('type_id') type_id: string) {
+    return this.suppliesService.findByCategoryId(type_id);
+  }
+
   @UseGuards(AdminGuard)
   @Post()
   async create(@Body() createSupplyDto: CreateSupplyDto) {
     return this.suppliesService.create(createSupplyDto);
-  }
-
-  @Get(':type_id')
-  async findByCategoryId(@Param('type_id') type_id: string) {
-    return this.suppliesService.findByCategoryId(type_id);
   }
 }

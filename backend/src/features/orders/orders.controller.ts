@@ -16,11 +16,6 @@ import { AdminGuard } from '../auth/auth.guard';
 export class OrdersController {
   constructor(private ordersService: OrdersService) {}
 
-  @Post()
-  async create(@Body() createOrderDto: CreateOrderDto) {
-    return this.ordersService.create(createOrderDto);
-  }
-
   @UseGuards(AdminGuard)
   @Get()
   async findAll() {
@@ -31,6 +26,11 @@ export class OrdersController {
   @Get(':id')
   async findOne(@Param('id') id: string) {
     return this.ordersService.findOne(id);
+  }
+
+  @Post()
+  async create(@Body() createOrderDto: CreateOrderDto) {
+    return this.ordersService.create(createOrderDto);
   }
 
   @UseGuards(AdminGuard)

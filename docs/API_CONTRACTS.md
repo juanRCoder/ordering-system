@@ -10,18 +10,18 @@ Prefijo base: `/api`
 | :----- | :------------------- | :------------------------------------------ |
 | POST   | `/auth/register`     | Registra un nuevo usuario.                  |
 | POST   | `/auth/login`        | Inicia sesión un usuario.                   |
-| GET    | `/types-supplies`    | Obtiene todos los tipos de insumos.         |
-| POST   | `/types-supplies`    | Crea un nuevo tipo de insumo.               |
-| GET    | `/supplies/:type_id` | Lista los insumos por ID de tipo de insumo. |
-| POST   | `/supplies`          | Crea un nuevo insumo.                       |
 | GET    | `/orders`            | Obtiene todos los pedidos.                  |
 | GET    | `/orders/:id`        | Obtiene un pedido por ID.                   |
 | POST   | `/orders`            | Crea un nuevo pedido.                       |
 | PATCH  | `/orders/:id`        | Actualiza el estado de un pedido.           |
+| GET    | `/supplies/:type_id` | Lista los insumos por ID de tipo de insumo. |
+| POST   | `/supplies`          | Crea un nuevo insumo.                       |
+| GET    | `/types-supplies`    | Obtiene todos los tipos de insumos.         |
+| POST   | `/types-supplies`    | Crea un nuevo tipo de insumo.               |
 
 ## Detalle de Endpoints
 
-## 1. Registrar Usuario
+## Registrar Usuario
 
 **Endpoint:** `POST /auth/register`
 
@@ -61,7 +61,7 @@ Prefijo base: `/api`
 }
 ```
 
-## 2. Iniciar Sesión
+## Iniciar Sesión
 
 **Endpoint:** `POST /auth/login`
 
@@ -96,139 +96,17 @@ Prefijo base: `/api`
 {
   "status": 401,
   "code": "USER_NOT_FOUND",
-  "message": "User not found"
+  "message": "Invalid credentials"
 }
-```
 
-## 3. Obtener todas las categorías de insumos
-
-**Endpoint:** `GET /types-supplies`
-
-**Description:** Obtiene todas las categorías de insumos.
-
-**Response:**
-
-### Success
-
-```json
 {
-  "status": 200,
-  "data": [
-    {
-      "id": "string",
-      "name": "string",
-      "layout": "string"
-    }
-  ]
+  "status": 401,
+  "code": "INVALID_PASSWORD",
+  "message": "Invalid credentials"
 }
 ```
 
-### Error
-
-```json
-{
-  "status": 400,
-  "code": "CATEGORY_NOT_FOUND",
-  "message": "La categoría especificada no existe"
-}
-```
-
-## 4. Crear Tipo de Insumo
-
-**Endpoint:** `POST /types-supplies`
-
-**Description:** Crea una nueva categoría para agrupar insumos.
-
-**Request Body:**
-
-```json
-{
-  "name": "string", // Nombre de la categoría
-  "layout": "string" // FULL o HALF (opcional)
-}
-```
-
-**Response:**
-
-### Success
-
-```json
-{
-  "status": 201,
-  "data": {
-    "ok": true
-  }
-}
-```
-
-## 5. Listar Insumos por Categoría
-
-**Endpoint:** `GET /supplies/:type_id`
-
-**Description:** Obtiene todos los insumos que pertenecen a una categoría específica.
-
-**Response:**
-
-### Success
-
-```json
-{
-  "status": 200,
-  "data": [
-    {
-      "id": "string",
-      "image_url": "string",
-      "name": "string",
-      "description": "string",
-      "price": 0
-    }
-  ]
-}
-```
-
-### Error
-
-```json
-{
-  "status": 400,
-  "code": "CATEGORY_NOT_FOUND",
-  "message": "La categoría especificada no existe"
-}
-```
-
-## 6. Crear Insumo
-
-**Endpoint:** `POST /supplies`
-
-**Description:** Crea un nuevo insumo asociado a una categoría.
-
-**Request Body:**
-
-```json
-{
-  "name": "string",
-  "description": "string", // Opcional
-  "price": "number",
-  "image_url": "string", // Opcional
-  "type_supply_id": "string", // UUID de la categoría
-  "status": "string" // AVAILABLE o UNAVAILABLE (opcional)
-}
-```
-
-**Response:**
-
-### Success
-
-```json
-{
-  "status": 201,
-  "data": {
-    "ok": true
-  }
-}
-```
-
-## 7. Obtener todos los pedidos
+## Obtener todos los pedidos
 
 **Endpoint:** `GET /orders`
 
@@ -259,7 +137,7 @@ Prefijo base: `/api`
 }
 ```
 
-## 8. Obtener un pedido por ID
+## Obtener un pedido por ID
 
 **Endpoint:** `GET /orders/:id`
 
@@ -289,7 +167,7 @@ Prefijo base: `/api`
 }
 ```
 
-## 9. Crear Pedido
+## Crear Pedido
 
 **Endpoint:** `POST /orders`
 
@@ -325,7 +203,7 @@ Prefijo base: `/api`
 }
 ```
 
-## 10. Actualizar estado de un pedido
+## Actualizar estado de un pedido
 
 **Endpoint:** `PATCH /orders/:id`
 
@@ -346,6 +224,134 @@ Prefijo base: `/api`
 ```json
 {
   "status": 200,
+  "data": {
+    "ok": true
+  }
+}
+```
+
+## Obtener todas las categorías de insumos
+
+**Endpoint:** `GET /types-supplies`
+
+**Description:** Obtiene todas las categorías de insumos.
+
+**Response:**
+
+### Success
+
+```json
+{
+  "status": 200,
+  "data": [
+    {
+      "id": "string",
+      "name": "string",
+      "layout": "string"
+    }
+  ]
+}
+```
+
+### Error
+
+```json
+{
+  "status": 400,
+  "code": "CATEGORY_NOT_FOUND",
+  "message": "La categoría especificada no existe"
+}
+```
+
+## Crear Tipo de Insumo
+
+**Endpoint:** `POST /types-supplies`
+
+**Description:** Crea una nueva categoría para agrupar insumos.
+
+**Request Body:**
+
+```json
+{
+  "name": "string", // Nombre de la categoría
+  "layout": "string" // FULL o HALF (opcional)
+}
+```
+
+**Response:**
+
+### Success
+
+```json
+{
+  "status": 201,
+  "data": {
+    "ok": true
+  }
+}
+```
+
+## Listar Insumos por Categoría
+
+**Endpoint:** `GET /supplies/:type_id`
+
+**Description:** Obtiene todos los insumos que pertenecen a una categoría específica.
+
+**Response:**
+
+### Success
+
+```json
+{
+  "status": 200,
+  "data": [
+    {
+      "id": "string",
+      "image_url": "string",
+      "name": "string",
+      "description": "string",
+      "price": 0
+    }
+  ]
+}
+```
+
+### Error
+
+```json
+{
+  "status": 400,
+  "code": "CATEGORY_NOT_FOUND",
+  "message": "La categoría especificada no existe"
+}
+```
+
+## Crear Insumo
+
+**Endpoint:** `POST /supplies`
+
+**Description:** Crea un nuevo insumo asociado a una categoría.
+
+**Request Body:**
+
+```json
+{
+  "name": "string",
+  "description": "string", // Opcional
+  "price": "number",
+  "image_url": "string", // Opcional
+  "type_supply_id": "string", // UUID de la categoría
+  "status": "string" // AVAILABLE o UNAVAILABLE (opcional)
+}
+```
+
+**Response:**
+
+### Success
+
+```json
+{
+  "status": 201,
   "data": {
     "ok": true
   }
