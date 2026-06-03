@@ -14,7 +14,7 @@ class AuthService {
       },
       body: JSON.stringify(data),
     });
-    console.log('response', response);
+
     const result = await response.json();
     if (!response.ok) {
       throw {
@@ -42,6 +42,23 @@ class AuthService {
         status: response.status,
         code: result.code,
         message: result.message,
+      };
+    }
+    return result.data;
+  }
+
+  async logout() {
+    const response = await fetch(`${this.API}/auth/logout`, {
+      method: 'POST',
+      credentials: 'include',
+    });
+
+    const result = await response.json();
+    if (!response.ok) {
+      throw {
+        status: response.status,
+        code: result?.code,
+        message: result?.message,
       };
     }
     return result.data;

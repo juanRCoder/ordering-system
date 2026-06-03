@@ -1,4 +1,4 @@
-import { Bolt, Utensils, UserStar, type LucideIcon } from 'lucide-react';
+import { Bolt, Utensils, type LucideIcon, ScrollText, Box } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
 type props = {
@@ -8,27 +8,39 @@ type props = {
 export const BottomAppBar = ({ statusAdmin }: props) => {
   const location = useLocation();
 
-  const items = [
-    {
+  const items = [];
+
+  if (statusAdmin) {
+    items.push({
+      id: 'pedidos',
+      label: 'Pedidos',
+      icon: ScrollText,
+      to: '/admin/orders',
+    });
+    items.push({
+      id: 'insumos',
+      label: 'Insumos',
+      icon: Box,
+      to: '/admin/supplies',
+    });
+    items.push({
+      id: 'settings',
+      label: 'Ajustes',
+      icon: Bolt,
+      to: '/admin/settings',
+    });
+  } else {
+    items.push({
       id: 'menu',
       label: 'Menu',
       icon: Utensils,
       to: '/menu',
-    },
-    {
+    });
+    items.push({
       id: 'ajustes',
       label: 'Ajustes',
       icon: Bolt,
-      to: '/ajustes',
-    },
-  ];
-
-  if (statusAdmin) {
-    items.push({
-      id: 'admin',
-      label: 'Admin',
-      icon: UserStar,
-      to: '/admin/dashboard',
+      to: '/settings',
     });
   }
 

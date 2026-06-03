@@ -11,7 +11,7 @@ import { Plus } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-function AdminDashboard() {
+function Orders() {
   const navigate = useNavigate();
   const [filter, setFilter] = useState<'PENDING' | 'FINISHED'>('PENDING');
   const [open, setOpen] = useState(false);
@@ -121,4 +121,4 @@ function AdminDashboard() {
   );
 }
 
-export default AdminDashboard;
+export default Orders;

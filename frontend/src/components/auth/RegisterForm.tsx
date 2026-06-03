@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { registerSchema } from '@/schemas/auth.schema';
-import { useRegister } from '@/hooks/useRegister';
+import { useRegister } from '@/hooks/useAuth';
 import { InputField } from '@/components/InputField';
 import type { RegisterFormType } from '@/interfaces/auth.interface';
 import { defaultRegisterFormValues } from '@/lib/default';

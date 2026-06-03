@@ -42,6 +42,25 @@ export class AuthController {
     };
   }
 
+  @Post('logout')
+  async logout(@Res({ passthrough: true }) res: Response) {
+    const configService = appConfig();
+    const isProduction = configService.nodeEnv === 'production';
+
+    res.clearCookie('auth-token', {
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: 'lax',
+    });
+
+    return {
+      status: 200,
+      data: {
+        ok: true,
+      },
+    };
+  }
+
   @UseGuards(AdminGuard)
   @Post('create-admin')
   createAdmin(@Body() registerDto: RegisterDto) {

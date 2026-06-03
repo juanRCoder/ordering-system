@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import type { LoginFormType } from '@/interfaces/auth.interface';
 import { loginSchema } from '@/schemas/auth.schema';
-import { useLogin } from '@/hooks/useLogin';
+import { useLogin } from '@/hooks/useAuth';
 import { defaultLoginFormValues } from '@/lib/default';
 import { InputField } from '../InputField';
 import { Button } from '../ui/button';
