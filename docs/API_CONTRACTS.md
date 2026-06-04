@@ -10,6 +10,7 @@ Prefijo base: `/api`
 | :----- | :------------------- | :------------------------------------------ |
 | POST   | `/auth/register`     | Registra un nuevo usuario.                  |
 | POST   | `/auth/login`        | Inicia sesión un usuario.                   |
+| POST   | `/auth/logout`       | Cierra sesión un usuario.                   |
 | GET    | `/orders`            | Obtiene todos los pedidos.                  |
 | GET    | `/orders/:id`        | Obtiene un pedido por ID.                   |
 | POST   | `/orders`            | Crea un nuevo pedido.                       |
@@ -103,6 +104,25 @@ Prefijo base: `/api`
   "status": 401,
   "code": "INVALID_PASSWORD",
   "message": "Invalid credentials"
+}
+```
+
+## Cerrar Sesión
+
+**Endpoint:** `POST /auth/logout`
+
+**Description:** Cierra sesión un usuario.
+
+**Response:**
+
+### Success
+
+```json
+{
+  "status": 200,
+  "data": {
+    "ok": true
+  }
 }
 ```
 
