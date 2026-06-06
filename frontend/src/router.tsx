@@ -9,9 +9,6 @@ const Cart = lazy(() => import('./pages/Cart.tsx'));
 const Setting = lazy(() => import('./pages/Settings.tsx'));
 const Orders = lazy(() => import('./pages/admin/Orders.tsx'));
 const Supplies = lazy(() => import('./pages/admin/Supplies.tsx'));
-const AdminSupplySetup = lazy(
-  () => import('./pages/admin/AdminSupplySetup.tsx')
-);
 
 export const router = createBrowserRouter([
   {
@@ -34,7 +31,6 @@ export const router = createBrowserRouter([
       { index: true, element: <Navigate to="orders" replace /> },
       { path: 'orders', element: <Orders /> },
       { path: 'supplies', element: <Supplies /> },
-      { path: 'supply-setup', element: <AdminSupplySetup /> },
       { path: 'settings', element: <Setting isAdmin /> },
     ],
   },

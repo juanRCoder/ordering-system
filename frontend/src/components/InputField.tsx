@@ -36,7 +36,7 @@ export const InputField = ({
       >
         {label}
       </label>
-      <div className="flex items-center gap-2 border border-[#C3C6D0] rounded-lg h-11 px-4 bg-[#F8F9FA] relative">
+      <div className="flex items-center gap-2 border border-[#C3C6D0] rounded-sm h-11 px-4 bg-[#F8F9FA] relative">
         {Icon && <Icon className="text-[#6B7280] w-5 h-5 shrink-0" />}
         {leftSuffix}
         <input

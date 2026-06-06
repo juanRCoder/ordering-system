@@ -4,11 +4,9 @@ import { SuppliesKeys } from '@/lib/querykeys';
 import suppliesService from '@/services/supplies.service';
 import { toast } from 'sonner';
 import { toastStyles } from '@/lib/toast';
-import { useNavigate } from 'react-router-dom';
 
 export function useCreateSupply() {
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
 
   return useMutation({
     mutationFn: (data: CreateSupplyType) => suppliesService.create(data),
@@ -17,7 +15,6 @@ export function useCreateSupply() {
         queryKey: SuppliesKeys.byTypeId(String(variables.type_supply_id ?? '')),
       });
       toast.success('Insumo agregado con éxito', toastStyles.success);
-      navigate('/admin');
     },
     onError: () => {
       toast.error('Error al agregar insumo', toastStyles.error);

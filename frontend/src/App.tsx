@@ -16,13 +16,13 @@ function App() {
       <Link to="/order-received" className="block">
         Order Received
       </Link>
+      <Link to="/settings" className="block">
+        Settings
+      </Link>
       {/* Admin routes */}
       <hr className="my-4 border" />
       <Link to="/admin/orders" className="block">
         Admin Orders
-      </Link>
-      <Link to="/admin/supply-setup" className="block">
-        Admin Supply Setup
       </Link>
       <Link to="/admin/supplies" className="block">
         Admin Supplies

@@ -1,5 +1,6 @@
 import { OrderCard } from '@/components/admin/OrderCard';
 import { OrderDetailsDrawer } from '@/components/admin/OrderDetailsDrawer';
+import { SupplyDialog } from '@/components/admin/SupplyDialog';
 import { BottomAppBar } from '@/components/BottomAppBar';
 import { InputSearch } from '@/components/InputSearch';
 import { TopAppBar } from '@/components/TopAppBar';
@@ -9,12 +10,11 @@ import type { OrderListResponseType } from '@/interfaces/orders.interface';
 import { OrderCardSkeleton } from '@/skeletons/OrderCardSkeleton';
 import { Plus } from 'lucide-react';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 function Orders() {
-  const navigate = useNavigate();
   const [filter, setFilter] = useState<'PENDING' | 'FINISHED'>('PENDING');
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState<boolean>(false);
+  const [openSupplyDialog, setOpenSupplyDialog] = useState<boolean>(false);
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
   const [refreshKey, setRefreshKey] = useState<number>(0); // para refrescar horario
 
@@ -32,7 +32,7 @@ function Orders() {
           <Button
             variant="outline"
             className="cursor-pointer rounded-lg py-5.5"
-            onClick={() => navigate('/admin/supply-setup')}
+            onClick={() => setOpenSupplyDialog(true)}
           >
             <Plus className="h-6! w-6!" strokeWidth={1.5} />
             Agregar Insumo
@@ -116,6 +116,10 @@ function Orders() {
         externalTrigger={open}
         setExternalTrigger={setOpen}
         selectedOrderId={selectedOrderId}
+      />
+      <SupplyDialog
+        externalTrigger={openSupplyDialog}
+        setExternalTrigger={setOpenSupplyDialog}
       />
     </section>
   );

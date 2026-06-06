@@ -35,6 +35,7 @@ class TypeSuppliesService {
         message: result.message,
       };
     }
+
     return result.data;
   }
 }
