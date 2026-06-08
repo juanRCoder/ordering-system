@@ -2,6 +2,7 @@ import { createSupplySchema } from '@/schemas/supplies.schema';
 import type z from 'zod';
 
 export type CreateSupplyType = z.infer<typeof createSupplySchema>;
+export type StatusType = 'AVAILABLE' | 'UNAVAILABLE';
 
 export interface SupplyResponse {
   id: string;
@@ -9,4 +10,10 @@ export interface SupplyResponse {
   description?: string;
   price: number;
   imagen_url?: string;
+  status?: StatusType;
+}
+
+export interface UpdateSupplyStatusResponse {
+  name: string;
+  status: StatusType;
 }

@@ -29,3 +29,25 @@ export function useSuppliesByTypeId(type_id: string) {
     enabled: !!type_id,
   });
 }
+
+export function useUpdateSupplyStatus() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => suppliesService.updateStatus(id),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: SuppliesKeys.all });
+
+      toast.success(
+        `${data.name} ${data.status === 'AVAILABLE' ? 'Disponible' : 'No disponible'}`,
+        data.status === 'AVAILABLE' ? toastStyles.success : toastStyles.gray
+      );
+    },
+    onError: () => {
+      toast.error(
+        'Error al actualizar el estado del insumo',
+        toastStyles.error
+      );
+    },
+  });
+}

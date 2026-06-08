@@ -1,4 +1,7 @@
-import type { CreateSupplyType } from '@/interfaces/supplies.interface';
+import type {
+  CreateSupplyType,
+  UpdateSupplyStatusResponse,
+} from '@/interfaces/supplies.interface';
 
 class SuppliesService {
   private API = import.meta.env.VITE_API_DEV;
@@ -26,6 +29,23 @@ class SuppliesService {
 
   async getByTypeId(type_id: string) {
     const response = await fetch(`${this.API}/supplies/${type_id}`);
+
+    const result = await response.json();
+    if (!response.ok) {
+      throw {
+        status: response.status,
+        code: result.code,
+        message: result.message,
+      };
+    }
+    return result.data;
+  }
+
+  async updateStatus(id: string): Promise<UpdateSupplyStatusResponse> {
+    const response = await fetch(`${this.API}/supplies/${id}`, {
+      method: 'PATCH',
+      credentials: 'include',
+    });
 
     const result = await response.json();
     if (!response.ok) {

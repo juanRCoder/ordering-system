@@ -17,6 +17,7 @@ Prefijo base: `/api`
 | PATCH  | `/orders/:id`        | Actualiza el estado de un pedido.           |
 | GET    | `/supplies/:type_id` | Lista los insumos por ID de tipo de insumo. |
 | POST   | `/supplies`          | Crea un nuevo insumo.                       |
+| PATCH  | `/supplies/:id`      | Actualiza el estado de un insumo.           |
 | GET    | `/types-supplies`    | Obtiene todos los tipos de insumos.         |
 | POST   | `/types-supplies`    | Crea un nuevo tipo de insumo.               |
 
@@ -280,6 +281,44 @@ Prefijo base: `/api`
   "status": 400,
   "code": "CATEGORY_NOT_FOUND",
   "message": "La categoría especificada no existe"
+}
+```
+
+## Actualizar estado de un Insumo
+
+**Endpoint:** `PATCH /supplies/:id`
+
+**Description:** Cambia el estado de un insumo de AVAILABLE a UNAVAILABLE y viceversa. Requiere privilegios de ADMIN.
+
+**Response:**
+
+### Success
+
+```json
+{
+  "status": 200,
+  "data": {
+    "name": "string",
+    "status": "UNAVAILABLE"
+  }
+}
+```
+
+### Error
+
+```json
+{
+  "status": 400,
+  "code": "INVALID_ID",
+  "message": "The specified ID is not a valid UUID"
+}
+```
+
+```json
+{
+  "status": 404,
+  "code": "SUPPLY_NOT_FOUND",
+  "message": "The specified supply does not exist"
 }
 ```
 

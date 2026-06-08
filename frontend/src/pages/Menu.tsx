@@ -77,13 +77,17 @@ function Menu() {
                     layout={changeCategory?.layout || 'FULL'}
                   />
                 ))
-              : allSupplies?.data?.map((supply: SupplyResponse) => (
-                  <SupplyCard
-                    key={supply.id}
-                    supplyType={changeCategory}
-                    data={supply}
-                  />
-                ))}
+              : allSupplies?.data
+                  ?.filter(
+                    (supply: SupplyResponse) => supply.status === 'AVAILABLE'
+                  )
+                  .map((supply: SupplyResponse) => (
+                    <SupplyCard
+                      key={supply.id}
+                      supplyType={changeCategory}
+                      data={supply}
+                    />
+                  ))}
           </div>
         </div>
         {items.length > 0 ? (

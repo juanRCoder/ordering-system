@@ -3,9 +3,6 @@ import { BottomAppBar } from '@/components/BottomAppBar';
 import { InputSearch } from '@/components/InputSearch';
 import { TopAppBar } from '@/components/TopAppBar';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Switch } from '@/components/ui/switch';
-import { cn } from '@/lib/utils';
 import {
   Select,
   SelectContent,
@@ -16,15 +13,21 @@ import {
 } from '@/components/ui/select';
 import { useTypesSupplies } from '@/hooks/useTypesSupplies';
 import type { TypeSupplyResponse } from '@/interfaces/typesSupplies.interface';
-import { Pencil, Plus } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { useSuppliesByTypeId } from '@/hooks/useSupplies';
+import { SupplyCardAdminSkeleton } from '@/skeletons/SupplyCardSkeleton';
+import type { SupplyResponse } from '@/interfaces/supplies.interface';
+import { SupplyCard } from '@/components/admin/SupplyCard';
 
 function Supplies() {
-  const typesSupplies = useTypesSupplies();
-
+  const [changeCategory, setChangeCategory] =
+    useState<TypeSupplyResponse | null>(null);
   const [typeSupplyId, setTypeSupplyId] = useState<string>('');
-  const [enabled, setEnabled] = useState<boolean>(false);
   const [openSupplyDialog, setOpenSupplyDialog] = useState<boolean>(false);
+
+  const typesSupplies = useTypesSupplies();
+  const allSupplies = useSuppliesByTypeId(changeCategory?.id || 'all');
 
   const allOption = { id: 'all', name: 'Todos' };
   const typesSuppliesWithAll = [allOption, ...(typesSupplies.data ?? [])];
@@ -58,7 +61,7 @@ function Supplies() {
           </Button>
         }
       />
-      <div className="flex-1 flex flex-col p-3 pb-24">
+      <div className="flex flex-col p-3 pb-24">
         <div className="flex flex-col gap-3.5">
           <InputSearch placeholder="Buscar general" />
           <div className="flex gap-3.5">
@@ -72,7 +75,11 @@ function Supplies() {
               <SelectContent>
                 <SelectGroup>
                   {typesSuppliesWithAll?.map((ts: TypeSupplyResponse) => (
-                    <SelectItem key={ts.id} value={ts.id}>
+                    <SelectItem
+                      key={ts.id}
+                      value={ts.id}
+                      onClick={() => setChangeCategory(ts)}
+                    >
                       {ts.name}
                     </SelectItem>
                   ))}
@@ -89,49 +96,19 @@ function Supplies() {
             </Button>
           </div>
           <h2 className="text-xl font-semibold text-[#161D17]">
-            04 resultados{' '}
+            {allSupplies.data?.length} resultados{' '}
             {selectedTypeSupply?.name === 'Todos'
               ? ''
               : 'en ' + selectedTypeSupply?.name}
           </h2>
           <div className="flex flex-col gap-4">
-            <Card className="rounded-sm px-2 py-1 flex flex-row items-center gap-4">
-              <div className="shrink-0 w-20 h-20 rounded-[8px] overflow-hidden">
-                <img
-                  src="/insumo.jpg"
-                  alt="insumo"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="flex-1">
-                <h2 className="text-card-foreground text-lg font-semibold">
-                  Lomo Saltado
-                </h2>
-                <p className="text-primary text-base font-semibold pb-1">
-                  S/ 10.00
-                </p>
-                <p className="text-[13px] text-muted-foreground line-clamp-2">
-                  Contiene tallarines rojos, huancaina, arroz con pollo,
-                  ceviche, chaufanita
-                </p>
-              </div>
-              <div className="shrink-0 flex flex-col items-center gap-2.5">
-                <span className="bg-[#EFF6FF] cursor-pointer rounded-full w-12 h-12 flex items-center justify-center">
-                  <Pencil className="text-primary" />
-                </span>
-                <span
-                  className={cn(
-                    'flex flex-col items-center gap-0 justify-center w-18 shrink-0',
-                    enabled ? 'text-primary' : 'text-muted-foreground'
-                  )}
-                >
-                  <p className="font-bold text-[13px]">
-                    {enabled ? 'HABILITADO' : 'HABILITAR'}
-                  </p>
-                  <Switch checked={enabled} onCheckedChange={setEnabled} />
-                </span>
-              </div>
-            </Card>
+            {allSupplies.isLoading
+              ? Array.from({ length: 3 }).map((_, i) => (
+                  <SupplyCardAdminSkeleton key={i} />
+                ))
+              : allSupplies.data?.map((supply: SupplyResponse) => (
+                  <SupplyCard key={supply.id} data={supply} />
+                ))}
           </div>
         </div>
       </div>

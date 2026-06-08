@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { SuppliesService } from './supplies.service';
 import { CreateSupplyDto } from './dto/create-supply.dto';
 import { AdminGuard } from '../auth/auth.guard';
@@ -16,5 +24,11 @@ export class SuppliesController {
   @Post()
   async create(@Body() createSupplyDto: CreateSupplyDto) {
     return this.suppliesService.create(createSupplyDto);
+  }
+
+  @UseGuards(AdminGuard)
+  @Patch(':id')
+  async updateStatus(@Param('id') id: string) {
+    return this.suppliesService.updateStatus(id);
   }
 }
