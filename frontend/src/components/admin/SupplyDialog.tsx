@@ -19,7 +19,11 @@ import {
 import { FieldLabel } from '../ui/field';
 import { Button } from '../ui/button';
 import { useTypesSupplies } from '@/hooks/useTypesSupplies';
-import { useCreateSupply, useSupplyById } from '@/hooks/useSupplies';
+import {
+  useCreateSupply,
+  useSupplyById,
+  useUpdateSupply,
+} from '@/hooks/useSupplies';
 import { useEffect, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -44,49 +48,73 @@ export const SupplyDialog = ({
   const typesSupplies = useTypesSupplies();
   const createSupply = useCreateSupply();
   const getSupplyById = useSupplyById(id || '');
+  const updateSupply = useUpdateSupply();
 
-  const [typeSupply, setTypeSupply] = useState<string>('');
-
-  useEffect(() => {
-    if (typesSupplies.data?.length) {
-      setTypeSupply(typesSupplies.data[0].id);
-    }
-  }, [typesSupplies.data]);
-
-  useEffect(() => {
-    if (mode === 'edit' && id) {
-      console.log(getSupplyById.data);
-    }
-  }, [getSupplyById.data]);
+  const [typeSupplyId, setTypeSupplyId] = useState<string>('');
 
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<CreateSupplyType>({
     resolver: zodResolver(createSupplySchema),
     defaultValues: supplyFormValues,
   });
 
+  useEffect(() => {
+    if (typesSupplies.data?.length) {
+      setTypeSupplyId(typesSupplies.data[0].id);
+    }
+  }, [typesSupplies.data]);
+
+  useEffect(() => {
+    if (mode === 'edit' && id) {
+      reset({
+        name: getSupplyById.data?.name,
+        price: getSupplyById.data?.price,
+        description: getSupplyById.data?.description,
+      });
+      setTypeSupplyId(getSupplyById.data?.type_supply_id || '');
+    }
+  }, [getSupplyById.data]);
+
   const selectedTypeSupply = typesSupplies.data?.find(
-    (ts: TypeSupplyResponse) => ts.id === typeSupply
+    (ts: TypeSupplyResponse) => ts.id === typeSupplyId
   );
 
-  const onSubmit = (data: CreateSupplyType) => {
-    createSupply.mutate(
-      {
-        ...data,
-        type_supply_id: typeSupply,
-      },
-      {
-        onSuccess: () => {
-          setExternalTrigger(false);
-        },
-      }
-    );
-  };
-
   const isEditMode = mode === 'edit';
+
+  const onSubmit = (data: CreateSupplyType) => {
+    if (isEditMode) {
+      updateSupply.mutate(
+        {
+          id,
+          data: {
+            ...data,
+            type_supply_id: typeSupplyId,
+          },
+        },
+        {
+          onSuccess: () => {
+            setExternalTrigger(false);
+          },
+        }
+      );
+    } else {
+      createSupply.mutate(
+        {
+          ...data,
+          type_supply_id: typeSupplyId,
+        },
+        {
+          onSuccess: () => {
+            setExternalTrigger(false);
+          },
+        }
+      );
+    }
+  };
 
   return (
     <Dialog open={externalTrigger} onOpenChange={setExternalTrigger}>
@@ -120,6 +148,11 @@ export const SupplyDialog = ({
                       <p className="text-[#6B7280] text-xs text-center">
                         Archivos png - jpg
                       </p>
+                      {/* <img
+                        src="/insumo.jpg"
+                        alt="insumo"
+                        className="w-full h-full object-cover"
+                      /> */}
                     </div>
                   </label>
                 </div>
@@ -137,6 +170,7 @@ export const SupplyDialog = ({
                     error={errors.price?.message}
                     label="Precio*"
                     type="number"
+                    step="0.01"
                     leftSuffix={
                       <span className="text-[#6B7280] font-semibold">S/.</span>
                     }
@@ -148,8 +182,8 @@ export const SupplyDialog = ({
                   Tipo de Insumo*
                 </FieldLabel>
                 <Select
-                  value={typeSupply}
-                  onValueChange={(value) => setTypeSupply(value ?? '')}
+                  value={typeSupplyId}
+                  onValueChange={(value) => setTypeSupplyId(value ?? '')}
                 >
                   <SelectTrigger className="w-full bg-[#F8F9FA] border border-gray-300 rounded-lg px-3">
                     <SelectValue>{selectedTypeSupply?.name}</SelectValue>
