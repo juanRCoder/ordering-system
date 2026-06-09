@@ -1,5 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import type { CreateSupplyType } from '@/interfaces/supplies.interface';
+import type {
+  CreateSupplyType,
+  UpdateSupplyType,
+} from '@/interfaces/supplies.interface';
 import { SuppliesKeys } from '@/lib/querykeys';
 import suppliesService from '@/services/supplies.service';
 import { toast } from 'sonner';
@@ -30,6 +33,14 @@ export function useSuppliesByTypeId(type_id: string) {
   });
 }
 
+export function useSupplyById(id: string) {
+  return useQuery({
+    queryKey: SuppliesKeys.byId(id),
+    queryFn: () => suppliesService.getById(id),
+    enabled: !!id,
+  });
+}
+
 export function useUpdateSupplyStatus() {
   const queryClient = useQueryClient();
 
@@ -48,6 +59,22 @@ export function useUpdateSupplyStatus() {
         'Error al actualizar el estado del insumo',
         toastStyles.error
       );
+    },
+  });
+}
+
+export function useUpdateSupply() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: UpdateSupplyType }) =>
+      suppliesService.update(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: SuppliesKeys.all });
+      toast.success('Insumo actualizado con éxito', toastStyles.success);
+    },
+    onError: () => {
+      toast.error('Error al actualizar el insumo', toastStyles.error);
     },
   });
 }

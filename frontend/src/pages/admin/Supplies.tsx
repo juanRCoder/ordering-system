@@ -24,7 +24,11 @@ function Supplies() {
   const [changeCategory, setChangeCategory] =
     useState<TypeSupplyResponse | null>(null);
   const [typeSupplyId, setTypeSupplyId] = useState<string>('');
+
+  // for dialog
   const [openSupplyDialog, setOpenSupplyDialog] = useState<boolean>(false);
+  const [mode, setMode] = useState<'create' | 'edit'>('create');
+  const [supplyId, setSupplyId] = useState<string>('');
 
   const typesSupplies = useTypesSupplies();
   const allSupplies = useSuppliesByTypeId(changeCategory?.id || 'all');
@@ -54,7 +58,10 @@ function Supplies() {
           <Button
             variant="outline"
             className="cursor-pointer rounded-lg py-5.5"
-            onClick={() => setOpenSupplyDialog(true)}
+            onClick={() => {
+              setMode('create');
+              setOpenSupplyDialog(true);
+            }}
           >
             <Plus className="h-6! w-6!" strokeWidth={1.5} />
             Agregar Insumo
@@ -107,7 +114,15 @@ function Supplies() {
                   <SupplyCardAdminSkeleton key={i} />
                 ))
               : allSupplies.data?.map((supply: SupplyResponse) => (
-                  <SupplyCard key={supply.id} data={supply} />
+                  <SupplyCard
+                    key={supply.id}
+                    data={supply}
+                    handlerEvents={() => {
+                      setOpenSupplyDialog(true);
+                      setMode('edit');
+                      setSupplyId(supply.id);
+                    }}
+                  />
                 ))}
           </div>
         </div>
@@ -118,6 +133,8 @@ function Supplies() {
       <SupplyDialog
         externalTrigger={openSupplyDialog}
         setExternalTrigger={setOpenSupplyDialog}
+        mode={mode}
+        id={supplyId}
       />
     </section>
   );

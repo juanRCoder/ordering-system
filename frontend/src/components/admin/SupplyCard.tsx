@@ -8,9 +8,10 @@ import { useUpdateSupplyStatus } from '@/hooks/useSupplies';
 
 type props = {
   data: SupplyResponse;
+  handlerEvents: () => void;
 };
 
-export const SupplyCard = ({ data }: props) => {
+export const SupplyCard = ({ data, handlerEvents }: props) => {
   const [enabled, setEnabled] = useState<boolean>(data.status === 'AVAILABLE');
   const updateStatus = useUpdateSupplyStatus();
 
@@ -45,7 +46,10 @@ export const SupplyCard = ({ data }: props) => {
         )}
       </div>
       <div className="shrink-0 flex flex-col items-center gap-2.5">
-        <span className="bg-[#EFF6FF] cursor-pointer rounded-full w-12 h-12 flex items-center justify-center">
+        <span
+          onClick={handlerEvents}
+          className="bg-[#EFF6FF] cursor-pointer rounded-full w-12 h-12 flex items-center justify-center"
+        >
           <Pencil className="text-primary" />
         </span>
         <span

@@ -6,20 +6,22 @@ Este documento detalla los endpoints disponibles.
 
 Prefijo base: `/api`
 
-| Método | Ruta                 | Descripción                                 |
-| :----- | :------------------- | :------------------------------------------ |
-| POST   | `/auth/register`     | Registra un nuevo usuario.                  |
-| POST   | `/auth/login`        | Inicia sesión un usuario.                   |
-| POST   | `/auth/logout`       | Cierra sesión un usuario.                   |
-| GET    | `/orders`            | Obtiene todos los pedidos.                  |
-| GET    | `/orders/:id`        | Obtiene un pedido por ID.                   |
-| POST   | `/orders`            | Crea un nuevo pedido.                       |
-| PATCH  | `/orders/:id`        | Actualiza el estado de un pedido.           |
-| GET    | `/supplies/:type_id` | Lista los insumos por ID de tipo de insumo. |
-| POST   | `/supplies`          | Crea un nuevo insumo.                       |
-| PATCH  | `/supplies/:id`      | Actualiza el estado de un insumo.           |
-| GET    | `/types-supplies`    | Obtiene todos los tipos de insumos.         |
-| POST   | `/types-supplies`    | Crea un nuevo tipo de insumo.               |
+| Método | Ruta                          | Descripción                                 |
+| :----- | :---------------------------- | :------------------------------------------ |
+| POST   | `/auth/register`              | Registra un nuevo usuario.                  |
+| POST   | `/auth/login`                 | Inicia sesión un usuario.                   |
+| POST   | `/auth/logout`                | Cierra sesión un usuario.                   |
+| GET    | `/orders`                     | Obtiene todos los pedidos.                  |
+| GET    | `/orders/:id`                 | Obtiene un pedido por ID.                   |
+| POST   | `/orders`                     | Crea un nuevo pedido.                       |
+| PATCH  | `/orders/:id`                 | Actualiza el estado de un pedido.           |
+| GET    | `/supplies/:id`               | Obtiene un insumo por ID.                   |
+| GET    | `/supplies/category/:type_id` | Lista los insumos por ID de tipo de insumo. |
+| POST   | `/supplies`                   | Crea un nuevo insumo.                       |
+| PATCH  | `/supplies/:id/status`        | Actualiza el estado de un insumo.           |
+| PATCH  | `/supplies/:id`               | Actualiza un insumo por ID.                 |
+| GET    | `/types-supplies`             | Obtiene todos los tipos de insumos.         |
+| POST   | `/types-supplies`             | Crea un nuevo tipo de insumo.               |
 
 ## Detalle de Endpoints
 
@@ -286,7 +288,7 @@ Prefijo base: `/api`
 
 ## Actualizar estado de un Insumo
 
-**Endpoint:** `PATCH /supplies/:id`
+**Endpoint:** `PATCH /supplies/:id/status`
 
 **Description:** Cambia el estado de un insumo de AVAILABLE a UNAVAILABLE y viceversa. Requiere privilegios de ADMIN.
 
@@ -305,14 +307,6 @@ Prefijo base: `/api`
 ```
 
 ### Error
-
-```json
-{
-  "status": 400,
-  "code": "INVALID_ID",
-  "message": "The specified ID is not a valid UUID"
-}
-```
 
 ```json
 {
@@ -352,7 +346,7 @@ Prefijo base: `/api`
 
 ## Listar Insumos por Categoría
 
-**Endpoint:** `GET /supplies/:type_id`
+**Endpoint:** `GET /supplies/category/:type_id`
 
 **Description:** Obtiene todos los insumos que pertenecen a una categoría específica.
 
@@ -399,8 +393,7 @@ Prefijo base: `/api`
   "description": "string", // Opcional
   "price": "number",
   "image_url": "string", // Opcional
-  "type_supply_id": "string", // UUID de la categoría
-  "status": "string" // AVAILABLE o UNAVAILABLE (opcional)
+  "type_supply_id": "string" // UUID de la categoría
 }
 ```
 
@@ -414,5 +407,88 @@ Prefijo base: `/api`
   "data": {
     "ok": true
   }
+}
+```
+
+## Actualizar Insumo
+
+**Endpoint:** `PATCH /supplies/:id`
+
+**Description:** Actualiza los campos de un insumo existente. Todos los campos del body son opcionales. Requiere privilegios de ADMIN.
+
+**Request Body:**
+
+```json
+{
+  "name": "string", // Opcional
+  "description": "string", // Opcional
+  "price": "number", // Opcional
+  "image_url": "string", // Opcional
+  "type_supply_id": "string" // UUID de la categoría (opcional)
+}
+```
+
+**Response:**
+
+### Success
+
+```json
+{
+  "status": 200,
+  "data": {
+    "ok": true
+  }
+}
+```
+
+### Error
+
+```json
+{
+  "status": 404,
+  "code": "SUPPLY_NOT_FOUND",
+  "message": "The specified supply does not exist"
+}
+```
+
+```json
+{
+  "status": 400,
+  "code": "CATEGORY_NOT_FOUND",
+  "message": "The specified category does not exist"
+}
+```
+
+## Obtener Insumo por ID
+
+**Endpoint:** `GET /supplies/:id`
+
+**Description:** Obtiene un insumo específico por su ID.
+
+**Response:**
+
+### Success
+
+```json
+{
+  "status": 200,
+  "data": {
+    "id": "string",
+    "name": "string",
+    "description": "string",
+    "price": "number",
+    "image_url": "string",
+    "type_supply_id": "string"
+  }
+}
+```
+
+### Error
+
+```json
+{
+  "status": 404,
+  "code": "SUPPLY_NOT_FOUND",
+  "message": "The specified supply does not exist"
 }
 ```

@@ -19,7 +19,7 @@ import {
 import { FieldLabel } from '../ui/field';
 import { Button } from '../ui/button';
 import { useTypesSupplies } from '@/hooks/useTypesSupplies';
-import { useCreateSupply } from '@/hooks/useSupplies';
+import { useCreateSupply, useSupplyById } from '@/hooks/useSupplies';
 import { useEffect, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -31,14 +31,19 @@ import type { TypeSupplyResponse } from '@/interfaces/typesSupplies.interface';
 type props = {
   externalTrigger?: boolean;
   setExternalTrigger: (e: boolean) => void;
+  mode?: 'create' | 'edit';
+  id?: string;
 };
 
 export const SupplyDialog = ({
   externalTrigger,
   setExternalTrigger,
+  mode = 'create',
+  id,
 }: props) => {
   const typesSupplies = useTypesSupplies();
   const createSupply = useCreateSupply();
+  const getSupplyById = useSupplyById(id || '');
 
   const [typeSupply, setTypeSupply] = useState<string>('');
 
@@ -47,6 +52,12 @@ export const SupplyDialog = ({
       setTypeSupply(typesSupplies.data[0].id);
     }
   }, [typesSupplies.data]);
+
+  useEffect(() => {
+    if (mode === 'edit' && id) {
+      console.log(getSupplyById.data);
+    }
+  }, [getSupplyById.data]);
 
   const {
     register,
@@ -75,12 +86,16 @@ export const SupplyDialog = ({
     );
   };
 
+  const isEditMode = mode === 'edit';
+
   return (
     <Dialog open={externalTrigger} onOpenChange={setExternalTrigger}>
       <DialogContent className="w-full sm:max-w-104 rounded-sm">
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogHeader className="mb-4">
-            <DialogTitle className="text-xl">Crear Producto</DialogTitle>
+            <DialogTitle className="text-xl">
+              {isEditMode ? 'Editar' : 'Crear'} Producto
+            </DialogTitle>
           </DialogHeader>
           <section>
             <div className="flex flex-col gap-4">
@@ -158,7 +173,7 @@ export const SupplyDialog = ({
               type="submit"
               className="w-full h-12 rounded-sm mt-4 cursor-pointer"
             >
-              CREAR
+              {isEditMode ? 'EDITAR' : 'CREAR'}
             </Button>
           </DialogFooter>
         </form>

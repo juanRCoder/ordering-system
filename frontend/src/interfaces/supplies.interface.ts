@@ -1,7 +1,11 @@
-import { createSupplySchema } from '@/schemas/supplies.schema';
+import {
+  createSupplySchema,
+  updateSupplySchema,
+} from '@/schemas/supplies.schema';
 import type z from 'zod';
 
 export type CreateSupplyType = z.infer<typeof createSupplySchema>;
+export type UpdateSupplyType = z.infer<typeof updateSupplySchema>;
 export type StatusType = 'AVAILABLE' | 'UNAVAILABLE';
 
 export interface SupplyResponse {

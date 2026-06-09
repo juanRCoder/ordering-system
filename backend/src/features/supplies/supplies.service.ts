@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../../prisma.service';
 import { CreateSupplyDto } from './dto/create-supply.dto';
+import { UpdateSupplyDto } from './dto/update-supply.dto';
 import { StatusSupply } from '../../generated/prisma/enums';
 
 @Injectable()
@@ -110,16 +111,40 @@ export class SuppliesService {
     };
   }
 
-  async updateStatus(id: string) {
-    const uuidRegex =
-      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-    if (!uuidRegex.test(id)) {
-      throw new BadRequestException({
-        code: 'INVALID_ID',
-        message: 'The specified ID is not a valid UUID',
+  async findById(id: string) {
+    const supply = await this.prisma.supplies.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        price: true,
+        imagen_url: true,
+        type_supply_id: true,
+      },
+    });
+
+    if (!supply) {
+      throw new NotFoundException({
+        code: 'SUPPLY_NOT_FOUND',
+        message: 'The specified supply does not exist',
       });
     }
 
+    return {
+      status: HttpStatus.OK,
+      data: {
+        id: supply.id,
+        name: supply.name,
+        description: supply.description,
+        price: Number(supply.price),
+        image_url: supply.imagen_url,
+        type_supply_id: supply.type_supply_id,
+      },
+    };
+  }
+
+  async updateStatus(id: string) {
     const supply = await this.prisma.supplies.findUnique({
       where: { id },
     });
@@ -146,6 +171,53 @@ export class SuppliesService {
       data: {
         name: updatedSupply.name,
         status: updatedSupply.status,
+      },
+    };
+  }
+
+  async update(id: string, updateSupplyDto: UpdateSupplyDto) {
+    const supply = await this.prisma.supplies.findUnique({
+      where: { id },
+    });
+
+    if (!supply) {
+      throw new NotFoundException({
+        code: 'SUPPLY_NOT_FOUND',
+        message: 'The specified supply does not exist',
+      });
+    }
+
+    const { name, description, price, image_url, type_supply_id } =
+      updateSupplyDto;
+
+    if (type_supply_id) {
+      const category = await this.prisma.typesSupplies.findUnique({
+        where: { id: type_supply_id },
+      });
+
+      if (!category) {
+        throw new BadRequestException({
+          code: 'CATEGORY_NOT_FOUND',
+          message: 'The specified category does not exist',
+        });
+      }
+    }
+
+    await this.prisma.supplies.update({
+      where: { id },
+      data: {
+        name,
+        description,
+        price,
+        imagen_url: image_url || null,
+        type_supply_id,
+      },
+    });
+
+    return {
+      status: HttpStatus.OK,
+      data: {
+        ok: true,
       },
     };
   }

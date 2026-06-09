@@ -18,6 +18,7 @@ export const SuppliesKeys = {
   all: baseKeys.supplies,
   byTypeId: (type_id: string) =>
     [...baseKeys.supplies, 'type_id', type_id] as const,
+  byId: (id: string) => [...baseKeys.supplies, 'id', id] as const,
 };
 
 export const OrdersKeys = {
