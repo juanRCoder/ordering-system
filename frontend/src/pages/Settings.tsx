@@ -31,7 +31,7 @@ export default function Settings({ isAdmin }: props) {
             className="cursor-pointer w-fit"
             onClick={() => setOpenDrawer(true)}
           >
-            Categorias
+            Gestion de Categorias
           </p>
           <span className="block border-b border-muted-foreground/10 w-full"></span>
           <p

@@ -15,6 +15,7 @@ export function useCreateTypeSupply() {
     mutationFn: (data: TypeSupplyType) => typeSuppliesService.create(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: TypesSuppliesKeys.all });
+      toast.success('Categoria creada con exito!', toastStyles.success);
     },
     onError: () => {
       toast.error('Error al crear una nuevo tipo de insumo', toastStyles.error);

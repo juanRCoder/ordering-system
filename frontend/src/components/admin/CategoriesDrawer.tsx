@@ -9,7 +9,11 @@ import {
 import { ScrollArea } from '../ui/scroll-area';
 import { InputField } from '../InputField';
 import { useState } from 'react';
-import { useTypesSupplies } from '@/hooks/useTypesSupplies';
+import {
+  useCreateTypeSupply,
+  useTypesSupplies,
+  useUpdateTypeSupply,
+} from '@/hooks/useTypesSupplies';
 import type { TypeSupplyResponse } from '@/interfaces/typesSupplies.interface';
 import { Button } from '../ui/button';
 import { useForm } from 'react-hook-form';
@@ -28,6 +32,8 @@ export const CategoriesDrawer = ({
   const [supplyId, setSupplyId] = useState<string | null>(null);
 
   const typesSupplies = useTypesSupplies();
+  const updateTypeSupply = useUpdateTypeSupply();
+  const createTypeSupply = useCreateTypeSupply();
 
   const { register, handleSubmit, setValue } = useForm<{ name: string }>({
     resolver: zodResolver(updateTypeSupplySchema),
@@ -45,8 +51,18 @@ export const CategoriesDrawer = ({
   };
 
   const onsubmit = (data: { name: string }) => {
-    console.log(data);
-    setSupplyId(null);
+    if (supplyId) {
+      updateTypeSupply.mutate(
+        { id: supplyId, data },
+        {
+          onSuccess: () => {
+            setSupplyId(null);
+          },
+        }
+      );
+    } else {
+      createTypeSupply.mutate({ name: data.name, layout: 'FULL' });
+    }
   };
 
   return (
@@ -60,12 +76,22 @@ export const CategoriesDrawer = ({
         <DrawerHeader className="text-xl font-semibold text-primary">
           <DrawerTitle>Categorias</DrawerTitle>
         </DrawerHeader>
-        <Button
-          variant="outline"
-          className="my-4 py-5.5 rounded-sm cursor-pointer"
-        >
-          Crear Categoria
-        </Button>
+        <form onSubmit={handleSubmit(onsubmit)} className="flex gap-2 my-5">
+          <div className="flex-1">
+            <InputField
+              {...register('name')}
+              placeholder="Nombre de la categoria"
+              className="w-full text-base border-none focus:outline-none focus:ring-0"
+            />
+          </div>
+          <Button
+            variant="outline"
+            type="submit"
+            className="h-11 cursor-pointer rounded-sm"
+          >
+            Agregar Categoria
+          </Button>
+        </form>
         <ScrollArea className="overflow-y-auto pt-0">
           <section className="flex flex-col gap-2">
             {typesSupplies.data?.map((ts: TypeSupplyResponse) => (
