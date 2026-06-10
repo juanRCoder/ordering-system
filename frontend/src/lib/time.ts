@@ -22,3 +22,14 @@ export const relativeTime = (fechaISO: string) => {
 
   return `${dias} día${dias !== 1 ? 's' : ''}`;
 };
+
+export const dayTime = (datetime: string) => {
+  const date = new Date(datetime);
+  return date
+    .toLocaleTimeString(undefined, {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+    })
+    .toLowerCase();
+};

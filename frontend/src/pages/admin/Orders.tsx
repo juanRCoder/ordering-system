@@ -1,6 +1,5 @@
 import { OrderCard } from '@/components/admin/OrderCard';
 import { OrderDetailsDrawer } from '@/components/admin/OrderDetailsDrawer';
-import { SupplyDialog } from '@/components/admin/SupplyDialog';
 import { BottomAppBar } from '@/components/BottomAppBar';
 import { InputSearch } from '@/components/InputSearch';
 import { TopAppBar } from '@/components/TopAppBar';
@@ -13,7 +12,6 @@ import { useState } from 'react';
 function Orders() {
   const [filter, setFilter] = useState<'PENDING' | 'FINISHED'>('PENDING');
   const [open, setOpen] = useState<boolean>(false);
-  const [openSupplyDialog, setOpenSupplyDialog] = useState<boolean>(false);
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
   const [refreshKey, setRefreshKey] = useState<number>(0); // para refrescar horario
 
@@ -50,11 +48,11 @@ function Orders() {
           </div>
           <InputSearch />
           <div className="flex items-center justify-between gap-3">
-            <div className="flex flex-1 gap-3">
+            <div className="flex flex-1 gap-3 flex-wrap">
               <Button
                 variant={filter === 'PENDING' ? 'default' : 'outline'}
                 onClick={() => setFilter('PENDING')}
-                className="px-4 py-6 font-normal min-w-32 rounded-[12px] cursor-pointer text-[17px]"
+                className="px-4 py-6 font-normal min-w-32 rounded-sm cursor-pointer text-[17px]"
               >
                 Pedidos
                 <span
@@ -71,7 +69,7 @@ function Orders() {
               <Button
                 variant={filter === 'FINISHED' ? 'default' : 'outline'}
                 onClick={() => setFilter('FINISHED')}
-                className="px-4 py-6 font-normal min-w-32 rounded-[12px] cursor-pointer text-[17px]"
+                className="px-4 py-6 font-normal min-w-32 rounded-sm cursor-pointer text-[17px]"
               >
                 Finalizados
               </Button>
@@ -108,10 +106,6 @@ function Orders() {
         externalTrigger={open}
         setExternalTrigger={setOpen}
         selectedOrderId={selectedOrderId}
-      />
-      <SupplyDialog
-        externalTrigger={openSupplyDialog}
-        setExternalTrigger={setOpenSupplyDialog}
       />
     </section>
   );

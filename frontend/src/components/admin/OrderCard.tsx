@@ -1,8 +1,8 @@
-import { ScrollText } from 'lucide-react';
+import { ListPlus } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
 import type { OrderListResponseType } from '@/interfaces/orders.interface';
-import { relativeTime } from '@/lib/time';
+import { dayTime, relativeTime } from '@/lib/time';
 
 type props = {
   data: OrderListResponseType;
@@ -13,45 +13,43 @@ export const OrderCard = ({ data, handlerEvents }: props) => {
   const isOrderCompleted = data.status === 'FINISHED';
 
   return (
-    <Card className="relative p-4 gap-3">
-      <div>
-        <div className="flex flex-col">
-          <h2 className="text-lg font-semibold">{data.guest_name}</h2>
-          <p className="text-muted-foreground text-sm">
-            Pedido #{data.id?.slice(0, 6)} • Hace{' '}
-            {relativeTime(data.created_at)}
-          </p>
-        </div>
+    <Card className="rounded-sm p-3 gap-2">
+      <div className="flex justify-between items-center flex-wrap-reverse gap-0.5">
+        <p>ORDEN #{data.id?.slice(0, 6)}</p>
         <span
-          className={`absolute top-5 right-4 text-xs font-medium px-3 py-1 rounded-full 
-					${isOrderCompleted ? 'bg-primary text-white outline-0' : 'text-[#43474F] outline'}`}
+          className={`
+          text-xs px-2 py-1 rounded-sm font-medium
+          ${isOrderCompleted ? 'bg-primary text-white' : 'bg-[#DAE0E6] text-[#5D6369]'}
+        `}
         >
-          {isOrderCompleted ? 'Finalizado' : 'Pendiente'}
+          {isOrderCompleted ? 'FINALIZADO' : 'PENDIENTE'}
         </span>
       </div>
-      <hr />
-      <div className="flex flex-col gap-4">
-        <div className="flex justify-between items-center">
-          <p className="font-semibold text-lg text-muted-foreground">
-            Monto Total:
-          </p>
-          <p
-            className={`font-bold text-xl text-primary ${isOrderCompleted && 'line-through'}`}
-          >
-            S/ {data.total.toFixed(2)}
-          </p>
+      <div className="flex justify-between items-center flex-wrap gap-0.5">
+        <p className="text-[#151C23] text-2xl font-semibold">
+          {data.guest_name}
+        </p>
+        <p className="font-semibold text-[#5D6369] text-sm">ORDEN EN MESA</p>
+      </div>
+      <div className="flex flex-col justify-between bg-[#EFF4FF] p-2 rounded-sm gap-0.5">
+        <div className="flex items-center flex-wrap justify-between gap-0.5">
+          <p className="font-mediun text-sm">MONTO TOTAL</p>
+          <p className="font-semibold text-xl">S/ {data.total.toFixed(2)}</p>
         </div>
+        <p className="text-[#5D6369] text-xs">
+          {dayTime(data.created_at)} - Hace {relativeTime(data.created_at)}
+        </p>
+      </div>
+      <div className="flex gap-2 flex-wrap">
         <Button
+          variant="outline"
           onClick={handlerEvents}
-          className={`w-full cursor-pointer rounded-[12px] py-6 flex justify-center items-center gap-3
-						${isOrderCompleted && 'bg-muted-foreground/20 text-[#42474F]/70 font-bold hover:bg-muted-foreground/10 hover:text-[#42474F]/70 hover:font-bold'}
-						`}
+          className="text-[#151C23] flex-1 rounded-sm cursor-pointer"
         >
-          <ScrollText
-            className={`h-6! w-6! ${isOrderCompleted && 'text-[#42474F]/70'}`}
-            strokeWidth={1.5}
-          />
-          <p className="text-[17px]">Detalles del pedido</p>
+          Detalles del pedido
+        </Button>
+        <Button className="px-3 rounded-sm cursor-pointer">
+          <ListPlus className="h-6! w-6!" strokeWidth={1.5} />
         </Button>
       </div>
     </Card>

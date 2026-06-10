@@ -12,6 +12,7 @@ export const UsersKeys = {
 
 export const TypesSuppliesKeys = {
   all: baseKeys.typesSupplies,
+  byId: (id: string) => [...baseKeys.typesSupplies, 'id', id] as const,
 };
 
 export const SuppliesKeys = {
