@@ -8,7 +8,6 @@ import { Button } from '@/components/ui/button';
 import { useOrdersQuery } from '@/hooks/useOrders';
 import type { OrderListResponseType } from '@/interfaces/orders.interface';
 import { OrderCardSkeleton } from '@/skeletons/OrderCardSkeleton';
-import { Plus } from 'lucide-react';
 import { useState } from 'react';
 
 function Orders() {
@@ -31,11 +30,14 @@ function Orders() {
         itemHeader={
           <Button
             variant="outline"
-            className="cursor-pointer rounded-lg py-5.5"
-            onClick={() => setOpenSupplyDialog(true)}
+            onClick={() => {
+              allOrders.refetch();
+              setRefreshKey((prev) => prev + 1);
+            }}
+            disabled={allOrders.isLoading}
+            className="cursor-pointer rounded-sm py-5.5"
           >
-            <Plus className="h-6! w-6!" strokeWidth={1.5} />
-            Agregar Insumo
+            Actualizar
           </Button>
         }
       />
@@ -45,16 +47,6 @@ function Orders() {
             <h2 className="text-2xl font-bold text-[#031C30]">
               Pedidos del dia
             </h2>
-            <Button
-              onClick={() => {
-                allOrders.refetch();
-                setRefreshKey((prev) => prev + 1);
-              }}
-              disabled={allOrders.isLoading}
-              className="px-4 py-6 font-normal rounded-[12px] cursor-pointer text-[17px]"
-            >
-              Actualizar
-            </Button>
           </div>
           <InputSearch />
           <div className="flex items-center justify-between gap-3">

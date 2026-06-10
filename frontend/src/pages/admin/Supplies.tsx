@@ -54,19 +54,6 @@ function Supplies() {
             Panel de Administrativo
           </p>
         }
-        itemHeader={
-          <Button
-            variant="outline"
-            className="cursor-pointer rounded-lg py-5.5"
-            onClick={() => {
-              setMode('create');
-              setOpenSupplyDialog(true);
-            }}
-          >
-            <Plus className="h-6! w-6!" strokeWidth={1.5} />
-            Agregar Insumo
-          </Button>
-        }
       />
       <div className="flex flex-col p-3 pb-24">
         <div className="flex flex-col gap-3.5">
@@ -96,10 +83,13 @@ function Supplies() {
             <Button
               variant="outline"
               className="cursor-pointer rounded-sm py-5.5"
-              // onClick={() => navigate('/admin/supply-setup')}
+              onClick={() => {
+                setMode('create');
+                setOpenSupplyDialog(true);
+              }}
             >
               <Plus className="h-6! w-6!" strokeWidth={1.5} />
-              Agregar Categoría
+              Agregar Insumo
             </Button>
           </div>
           <h2 className="text-xl font-semibold text-[#161D17]">

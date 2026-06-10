@@ -63,21 +63,23 @@ export const SupplyDialog = ({
   });
 
   useEffect(() => {
-    if (typesSupplies.data?.length) {
+    if (typesSupplies.data?.length && mode === 'create') {
       setTypeSupplyId(typesSupplies.data[0].id);
     }
-  }, [typesSupplies.data]);
+  }, [typesSupplies.data, mode]);
 
   useEffect(() => {
     if (mode === 'edit' && id) {
       reset({
-        name: getSupplyById.data?.name,
-        price: getSupplyById.data?.price,
-        description: getSupplyById.data?.description,
+        name: getSupplyById.data?.name ?? '',
+        price: getSupplyById.data?.price ?? 1,
+        description: getSupplyById.data?.description ?? '',
       });
       setTypeSupplyId(getSupplyById.data?.type_supply_id || '');
+    } else {
+      reset(supplyFormValues);
     }
-  }, [getSupplyById.data]);
+  }, [getSupplyById.data, mode]);
 
   const selectedTypeSupply = typesSupplies.data?.find(
     (ts: TypeSupplyResponse) => ts.id === typeSupplyId
@@ -87,6 +89,7 @@ export const SupplyDialog = ({
 
   const onSubmit = (data: CreateSupplyType) => {
     if (isEditMode) {
+      if (!id) return;
       updateSupply.mutate(
         {
           id,
@@ -119,7 +122,11 @@ export const SupplyDialog = ({
   return (
     <Dialog open={externalTrigger} onOpenChange={setExternalTrigger}>
       <DialogContent className="w-full sm:max-w-104 rounded-sm">
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form
+          onSubmit={handleSubmit(onSubmit, (errors) =>
+            console.log('ERRORS:', errors)
+          )}
+        >
           <DialogHeader className="mb-4">
             <DialogTitle className="text-xl">
               {isEditMode ? 'Editar' : 'Crear'} Producto
@@ -127,56 +134,52 @@ export const SupplyDialog = ({
           </DialogHeader>
           <section>
             <div className="flex flex-col gap-4">
-              <div className="flex gap-4">
-                <div className="w-1/2">
-                  <label className="block text-[#43474F] font-semibold mb-2">
-                    Imagen
-                  </label>
-                  <label className="cursor-pointer">
-                    <input
-                      type="file"
-                      accept=".png,.jpg,.jpeg"
-                      className="hidden"
+              <div className="w-1/2">
+                <label className="block text-[#43474F] font-semibold mb-2">
+                  Imagen
+                </label>
+                <label className="cursor-pointer">
+                  <input
+                    type="file"
+                    accept=".png,.jpg,.jpeg"
+                    className="hidden"
+                  />
+
+                  <div className="border border-[#C3C6D0] rounded-sm bg-[#F8F9FA] h-28 flex flex-col items-center justify-center hover:bg-[#F3F4F6] transition-colors">
+                    <Image
+                      className="w-14 h-14 text-[#6B7280] mb-2"
+                      strokeWidth={1.5}
                     />
 
-                    <div className="border border-[#C3C6D0] rounded-sm bg-[#F8F9FA] h-28 flex flex-col items-center justify-center hover:bg-[#F3F4F6] transition-colors">
-                      <Image
-                        className="w-14 h-14 text-[#6B7280] mb-2"
-                        strokeWidth={1.5}
-                      />
-
-                      <p className="text-[#6B7280] text-xs text-center">
-                        Archivos png - jpg
-                      </p>
-                      {/* <img
+                    <p className="text-[#6B7280] text-xs text-center">
+                      Archivos png - jpg
+                    </p>
+                    {/* <img
                         src="/insumo.jpg"
                         alt="insumo"
                         className="w-full h-full object-cover"
                       /> */}
-                    </div>
-                  </label>
-                </div>
-                <div className="w-3/5 flex flex-col gap-2">
-                  <InputField
-                    {...register('name')}
-                    error={errors.name?.message}
-                    label="Nombre*"
-                    type="text"
-                  />
-                  <InputField
-                    {...register('price', {
-                      valueAsNumber: true,
-                    })}
-                    error={errors.price?.message}
-                    label="Precio*"
-                    type="number"
-                    step="0.01"
-                    leftSuffix={
-                      <span className="text-[#6B7280] font-semibold">S/.</span>
-                    }
-                  />
-                </div>
+                  </div>
+                </label>
               </div>
+              <InputField
+                {...register('name')}
+                error={errors.name?.message}
+                label="Nombre*"
+                type="text"
+              />
+              <InputField
+                {...register('price', {
+                  valueAsNumber: true,
+                })}
+                error={errors.price?.message}
+                label="Precio*"
+                type="number"
+                step="0.01"
+                leftSuffix={
+                  <span className="text-[#6B7280] font-semibold">S/.</span>
+                }
+              />
               <div className="w-full">
                 <FieldLabel className="text-[#43474F] font-semibold mb-2">
                   Tipo de Insumo*

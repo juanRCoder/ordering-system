@@ -17,7 +17,6 @@ import {
   CollapsibleTrigger,
   CollapsibleContent,
 } from '../ui/collapsible';
-import { OrderDetailItem } from './OrderDetailItem';
 import { useOrderByIdQuery, useUpdateOrderStatus } from '@/hooks/useOrders';
 import { relativeTime } from '@/lib/time';
 import { OrderDetailSkeleton } from '@/skeletons/OrderDetailSkeleton';
@@ -93,12 +92,20 @@ export const OrderDetailsDrawer = ({
                 <div className="flex flex-col gap-3 mt-3">
                   {orderDetail?.data?.supplies?.map(
                     (supply: OrderDetailSupply) => (
-                      <OrderDetailItem
+                      <div
                         key={`${supply.name}-${supply.quantity}-${supply.price}`}
-                        quantity={supply.quantity}
-                        product={supply.name}
-                        price={supply.price}
-                      />
+                        className="flex justify-between items-center"
+                      >
+                        <div className="flex items-center gap-4">
+                          <span className="shrink-0 h-8 w-8 rounded-lg bg-[#D8E9FF]/50 grid place-items-center">
+                            {supply.quantity}
+                          </span>
+                          <p>{supply.name}</p>
+                        </div>
+                        <span className="text-primary font-medium">
+                          S/ {supply.price}
+                        </span>
+                      </div>
                     )
                   )}
                 </div>

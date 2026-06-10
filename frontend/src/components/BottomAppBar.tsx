@@ -78,7 +78,7 @@ export const BottomAppBar = ({ statusAdmin }: props) => {
   };
 
   return (
-    <div className="shadow-[0_-4px_10px_rgba(0,0,0,0.1)] bg-card flex items-center justify-center gap-8 h-20">
+    <div className="shadow-[0_-4px_10px_rgba(0,0,0,0.1)] bg-card flex items-center justify-evenly gap-2 h-20">
       {items.map(renderItem)}
     </div>
   );
