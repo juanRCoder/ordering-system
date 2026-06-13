@@ -8,13 +8,12 @@ export class OrdersService {
   constructor(private prisma: PrismaService) {}
 
   async create(createOrderDto: CreateOrderDto) {
-    const { supplies, observations, guest_name, total } = createOrderDto;
+    const { supplies, guest_name, total } = createOrderDto;
 
     const order = await this.prisma.$transaction(async (tx) => {
       const newOrder = await tx.orders.create({
         data: {
           guest_name,
-          observations,
           total,
         },
       });
@@ -72,7 +71,6 @@ export class OrdersService {
           name: so.supply.name,
           price: so.price.toNumber(),
         })),
-        observations: order.observations,
         total: order.total.toNumber(),
         type_pay: order.type_pay,
       },

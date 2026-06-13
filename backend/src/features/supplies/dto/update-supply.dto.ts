@@ -19,5 +19,5 @@ export class UpdateSupplyDto {
 
   @IsOptional()
   @IsUUID()
-  type_supply_id?: string;
+  category_id?: string;
 }

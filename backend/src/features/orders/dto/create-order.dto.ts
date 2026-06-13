@@ -2,7 +2,6 @@ import {
   IsArray,
   IsNotEmpty,
   IsNumber,
-  IsOptional,
   IsString,
   ValidateNested,
 } from 'class-validator';
@@ -27,10 +26,6 @@ export class CreateOrderDto {
   @ValidateNested({ each: true })
   @Type(() => SupplyItemDto)
   supplies!: SupplyItemDto[];
-
-  @IsOptional()
-  @IsString()
-  observations?: string;
 
   @IsNotEmpty()
   @IsString()

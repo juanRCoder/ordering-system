@@ -27,7 +27,7 @@ export class CreateSupplyDto {
 
   @IsNotEmpty()
   @IsUUID()
-  type_supply_id!: string;
+  category_id!: string;
 
   @IsOptional()
   @IsEnum(StatusSupply)

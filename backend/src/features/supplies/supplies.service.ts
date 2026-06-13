@@ -14,11 +14,11 @@ export class SuppliesService {
   constructor(private prisma: PrismaService) {}
 
   async create(createSupplyDto: CreateSupplyDto) {
-    const { name, description, price, image_url, type_supply_id, status } =
+    const { name, description, price, image_url, category_id, status } =
       createSupplyDto;
 
-    const category = await this.prisma.typesSupplies.findUnique({
-      where: { id: type_supply_id },
+    const category = await this.prisma.categories.findUnique({
+      where: { id: category_id },
     });
 
     if (!category) {
@@ -34,7 +34,7 @@ export class SuppliesService {
         description,
         price,
         imagen_url: image_url || null,
-        type_supply_id,
+        category_id,
         status,
       },
     });
@@ -47,8 +47,8 @@ export class SuppliesService {
     };
   }
 
-  async findByCategoryId(type_id: string) {
-    if (type_id === 'all') {
+  async findByCategoryId(category_id: string) {
+    if (category_id === 'all') {
       const supplies = await this.prisma.supplies.findMany({
         orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
         select: {
@@ -74,8 +74,8 @@ export class SuppliesService {
       };
     }
 
-    const category = await this.prisma.typesSupplies.findUnique({
-      where: { id: type_id },
+    const category = await this.prisma.categories.findUnique({
+      where: { id: category_id },
     });
 
     if (!category) {
@@ -86,7 +86,7 @@ export class SuppliesService {
     }
 
     const supplies = await this.prisma.supplies.findMany({
-      where: { type_supply_id: type_id },
+      where: { category_id },
       orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
       select: {
         id: true,
@@ -120,7 +120,7 @@ export class SuppliesService {
         description: true,
         price: true,
         imagen_url: true,
-        type_supply_id: true,
+        category_id: true,
       },
     });
 
@@ -139,7 +139,7 @@ export class SuppliesService {
         description: supply.description,
         price: Number(supply.price),
         image_url: supply.imagen_url,
-        type_supply_id: supply.type_supply_id,
+        category_id: supply.category_id,
       },
     };
   }
@@ -187,12 +187,12 @@ export class SuppliesService {
       });
     }
 
-    const { name, description, price, image_url, type_supply_id } =
+    const { name, description, price, image_url, category_id } =
       updateSupplyDto;
 
-    if (type_supply_id) {
-      const category = await this.prisma.typesSupplies.findUnique({
-        where: { id: type_supply_id },
+    if (category_id) {
+      const category = await this.prisma.categories.findUnique({
+        where: { id: category_id },
       });
 
       if (!category) {
@@ -210,7 +210,7 @@ export class SuppliesService {
         description,
         price,
         imagen_url: image_url || null,
-        type_supply_id,
+        category_id,
       },
     });
 

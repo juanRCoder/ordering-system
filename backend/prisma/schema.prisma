@@ -32,11 +32,6 @@ enum TypePayment {
   YAPE
 }
 
-enum LayoutType {
-  FULL
-  HALF
-}
-
 model Users {
   id        String   @id @default(uuid())
   email     String   @unique
@@ -49,10 +44,9 @@ model Users {
   orders Orders[]
 }
 
-model TypesSupplies {
+model Categories {
   id        String     @id @default(uuid())
   name      String
-  layout    LayoutType @default(FULL)
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
 
@@ -66,11 +60,11 @@ model Supplies {
   price          Decimal      @default(0) @db.Decimal(10, 2)
   status         StatusSupply @default(AVAILABLE)
   imagen_url     String?
-  type_supply_id String
+  category_id    String
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
 
-  type           TypesSupplies    @relation(fields: [type_supply_id], references: [id])
+  category       Categories   @relation(fields: [category_id], references: [id])
   suppliesOrders SuppliesOrders[]
 }
 
@@ -79,7 +73,6 @@ model Orders {
   user_id      String?
   guest_name   String
   status       StatusOrder  @default(PENDING)
-  observations String?
   type_pay     TypePayment? @default(CASH)
   total        Decimal      @default(0) @db.Decimal(10, 2)
   createdAt    DateTime     @default(now())
@@ -90,13 +83,14 @@ model Orders {
 }
 
 model SuppliesOrders {
-  id        String   @id @default(uuid())
-  order_id  String
-  supply_id String
-  price     Decimal  @default(0) @db.Decimal(10, 2)
-  quantity  Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           String   @id @default(uuid())
+  order_id     String
+  supply_id    String
+  price        Decimal  @default(0) @db.Decimal(10, 2)
+  quantity     Int
+  observations String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   order  Orders   @relation(fields: [order_id], references: [id])
   supply Supplies @relation(fields: [supply_id], references: [id])

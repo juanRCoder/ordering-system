@@ -4,7 +4,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './features/auth/auth.module';
 import { SuppliesModule } from './features/supplies/supplies.module';
-import { TypeSuppliesModule } from './features/typesSupplies/typesSupplies.module';
+import { CategoriesModule } from './features/categories/categories.module';
 import { OrdersModule } from './features/orders/orders.module';
 import appConfig from './config/app.config';
 
@@ -15,7 +15,7 @@ import appConfig from './config/app.config';
       load: [appConfig],
     }),
     AuthModule,
-    TypeSuppliesModule,
+    CategoriesModule,
     SuppliesModule,
     OrdersModule,
   ],

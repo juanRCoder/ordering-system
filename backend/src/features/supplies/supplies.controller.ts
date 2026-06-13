@@ -21,9 +21,9 @@ export class SuppliesController {
     return this.suppliesService.findById(id);
   }
 
-  @Get('category/:type_id')
-  async findByCategoryId(@Param('type_id') type_id: string) {
-    return this.suppliesService.findByCategoryId(type_id);
+  @Get('category/:id')
+  async findByCategoryId(@Param('id') id: string) {
+    return this.suppliesService.findByCategoryId(id);
   }
 
   @UseGuards(AdminGuard)
