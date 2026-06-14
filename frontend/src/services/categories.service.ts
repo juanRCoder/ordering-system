@@ -1,13 +1,13 @@
 import type {
-  TypeSupplyType,
-  UpdateTypeSupplyType,
-} from '@/interfaces/typesSupplies.interface';
+  CategoryType,
+  UpdateCategoryType,
+} from '@/interfaces/categories.interface';
 
-class TypeSuppliesService {
+class CategoriesService {
   private API = import.meta.env.VITE_API_DEV;
 
-  async create(data: TypeSupplyType) {
-    const response = await fetch(`${this.API}/types-supplies`, {
+  async create(data: CategoryType) {
+    const response = await fetch(`${this.API}/categories`, {
       method: 'POST',
       credentials: 'include',
       headers: {
@@ -28,7 +28,7 @@ class TypeSuppliesService {
   }
 
   async getAll() {
-    const response = await fetch(`${this.API}/types-supplies`);
+    const response = await fetch(`${this.API}/categories`);
 
     const result = await response.json();
     if (!response.ok) {
@@ -43,7 +43,7 @@ class TypeSuppliesService {
   }
 
   async getById(id: string) {
-    const response = await fetch(`${this.API}/types-supplies/${id}`);
+    const response = await fetch(`${this.API}/categories/${id}`);
 
     const result = await response.json();
     if (!response.ok) {
@@ -57,8 +57,8 @@ class TypeSuppliesService {
     return result.data;
   }
 
-  async update(id: string, data: UpdateTypeSupplyType) {
-    const response = await fetch(`${this.API}/types-supplies/${id}`, {
+  async update(id: string, data: UpdateCategoryType) {
+    const response = await fetch(`${this.API}/categories/${id}`, {
       method: 'PATCH',
       credentials: 'include',
       headers: {
@@ -80,4 +80,4 @@ class TypeSuppliesService {
   }
 }
 
-export default new TypeSuppliesService();
+export default new CategoriesService();

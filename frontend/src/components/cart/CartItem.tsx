@@ -1,7 +1,6 @@
-import type { CartItemType } from '@/interfaces/cart.interface';
 import { Minus, Plus } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
-import { useCartStore } from '@/stores/cart.store';
+import { useCartStore, type CartItemType } from '@/stores/cart.store';
 
 interface props {
   item: CartItemType;

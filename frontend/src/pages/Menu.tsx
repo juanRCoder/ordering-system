@@ -6,8 +6,8 @@ import { TopAppBar } from '@/components/TopAppBar';
 import { InputSearch } from '@/components/InputSearch';
 import { Button } from '@/components/ui/button';
 import { BottomAppBar } from '@/components/BottomAppBar';
-import { useTypesSupplies } from '@/hooks/useTypesSupplies';
-import type { TypeSupplyResponse } from '@/interfaces/typesSupplies.interface';
+import { useCategories } from '@/hooks/useCategories';
+import type { CategoryResponse } from '@/interfaces/categories.interface';
 import { CategorySkeleton } from '@/skeletons/CategorySkeleton';
 import { useSuppliesByTypeId } from '@/hooks/useSupplies';
 import type { SupplyResponse } from '@/interfaces/supplies.interface';
@@ -16,16 +16,17 @@ import { CartBadget } from '@/components/cart/CartBadget';
 import { useCartStore } from '@/stores/cart.store';
 
 function Menu() {
-  const [changeCategory, setChangeCategory] =
-    useState<TypeSupplyResponse | null>(null);
+  const [changeCategory, setChangeCategory] = useState<CategoryResponse | null>(
+    null
+  );
   const { items, totalPrice, totalSupplies } = useCartStore();
 
-  const typesSupplies = useTypesSupplies();
-  const allSupplies = useSuppliesByTypeId(changeCategory?.id || '');
+  const categories = useCategories();
+  const suppliesByType = useSuppliesByTypeId(changeCategory?.id || '');
 
   useEffect(() => {
-    if (typesSupplies.data) setChangeCategory(typesSupplies.data[0]);
-  }, [typesSupplies.data]);
+    if (categories.data) setChangeCategory(categories.data[0]);
+  }, [categories.data]);
 
   const firstLetterUpper = (name: string) => {
     return name.charAt(0).toUpperCase() + name.slice(1);
@@ -38,10 +39,10 @@ function Menu() {
         <div className="flex flex-col gap-3">
           <InputSearch />
           <div className="flex gap-3 overflow-x-auto">
-            {typesSupplies.isLoading ? (
+            {categories.isLoading ? (
               <CategorySkeleton />
             ) : (
-              typesSupplies?.data?.map((type: TypeSupplyResponse) => (
+              categories?.data?.map((type: CategoryResponse) => (
                 <Button
                   key={type.id}
                   variant={
@@ -57,7 +58,7 @@ function Menu() {
           </div>
         </div>
         <div className="mt-4">
-          {typesSupplies.isLoading ? (
+          {categories.isLoading ? (
             <div className="animate-pulse bg-muted-foreground/40 rounded-md h-8 w-40" />
           ) : (
             <h2 className="text-2xl font-bold text-primary">
@@ -65,28 +66,17 @@ function Menu() {
                 firstLetterUpper(changeCategory.name) + ' del dia'}
             </h2>
           )}
-          <div
-            className={`grid ${changeCategory?.layout === 'HALF' ? 'grid-cols-2' : 'grid-cols-1'} gap-4 mt-4`}
-          >
-            {typesSupplies.isLoading || allSupplies.isLoading
-              ? Array.from({
-                  length: changeCategory?.layout === 'HALF' ? 4 : 2,
-                }).map((_, i) => (
-                  <SupplyCardSkeleton
-                    key={i}
-                    layout={changeCategory?.layout || 'FULL'}
-                  />
+          <div className="grid grid-cols-1 gap-4 mt-4">
+            {categories.isLoading || suppliesByType.isLoading
+              ? Array.from({ length: 2 }).map((_, i) => (
+                  <SupplyCardSkeleton key={i} />
                 ))
-              : allSupplies?.data
+              : suppliesByType?.data
                   ?.filter(
                     (supply: SupplyResponse) => supply.status === 'AVAILABLE'
                   )
                   .map((supply: SupplyResponse) => (
-                    <SupplyCard
-                      key={supply.id}
-                      supplyType={changeCategory}
-                      data={supply}
-                    />
+                    <SupplyCard key={supply.id} data={supply} />
                   ))}
           </div>
         </div>

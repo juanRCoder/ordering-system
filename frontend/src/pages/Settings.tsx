@@ -27,13 +27,17 @@ export default function Settings({ isAdmin }: props) {
         <h2 className="text-2xl font-bold text-[#031C30] mb-3">Ajustes</h2>
         <hr />
         <div className="flex flex-col mt-4 gap-2">
-          <p
-            className="cursor-pointer w-fit"
-            onClick={() => setOpenDrawer(true)}
-          >
-            Gestion de Categorias
-          </p>
-          <span className="block border-b border-muted-foreground/10 w-full"></span>
+          {isAdmin && (
+            <>
+              <p
+                className="cursor-pointer w-fit"
+                onClick={() => setOpenDrawer(true)}
+              >
+                Gestion de Categorias
+              </p>
+              <span className="block border-b border-muted-foreground/10 w-full"></span>
+            </>
+          )}
           <p
             className="text-destructive cursor-pointer w-fit"
             onClick={() => logoutMutation.mutate()}

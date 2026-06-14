@@ -1,18 +1,18 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import type {
-  TypeSupplyType,
-  UpdateTypeSupplyType,
-} from '@/interfaces/typesSupplies.interface';
+  CategoryType,
+  UpdateCategoryType,
+} from '@/interfaces/categories.interface';
 import { TypesSuppliesKeys } from '@/lib/querykeys';
-import typeSuppliesService from '@/services/typeSupply.service';
+import typeSuppliesService from '@/services/categories.service';
 import { toastStyles } from '@/lib/toast';
 
-export function useCreateTypeSupply() {
+export function useCreateCategory() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: TypeSupplyType) => typeSuppliesService.create(data),
+    mutationFn: (data: CategoryType) => typeSuppliesService.create(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: TypesSuppliesKeys.all });
       toast.success('Categoria creada con exito!', toastStyles.success);
@@ -23,7 +23,7 @@ export function useCreateTypeSupply() {
   });
 }
 
-export function useTypesSupplies() {
+export function useCategories() {
   return useQuery({
     queryKey: TypesSuppliesKeys.all,
     queryFn: () => typeSuppliesService.getAll(),
@@ -38,11 +38,11 @@ export function useTypeSupplyById(id: string) {
   });
 }
 
-export function useUpdateTypeSupply() {
+export function useUpdateCategory() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: UpdateTypeSupplyType }) =>
+    mutationFn: ({ id, data }: { id: string; data: UpdateCategoryType }) =>
       typeSuppliesService.update(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: TypesSuppliesKeys.all });

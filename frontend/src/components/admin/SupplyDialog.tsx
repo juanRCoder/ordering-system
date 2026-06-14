@@ -18,7 +18,7 @@ import {
 } from '../ui/select';
 import { FieldLabel } from '../ui/field';
 import { Button } from '../ui/button';
-import { useTypesSupplies } from '@/hooks/useTypesSupplies';
+import { useCategories } from '@/hooks/useCategories';
 import {
   useCreateSupply,
   useSupplyById,
@@ -30,7 +30,7 @@ import { useForm } from 'react-hook-form';
 import type { CreateSupplyType } from '@/interfaces/supplies.interface';
 import { createSupplySchema } from '@/schemas/supplies.schema';
 import { supplyFormValues } from '@/lib/default';
-import type { TypeSupplyResponse } from '@/interfaces/typesSupplies.interface';
+import type { CategoryResponse } from '@/interfaces/categories.interface';
 
 type props = {
   externalTrigger?: boolean;
@@ -45,9 +45,9 @@ export const SupplyDialog = ({
   mode = 'create',
   id,
 }: props) => {
-  const typesSupplies = useTypesSupplies();
+  const categories = useCategories();
   const createSupply = useCreateSupply();
-  const getSupplyById = useSupplyById(id || '');
+  const supplyById = useSupplyById(id || '');
   const updateSupply = useUpdateSupply();
 
   const [typeSupplyId, setTypeSupplyId] = useState<string>('');
@@ -63,26 +63,26 @@ export const SupplyDialog = ({
   });
 
   useEffect(() => {
-    if (typesSupplies.data?.length && mode === 'create') {
-      setTypeSupplyId(typesSupplies.data[0].id);
+    if (categories.data?.length && mode === 'create') {
+      setTypeSupplyId(categories.data[0].id);
     }
-  }, [typesSupplies.data, mode]);
+  }, [categories.data, mode]);
 
   useEffect(() => {
     if (mode === 'edit' && id) {
       reset({
-        name: getSupplyById.data?.name ?? '',
-        price: getSupplyById.data?.price ?? 1,
-        description: getSupplyById.data?.description ?? '',
+        name: supplyById.data?.name ?? '',
+        price: supplyById.data?.price ?? 1,
+        description: supplyById.data?.description ?? '',
       });
-      setTypeSupplyId(getSupplyById.data?.type_supply_id || '');
+      setTypeSupplyId(supplyById.data?.type_supply_id || '');
     } else {
       reset(supplyFormValues);
     }
-  }, [getSupplyById.data, mode]);
+  }, [supplyById.data, mode]);
 
-  const selectedTypeSupply = typesSupplies.data?.find(
-    (ts: TypeSupplyResponse) => ts.id === typeSupplyId
+  const selectedCategory = categories.data?.find(
+    (ts: CategoryResponse) => ts.id === typeSupplyId
   );
 
   const isEditMode = mode === 'edit';
@@ -122,11 +122,7 @@ export const SupplyDialog = ({
   return (
     <Dialog open={externalTrigger} onOpenChange={setExternalTrigger}>
       <DialogContent className="w-full sm:max-w-104 rounded-sm">
-        <form
-          onSubmit={handleSubmit(onSubmit, (errors) =>
-            console.log('ERRORS:', errors)
-          )}
-        >
+        <form onSubmit={handleSubmit(onSubmit)}>
           <DialogHeader className="mb-4">
             <DialogTitle className="text-xl">
               {isEditMode ? 'Editar' : 'Crear'} Producto
@@ -189,12 +185,12 @@ export const SupplyDialog = ({
                   onValueChange={(value) => setTypeSupplyId(value ?? '')}
                 >
                   <SelectTrigger className="w-full bg-[#F8F9FA] border border-gray-300 rounded-lg px-3">
-                    <SelectValue>{selectedTypeSupply?.name}</SelectValue>
+                    <SelectValue>{selectedCategory?.name}</SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
                       <SelectLabel>Tipos</SelectLabel>
-                      {typesSupplies.data?.map((ts: TypeSupplyResponse) => (
+                      {categories.data?.map((ts: CategoryResponse) => (
                         <SelectItem key={ts.id} value={ts.id}>
                           {ts.name}
                         </SelectItem>

@@ -11,8 +11,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { useTypesSupplies } from '@/hooks/useTypesSupplies';
-import type { TypeSupplyResponse } from '@/interfaces/typesSupplies.interface';
+import { useCategories } from '@/hooks/useCategories';
+import type { CategoryResponse } from '@/interfaces/categories.interface';
 import { Plus } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useSuppliesByTypeId } from '@/hooks/useSupplies';
@@ -21,8 +21,9 @@ import type { SupplyResponse } from '@/interfaces/supplies.interface';
 import { SupplyCard } from '@/components/admin/SupplyCard';
 
 function Supplies() {
-  const [changeCategory, setChangeCategory] =
-    useState<TypeSupplyResponse | null>(null);
+  const [changeCategory, setChangeCategory] = useState<CategoryResponse | null>(
+    null
+  );
   const [typeSupplyId, setTypeSupplyId] = useState<string>('');
 
   // for dialog
@@ -30,20 +31,20 @@ function Supplies() {
   const [mode, setMode] = useState<'create' | 'edit'>('create');
   const [supplyId, setSupplyId] = useState<string>('');
 
-  const typesSupplies = useTypesSupplies();
-  const allSupplies = useSuppliesByTypeId(changeCategory?.id || 'all');
+  const categories = useCategories();
+  const suppliesByType = useSuppliesByTypeId(changeCategory?.id || 'all');
 
   const allOption = { id: 'all', name: 'Todos' };
-  const typesSuppliesWithAll = [allOption, ...(typesSupplies.data ?? [])];
+  const categoriesWithAll = [allOption, ...(categories.data ?? [])];
 
   useEffect(() => {
-    if (typesSuppliesWithAll.length) {
-      setTypeSupplyId(typesSuppliesWithAll[0].id);
+    if (categoriesWithAll.length) {
+      setTypeSupplyId(categoriesWithAll[0].id);
     }
-  }, [typesSupplies.data]);
+  }, [categories.data]);
 
-  const selectedTypeSupply = typesSuppliesWithAll?.find(
-    (ts: TypeSupplyResponse) => ts.id === typeSupplyId
+  const selectedTypeSupply = categoriesWithAll?.find(
+    (ts: CategoryResponse) => ts.id === typeSupplyId
   );
 
   return (
@@ -68,7 +69,7 @@ function Supplies() {
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  {typesSuppliesWithAll?.map((ts: TypeSupplyResponse) => (
+                  {categoriesWithAll?.map((ts: CategoryResponse) => (
                     <SelectItem
                       key={ts.id}
                       value={ts.id}
@@ -93,17 +94,17 @@ function Supplies() {
             </Button>
           </div>
           <h2 className="text-xl font-semibold text-[#161D17]">
-            {allSupplies.data?.length} resultados{' '}
+            {suppliesByType.data?.length} resultados{' '}
             {selectedTypeSupply?.name === 'Todos'
               ? ''
               : 'en ' + selectedTypeSupply?.name}
           </h2>
           <div className="flex flex-col gap-4">
-            {allSupplies.isLoading
+            {suppliesByType.isLoading
               ? Array.from({ length: 3 }).map((_, i) => (
                   <SupplyCardAdminSkeleton key={i} />
                 ))
-              : allSupplies.data?.map((supply: SupplyResponse) => (
+              : suppliesByType.data?.map((supply: SupplyResponse) => (
                   <SupplyCard
                     key={supply.id}
                     data={supply}

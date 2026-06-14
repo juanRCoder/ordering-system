@@ -1,6 +1,20 @@
-import type { CartItemType, CartStore } from '@/interfaces/cart.interface';
 import type { SupplyResponse } from '@/interfaces/supplies.interface';
 import { create } from 'zustand';
+
+export type CartItemType = SupplyResponse & {
+  quantity: number;
+};
+
+export interface CartStore {
+  items: CartItemType[];
+  addItem: (item: SupplyResponse) => void;
+  removeItem: (id: string) => void;
+  incrementQuantity: (id: string) => void;
+  decrementQuantity: (id: string) => void;
+  clear: () => void;
+  totalSupplies: number;
+  totalPrice: number;
+}
 
 export const calculateTotals = (items: CartItemType[]) => ({
   totalSupplies: items.reduce((acc, item) => acc + item.quantity, 0),

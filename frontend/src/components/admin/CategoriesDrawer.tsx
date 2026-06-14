@@ -10,15 +10,15 @@ import { ScrollArea } from '../ui/scroll-area';
 import { InputField } from '../InputField';
 import { useState } from 'react';
 import {
-  useCreateTypeSupply,
-  useTypesSupplies,
-  useUpdateTypeSupply,
-} from '@/hooks/useTypesSupplies';
-import type { TypeSupplyResponse } from '@/interfaces/typesSupplies.interface';
+  useCreateCategory,
+  useCategories,
+  useUpdateCategory,
+} from '@/hooks/useCategories';
+import type { CategoryResponse } from '@/interfaces/categories.interface';
 import { Button } from '../ui/button';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { updateTypeSupplySchema } from '@/schemas/typesSupplies.schema';
+import { updateCategorySchema } from '@/schemas/categories.schema';
 
 type props = {
   externalTrigger: boolean;
@@ -29,40 +29,44 @@ export const CategoriesDrawer = ({
   externalTrigger,
   setExternalTrigger,
 }: props) => {
-  const [supplyId, setSupplyId] = useState<string | null>(null);
+  const [categoryId, setCategoryId] = useState<string | null>(null);
 
-  const typesSupplies = useTypesSupplies();
-  const updateTypeSupply = useUpdateTypeSupply();
-  const createTypeSupply = useCreateTypeSupply();
+  const categories = useCategories();
+  const updateCategory = useUpdateCategory();
+  const createCategory = useCreateCategory();
 
-  const { register, handleSubmit, setValue } = useForm<{ name: string }>({
-    resolver: zodResolver(updateTypeSupplySchema),
+  const createForm = useForm<{ name: string }>({
+    resolver: zodResolver(updateCategorySchema),
+    defaultValues: { name: '' },
+  });
+
+  const editForm = useForm<{ name: string }>({
+    resolver: zodResolver(updateCategorySchema),
     defaultValues: { name: '' },
   });
 
   const handleEditMode = (id: string) => {
-    setSupplyId(id);
-    const supply = typesSupplies.data?.find(
-      (ts: TypeSupplyResponse) => ts.id === id
+    setCategoryId(id);
+    const category = categories.data?.find(
+      (ts: CategoryResponse) => ts.id === id
     );
-    if (supply) {
-      setValue('name', supply.name);
+    if (category) {
+      editForm.setValue('name', category.name);
     }
   };
 
-  const onsubmit = (data: { name: string }) => {
-    if (supplyId) {
-      updateTypeSupply.mutate(
-        { id: supplyId, data },
-        {
-          onSuccess: () => {
-            setSupplyId(null);
-          },
-        }
-      );
-    } else {
-      createTypeSupply.mutate({ name: data.name, layout: 'FULL' });
-    }
+  const onCreateSubmit = (data: { name: string }) => {
+    createCategory.mutate({ name: data.name });
+  };
+
+  const onUpdateSubmit = (data: { name: string }) => {
+    if (!categoryId) return;
+    updateCategory.mutate(
+      { id: categoryId, data },
+      {
+        onSuccess: () => setCategoryId(null),
+      }
+    );
   };
 
   return (
@@ -76,10 +80,14 @@ export const CategoriesDrawer = ({
         <DrawerHeader className="text-xl font-semibold text-primary">
           <DrawerTitle>Categorias</DrawerTitle>
         </DrawerHeader>
-        <form onSubmit={handleSubmit(onsubmit)} className="flex gap-2 my-5">
+        <form
+          onSubmit={createForm.handleSubmit(onCreateSubmit)}
+          className="flex gap-2 my-5"
+        >
           <div className="flex-1">
             <InputField
-              {...register('name')}
+              {...createForm.register('name')}
+              defaultValue=""
               placeholder="Nombre de la categoria"
               className="w-full text-base border-none focus:outline-none focus:ring-0"
             />
@@ -94,16 +102,16 @@ export const CategoriesDrawer = ({
         </form>
         <ScrollArea className="overflow-y-auto pt-0">
           <section className="flex flex-col gap-2">
-            {typesSupplies.data?.map((ts: TypeSupplyResponse) => (
+            {categories.data?.map((ts: CategoryResponse) => (
               <form
                 key={ts.id}
-                onSubmit={handleSubmit(onsubmit)}
+                onSubmit={editForm.handleSubmit(onUpdateSubmit)}
                 className="flex flex-row items-center justify-between gap-2 border rounded-sm p-2"
               >
                 <div className="flex flex-col">
-                  {supplyId === ts.id ? (
+                  {categoryId === ts.id ? (
                     <InputField
-                      {...register('name')}
+                      {...editForm.register('name')}
                       className="w-full text-base border-none focus:outline-none focus:ring-0"
                     />
                   ) : (
@@ -115,7 +123,7 @@ export const CategoriesDrawer = ({
                     </>
                   )}
                 </div>
-                {supplyId === ts.id ? (
+                {categoryId === ts.id ? (
                   <div className="flex gap-2">
                     <button
                       type="submit"
@@ -124,7 +132,7 @@ export const CategoriesDrawer = ({
                       <CheckIcon className="text-primary" />
                     </button>
                     <span
-                      onClick={() => setSupplyId(null)}
+                      onClick={() => setCategoryId(null)}
                       className="bg-destructive/10 border-destructive cursor-pointer rounded-full w-12 h-12 flex items-center justify-center"
                     >
                       <XIcon className="text-destructive" />
