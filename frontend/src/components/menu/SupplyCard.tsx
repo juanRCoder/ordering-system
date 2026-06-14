@@ -1,7 +1,8 @@
-import { Button } from '@/components/ui/button';
-import { Card, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import type { SupplyResponse } from '@/interfaces/supplies.interface';
 import { useCartStore } from '@/stores/cart.store';
+import { Plus } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 type props = {
   data: SupplyResponse;
@@ -11,31 +12,37 @@ export const SupplyCard = ({ data }: props) => {
   const { addItem } = useCartStore();
 
   return (
-    <Card className="relative w-full pt-0 rounded-[12px] gap-0 p-0">
-      {data?.imagen_url && (
+    <Card className="relative w-full rounded-sm overflow-hidden p-0 gap-0 shadow-sm border border-border">
+      <div className="relative w-full">
         <img
-          src={data.imagen_url}
-          alt="insumo"
-          className="relative z-20 object-cover w-full aspect-video"
+          src={data.imagen_url || '/insumo.jpg'}
+          alt={data.name || 'img'}
+          className="object-cover w-full aspect-video"
         />
-      )}
-      <CardHeader className="p-4 m-0">
-        <CardTitle className="font-semibold text-card-foreground">
-          {data.name}
-        </CardTitle>
-      </CardHeader>
-      <CardFooter className="px-4 pb-4 flex justify-between">
-        <p className="font-bold text-xl text-primary">
-          S/ {data.price.toFixed(2)}
-        </p>
-
         <Button
           onClick={() => addItem(data)}
-          className="w-32 bg-[#254875] cursor-pointer font-semibold"
+          className="absolute bottom-2 right-2 w-11 h-11 rounded-sm cursor-pointer border border-border"
+          aria-label={`Agregar ${data.name} al carrito`}
         >
-          AGREGAR
+          <Plus className="text-white w-7! h-7!" strokeWidth={2} />
         </Button>
-      </CardFooter>
+      </div>
+      <div className="p-2">
+        <div className="flex items-start justify-between gap-2">
+          <h3 className="font-semibold text-[18px] text-foreground leading-snug">
+            {data.name}
+          </h3>
+          <span className="font-normal text-[18px] text-foreground whitespace-nowrap">
+            S/ {data.price.toFixed(2)}
+          </span>
+        </div>
+
+        {data.description && (
+          <p className="mt-1 text-xs text-muted-foreground leading-snug">
+            {data.description}
+          </p>
+        )}
+      </div>
     </Card>
   );
 };

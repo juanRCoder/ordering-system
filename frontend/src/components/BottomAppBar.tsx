@@ -57,17 +57,17 @@ export const BottomAppBar = ({ statusAdmin }: props) => {
       <Link
         to={item.to}
         key={item.id}
-        className={`rounded-[12px] flex flex-col items-center justify-center p-2 px-4 w-20 cursor-pointer transition-colors ${
+        className={`rounded-sm flex flex-col items-center justify-center py-1 px-3 cursor-pointer transition-colors ${
           isActive ? 'bg-[#D8E9FF]/50' : 'bg-transparent'
         }`}
       >
         <Icon
           className={isActive ? 'text-primary' : 'text-muted-foreground'}
-          size={22}
+          size={18}
         />
 
         <p
-          className={`text-sm font-semibold ${
+          className={`text-xs font-semibold ${
             isActive ? 'text-primary' : 'text-muted-foreground'
           }`}
         >
@@ -78,7 +78,7 @@ export const BottomAppBar = ({ statusAdmin }: props) => {
   };
 
   return (
-    <div className="shadow-[0_-4px_10px_rgba(0,0,0,0.1)] bg-card flex items-center justify-evenly gap-2 h-20">
+    <div className="shadow-[0_-4px_10px_rgba(0,0,0,0.1)] bg-card flex items-center justify-center gap-2 h-20">
       {items.map(renderItem)}
     </div>
   );

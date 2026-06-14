@@ -15,41 +15,52 @@ export const CartItem = ({ item }: props) => {
   };
 
   return (
-    <Card className="py-3 w-full rounded-[12px]">
-      <CardContent className="flex flex-wrap items-center gap-4 px-4 py-0">
-        {/* <div className="shrink-0 w-20 h-20 rounded-[8px] overflow-hidden">
+    <Card className="p-2 w-full rounded-sm">
+      <CardContent className="flex flex-wrap items-start gap-4 p-0">
+        <div className="shrink-0 w-20 h-20 rounded-sm overflow-hidden">
           <img
             src="./insumo.jpg"
             alt="insumo"
             className="w-full h-full object-cover"
           />
-        </div> */}
+        </div>
         <div className="flex flex-col justify-between gap-2 flex-1 self-stretch">
-          <div className="flex items-start justify-between gap-1">
+          <div className="flex flex-col">
             <p className="text-[15px] font-semibold text-card-foreground leading-tight">
               {item.name}
             </p>
-            <span className="whitespace-nowrap text-end font-bold text-primary">
+            <p className="text-xs text-muted-foreground leading-tight line-clamp-2">
+              {item.description || ''}
+            </p>
+          </div>
+          <div className="flex justify-between items-center flex-wrap gap-2">
+            <span className="whitespace-nowrap font-bold text-primary text-[15px]">
               S/ {(item.price * item.quantity).toFixed(2)}
             </span>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => handleRemoveItem(item)}
+                className="w-8 h-8 rounded-full cursor-pointer border border-border font-semibold flex items-center justify-center"
+              >
+                <Minus className="text-[#151C23] w-5 h-5" />
+              </button>
+              <span className="text-sm font-medium text-gray-800 w-4 text-center">
+                {item.quantity}
+              </span>
+              <button
+                onClick={() => incrementQuantity(item.id)}
+                className="w-8 h-8 rounded-full cursor-pointer border border-border bg-[#254875] font-semibold flex items-center justify-center"
+              >
+                <Plus className="text-card w-5 h-5" />
+              </button>
+            </div>
           </div>
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => handleRemoveItem(item)}
-              className="w-8 h-8 rounded-full cursor-pointer bg-[#D8E9FF] font-semibold flex items-center justify-center"
-            >
-              <Minus className="text-[#151C23] w-5 h-5" />
-            </button>
-            <span className="text-sm font-medium text-gray-800 w-4 text-center">
-              {item.quantity}
-            </span>
-            <button
-              onClick={() => incrementQuantity(item.id)}
-              className="w-8 h-8 rounded-full cursor-pointer bg-[#254875] font-semibold flex items-center justify-center"
-            >
-              <Plus className="text-card w-5 h-5" />
-            </button>
-          </div>
+        </div>
+        <div className="w-full border-t border-border pt-2">
+          <textarea
+            placeholder="Algun detalle..."
+            className="w-full border-none outline-none text-xs text-[#737780]"
+          />
         </div>
       </CardContent>
     </Card>

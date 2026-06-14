@@ -32,17 +32,17 @@ export const InputField = ({
     <section className="flex flex-col">
       {label && (
         <label
-          className="text-[#43474F] font-semibold mb-2"
+          className="text-[#43474F] font-semibold mb-2 text-sm"
           htmlFor={inputProps.id}
         >
           {label}
         </label>
       )}
-      <div className="flex items-center gap-2 border border-[#C3C6D0] rounded-sm h-11 px-4 bg-[#F8F9FA] relative">
+      <div className="flex items-center gap-2 border border-[#C3C6D0] rounded-sm h-11 px-2 bg-[#F8F9FA] relative">
         {Icon && <Icon className="text-[#6B7280] w-5 h-5 shrink-0" />}
         {leftSuffix}
         <input
-          className="flex-1 min-w-0 truncate outline-none border-none bg-transparent text-[#6B7280] placeholder:text-[#9CA3AF]"
+          className="text-sm flex-1 min-w-0 truncate outline-none border-none bg-transparent text-[#6B7280] placeholder:text-[#9CA3AF]"
           type={toggleInputType()}
           {...inputProps}
         />
