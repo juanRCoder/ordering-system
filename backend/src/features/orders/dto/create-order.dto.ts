@@ -2,6 +2,7 @@ import {
   IsArray,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsString,
   ValidateNested,
 } from 'class-validator';
@@ -19,6 +20,10 @@ export class SupplyItemDto {
   @IsNotEmpty()
   @IsNumber()
   quantity!: number;
+
+  @IsOptional()
+  @IsString()
+  observations?: string;
 }
 
 export class CreateOrderDto {

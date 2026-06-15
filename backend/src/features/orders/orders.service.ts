@@ -23,6 +23,7 @@ export class OrdersService {
         supply_id: supply.id,
         price: supply.price,
         quantity: supply.quantity,
+        observations: supply.observations,
       }));
 
       await tx.suppliesOrders.createMany({
@@ -70,6 +71,7 @@ export class OrdersService {
           quantity: so.quantity,
           name: so.supply.name,
           price: so.price.toNumber(),
+          observations: so.observations,
         })),
         total: order.total.toNumber(),
         type_pay: order.type_pay,

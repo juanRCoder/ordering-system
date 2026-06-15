@@ -15,7 +15,7 @@ function Orders() {
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
   const [refreshKey, setRefreshKey] = useState<number>(0); // para refrescar horario
 
-  const allOrders = useOrdersQuery();
+  const orders = useOrdersQuery();
 
   return (
     <section className="bg-[#F8F9FF] min-h-screen flex flex-col">
@@ -29,10 +29,10 @@ function Orders() {
           <Button
             variant="outline"
             onClick={() => {
-              allOrders.refetch();
+              orders.refetch();
               setRefreshKey((prev) => prev + 1);
             }}
-            disabled={allOrders.isLoading}
+            disabled={orders.isLoading}
             className="cursor-pointer rounded-sm py-5.5"
           >
             Actualizar
@@ -59,7 +59,7 @@ function Orders() {
                   className={`${filter === 'PENDING' ? 'bg-white/20' : 'bg-[#D8E9FF]/50'} rounded-full h-8 w-8 grid place-items-center text-sm`}
                 >
                   {
-                    allOrders?.data?.filter(
+                    orders?.data?.filter(
                       (order: OrderListResponseType) =>
                         order.status === 'PENDING'
                     )?.length
@@ -78,11 +78,11 @@ function Orders() {
         </div>
         <div className="mt-4">
           <div className="grid grid-cols-1 gap-4">
-            {allOrders.isLoading
+            {orders.isLoading
               ? Array.from({ length: 3 }).map((_, index) => (
                   <OrderCardSkeleton key={index} />
                 ))
-              : allOrders?.data
+              : orders?.data
                   ?.filter(
                     (order: OrderListResponseType) => order.status === filter
                   )

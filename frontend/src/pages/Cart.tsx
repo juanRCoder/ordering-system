@@ -9,7 +9,7 @@ import { ShoppingBag, User } from 'lucide-react';
 import { useCreateOrder } from '@/hooks/useOrders';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { orderSchema } from '@/schemas/orders.schema';
+import { newOrderSchema } from '@/schemas/orders.schema';
 import type { NewOrderType } from '@/interfaces/orders.interface';
 import { defaultNewOrder } from '@/lib/default';
 
@@ -21,7 +21,7 @@ function Cart() {
     handleSubmit,
     formState: { errors },
   } = useForm<NewOrderType>({
-    resolver: zodResolver(orderSchema),
+    resolver: zodResolver(newOrderSchema),
     defaultValues: defaultNewOrder,
   });
 
@@ -33,6 +33,7 @@ function Cart() {
         id: item.id,
         price: item.price,
         quantity: item.quantity,
+        observations: item.observations,
       })),
     });
   };

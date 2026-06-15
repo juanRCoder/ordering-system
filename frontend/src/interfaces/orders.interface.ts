@@ -1,17 +1,10 @@
 import type z from 'zod';
 import type {
-  orderSchema,
+  newOrderSchema,
   orderUpdateStatusSchema,
 } from '@/schemas/orders.schema';
 
-export type NewOrderType = z.infer<typeof orderSchema>;
-
-export interface OrderResponse {
-  status: number;
-  data: {
-    id: string;
-  };
-}
+export type NewOrderType = z.infer<typeof newOrderSchema>;
 
 export type OrderListResponseType = {
   id: string;
@@ -25,11 +18,11 @@ export type OrderDetailSupply = {
   quantity: number;
   name: string;
   price: number;
+  observations: string | null;
 };
 
 export type OrderDetailResponseType = OrderListResponseType & {
   supplies: OrderDetailSupply[];
-  observations: string | null;
   type_pay: 'CASH' | 'YAPE';
 };
 

@@ -1,8 +1,13 @@
 import type { SupplyResponse } from '@/interfaces/supplies.interface';
 import { create } from 'zustand';
 
-export type CartItemType = SupplyResponse & {
+export type CartItemType = {
+  id: string;
+  name: string;
+  description?: string;
+  price: number;
   quantity: number;
+  observations?: string;
 };
 
 export interface CartStore {
@@ -14,6 +19,7 @@ export interface CartStore {
   clear: () => void;
   totalSupplies: number;
   totalPrice: number;
+  setObservations: (id: string, observation: string) => void;
 }
 
 export const calculateTotals = (items: CartItemType[]) => ({
@@ -55,7 +61,16 @@ export const useCartStore = create<CartStore>((set) => ({
           i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
         );
       } else {
-        updatedItems = [...state.items, { ...item, quantity: 1 }];
+        updatedItems = [
+          ...state.items,
+          {
+            id: item.id,
+            name: item.name,
+            price: item.price,
+            quantity: 1,
+            observations: '',
+          },
+        ];
       }
 
       return {
@@ -69,6 +84,15 @@ export const useCartStore = create<CartStore>((set) => ({
       return {
         items: updatedItems,
         ...calculateTotals(updatedItems),
+      };
+    }),
+  setObservations: (id: string, observations: string) =>
+    set((state) => {
+      const updatedItems = state.items.map((i) =>
+        i.id === id ? { ...i, observations } : i
+      );
+      return {
+        items: updatedItems,
       };
     }),
   clear: () =>

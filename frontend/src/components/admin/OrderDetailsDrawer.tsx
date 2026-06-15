@@ -35,6 +35,9 @@ export const OrderDetailsDrawer = ({
 }: props) => {
   const [openPaymentMethods, setOpenPaymentMethods] = useState<boolean>(true);
   const [typePay, setTypePay] = useState<'CASH' | 'YAPE'>('CASH');
+  const [orderStatus, setOrderStatus] = useState<'PENDING' | 'FINISHED'>(
+    'PENDING'
+  );
 
   const orderDetail = useOrderByIdQuery(selectedOrderId!);
   const updateStatus = useUpdateOrderStatus();
@@ -44,6 +47,7 @@ export const OrderDetailsDrawer = ({
   useEffect(() => {
     if (externalTrigger && orderDetail.data?.type_pay) {
       setTypePay(orderDetail.data.type_pay);
+      setOrderStatus(orderDetail.data.status);
     }
   }, [externalTrigger, orderDetail.data?.type_pay]);
 
@@ -51,7 +55,7 @@ export const OrderDetailsDrawer = ({
     updateStatus.mutate(
       {
         id: selectedOrderId!,
-        status: 'FINISHED',
+        status: orderStatus,
         type_pay: typePay,
       },
       {
@@ -101,6 +105,7 @@ export const OrderDetailsDrawer = ({
                             {supply.quantity}
                           </span>
                           <p>{supply.name}</p>
+                          <p>{supply.observations}</p>
                         </div>
                         <span className="text-primary font-medium">
                           S/ {supply.price}
@@ -109,17 +114,6 @@ export const OrderDetailsDrawer = ({
                     )
                   )}
                 </div>
-              </div>
-              <div className="py-4 border-t">
-                <p className="text-base font-semibold text-[#031C30]">
-                  Observaciones:
-                </p>
-                <textarea
-                  disabled
-                  value={orderDetail?.data?.observations || 'Sin observaciones'}
-                  placeholder="Escribe aquí tus observaciones"
-                  className="mt-2 text-sm w-full h-24 rounded-lg p-4 outline-none resize-none border bg-[#F8F9FA] text-[#6B7280]"
-                />
               </div>
             </>
           )}

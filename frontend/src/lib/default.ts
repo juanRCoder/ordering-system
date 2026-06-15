@@ -10,7 +10,6 @@ export const defaultRegisterFormValues = {
 
 export const defaultNewOrder = {
   supplies: [],
-  observations: '',
   guest_name: '',
   total: 0,
 };
