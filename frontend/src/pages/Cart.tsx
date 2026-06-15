@@ -15,7 +15,7 @@ import { defaultNewOrder } from '@/lib/default';
 
 function Cart() {
   const { items, totalPrice } = useCartStore();
-  const newOrder = useCreateOrder();
+  const createOrder = useCreateOrder();
   const {
     register,
     handleSubmit,
@@ -26,7 +26,7 @@ function Cart() {
   });
 
   const onSubmit = (data: NewOrderType) => {
-    newOrder.mutate({
+    createOrder.mutate({
       ...data,
       total: totalPrice,
       supplies: items.map((item) => ({
@@ -81,14 +81,14 @@ function Cart() {
           </div>
           <Button
             className="w-full mt-4 h-12 rounded-sm font-semibold text-base cursor-pointer"
-            disabled={items.length === 0 || newOrder.isPending}
+            disabled={items.length === 0 || createOrder.isPending}
             type="submit"
           >
-            {newOrder.isPending ? 'Creando pedido...' : 'Solicitar Pedido'}
+            {createOrder.isPending ? 'Creando pedido...' : 'Solicitar Pedido'}
           </Button>
         </form>
       </div>
-      <div className="fixed w-full max-w-[330px] mx-auto bottom-0">
+      <div className="fixed w-full max-w-[344px] mx-auto bottom-0">
         <BottomAppBar />
       </div>
     </section>

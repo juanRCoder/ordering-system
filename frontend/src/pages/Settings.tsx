@@ -9,7 +9,7 @@ type props = {
 };
 
 export default function Settings({ isAdmin }: props) {
-  const logoutMutation = useLogout();
+  const logout = useLogout();
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
 
   return (
@@ -40,13 +40,13 @@ export default function Settings({ isAdmin }: props) {
           )}
           <p
             className="text-destructive cursor-pointer w-fit"
-            onClick={() => logoutMutation.mutate()}
+            onClick={() => logout.mutate()}
           >
-            {logoutMutation.isPending ? 'Cerrando sesión...' : 'Cerrar Sesión'}
+            {logout.isPending ? 'Cerrando sesión...' : 'Cerrar Sesión'}
           </p>
         </div>
       </div>
-      <div className="fixed w-full max-w-md mx-auto bottom-0">
+      <div className="fixed w-full max-w-[340px] mx-auto bottom-0">
         <BottomAppBar statusAdmin={isAdmin} />
       </div>
       <CategoriesDrawer

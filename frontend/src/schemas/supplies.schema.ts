@@ -8,7 +8,7 @@ export const createSupplySchema = z.object({
       error: 'Debe ser un número válido',
     })
     .min(1, 'El precio mínimo es S/. 1'),
-  type_supply_id: z.string().uuidv4().optional(),
+  category_id: z.string().uuidv4().optional(),
 });
 
 export const updateSupplySchema = z.object({
@@ -21,5 +21,5 @@ export const updateSupplySchema = z.object({
     .min(1, 'El precio mínimo es S/. 1')
     .optional(),
   image_url: z.string().optional(),
-  type_supply_id: z.string().uuidv4().optional(),
+  category_id: z.string().uuidv4().optional(),
 });

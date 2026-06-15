@@ -14,7 +14,7 @@ export const OrderCard = ({ data, handlerEvents }: props) => {
 
   return (
     <Card className="rounded-sm p-3 gap-2">
-      <div className="flex justify-between items-center flex-wrap-reverse gap-0.5">
+      <div className="flex justify-between items-center flex-wrap-reverse gap-0.5 uppercase text-[#42474F] text-xs font-medium">
         <p>ORDEN #{data.id?.slice(0, 6)}</p>
         <span
           className={`
@@ -26,10 +26,10 @@ export const OrderCard = ({ data, handlerEvents }: props) => {
         </span>
       </div>
       <div className="flex justify-between items-center flex-wrap gap-0.5">
-        <p className="text-[#151C23] text-2xl font-semibold">
+        <p className="text-[#151C23] text-xl font-semibold">
           {data.guest_name}
         </p>
-        <p className="font-semibold text-[#5D6369] text-sm">ORDEN EN MESA</p>
+        <p className="font-semibold text-[#5D6369] text-sm">EN LOCAL</p>
       </div>
       <div className="flex flex-col justify-between bg-[#EFF4FF] p-2 rounded-sm gap-0.5">
         <div className="flex items-center flex-wrap justify-between gap-0.5">

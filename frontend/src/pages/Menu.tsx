@@ -13,15 +13,14 @@ import { SupplyCardSkeleton } from '@/skeletons/SupplyCardSkeleton';
 import { CartBadget } from '@/components/cart/CartBadget';
 
 function Menu() {
-  const [changeCategory, setChangeCategory] = useState<CategoryResponse | null>(
-    null
-  );
+  const [selectedCategory, setSelectedCategory] =
+    useState<CategoryResponse | null>(null);
 
   const categories = useCategories();
-  const suppliesByType = useSuppliesByTypeId(changeCategory?.id || '');
+  const suppliesByType = useSuppliesByTypeId(selectedCategory?.id || '');
 
   useEffect(() => {
-    if (categories.data) setChangeCategory(categories.data[0]);
+    if (categories.data) setSelectedCategory(categories.data[0]);
   }, [categories.data]);
 
   const firstLetterUpper = (name: string) => {
@@ -42,10 +41,10 @@ function Menu() {
                 <Button
                   key={type.id}
                   variant={
-                    changeCategory?.id === type.id ? 'default' : 'outline'
+                    selectedCategory?.id === type.id ? 'default' : 'outline'
                   }
                   className="py-5 font-normal min-w-32 rounded-sm cursor-pointer text-base"
-                  onClick={() => setChangeCategory(type)}
+                  onClick={() => setSelectedCategory(type)}
                 >
                   {type.name}
                 </Button>
@@ -58,7 +57,7 @@ function Menu() {
             <div className="animate-pulse bg-muted-foreground/40 rounded-sm h-8 w-40" />
           ) : (
             <h2 className="text-2xl font-bold text-primary">
-              {changeCategory && firstLetterUpper(changeCategory.name)}
+              {selectedCategory && firstLetterUpper(selectedCategory.name)}
             </h2>
           )}
           <div className="grid grid-cols-1 gap-4 mt-4">
@@ -76,7 +75,7 @@ function Menu() {
           </div>
         </div>
         <div className="h-[84px]" />
-        <div className="fixed w-full max-w-[330px] mx-auto bottom-0 left-0 right-0 z-50 flex flex-col gap-4">
+        <div className="fixed w-full max-w-[344px] mx-auto bottom-0 left-0 right-0 z-50 flex flex-col gap-4">
           <BottomAppBar />
         </div>
       </div>

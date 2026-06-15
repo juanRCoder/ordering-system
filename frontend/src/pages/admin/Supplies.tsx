@@ -12,7 +12,6 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useCategories } from '@/hooks/useCategories';
-import type { CategoryResponse } from '@/interfaces/categories.interface';
 import { Plus } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useSuppliesByTypeId } from '@/hooks/useSupplies';
@@ -21,30 +20,25 @@ import type { SupplyResponse } from '@/interfaces/supplies.interface';
 import { SupplyCard } from '@/components/admin/SupplyCard';
 
 function Supplies() {
-  const [changeCategory, setChangeCategory] = useState<CategoryResponse | null>(
-    null
-  );
-  const [typeSupplyId, setTypeSupplyId] = useState<string>('');
-
-  // for dialog
-  const [openSupplyDialog, setOpenSupplyDialog] = useState<boolean>(false);
-  const [mode, setMode] = useState<'create' | 'edit'>('create');
-  const [supplyId, setSupplyId] = useState<string>('');
+  const [selectedMode, setSelectedMode] = useState<'create' | 'edit'>('create');
+  const [selectedSupplyId, setSelectedSupplyId] = useState<string>('');
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string>('all');
+  const [openDialog, setOpenDialog] = useState<boolean>(false);
 
   const categories = useCategories();
-  const suppliesByType = useSuppliesByTypeId(changeCategory?.id || 'all');
+  const suppliesByType = useSuppliesByTypeId(selectedCategoryId);
 
-  const allOption = { id: 'all', name: 'Todos' };
-  const categoriesWithAll = [allOption, ...(categories.data ?? [])];
+  const defaultOption = { id: 'all', name: 'Todos' };
+  const allCategories = [defaultOption, ...(categories.data || [])];
 
   useEffect(() => {
-    if (categoriesWithAll.length) {
-      setTypeSupplyId(categoriesWithAll[0].id);
+    if (allCategories.length) {
+      setSelectedCategoryId(allCategories[0].id);
     }
   }, [categories.data]);
 
-  const selectedTypeSupply = categoriesWithAll?.find(
-    (ts: CategoryResponse) => ts.id === typeSupplyId
+  const selectedCategory = allCategories?.find(
+    (category) => category.id === selectedCategoryId
   );
 
   return (
@@ -61,21 +55,17 @@ function Supplies() {
           <InputSearch placeholder="Buscar general" />
           <div className="flex gap-3.5">
             <Select
-              value={typeSupplyId}
-              onValueChange={(value) => setTypeSupplyId(value ?? '')}
+              value={selectedCategoryId}
+              onValueChange={(value) => setSelectedCategoryId(value ?? '')}
             >
               <SelectTrigger className="w-full bg-[#F8F9FA] border border-gray-300 rounded-sm px-3 h-[46px]!">
-                <SelectValue>{selectedTypeSupply?.name}</SelectValue>
+                <SelectValue>{selectedCategory?.name}</SelectValue>
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  {categoriesWithAll?.map((ts: CategoryResponse) => (
-                    <SelectItem
-                      key={ts.id}
-                      value={ts.id}
-                      onClick={() => setChangeCategory(ts)}
-                    >
-                      {ts.name}
+                  {allCategories?.map((category) => (
+                    <SelectItem key={category.id} value={category.id}>
+                      {category.name}
                     </SelectItem>
                   ))}
                 </SelectGroup>
@@ -85,8 +75,8 @@ function Supplies() {
               variant="outline"
               className="cursor-pointer rounded-sm py-5.5"
               onClick={() => {
-                setMode('create');
-                setOpenSupplyDialog(true);
+                setSelectedMode('create');
+                setOpenDialog(true);
               }}
             >
               <Plus className="h-6! w-6!" strokeWidth={1.5} />
@@ -95,9 +85,9 @@ function Supplies() {
           </div>
           <h2 className="text-xl font-semibold text-[#161D17]">
             {suppliesByType.data?.length} resultados{' '}
-            {selectedTypeSupply?.name === 'Todos'
+            {selectedCategory?.name === 'Todos'
               ? ''
-              : 'en ' + selectedTypeSupply?.name}
+              : 'en ' + selectedCategory?.name}
           </h2>
           <div className="flex flex-col gap-4">
             {suppliesByType.isLoading
@@ -109,23 +99,23 @@ function Supplies() {
                     key={supply.id}
                     data={supply}
                     handlerEvents={() => {
-                      setOpenSupplyDialog(true);
-                      setMode('edit');
-                      setSupplyId(supply.id);
+                      setOpenDialog(true);
+                      setSelectedMode('edit');
+                      setSelectedSupplyId(supply.id);
                     }}
                   />
                 ))}
           </div>
         </div>
       </div>
-      <div className="fixed w-full max-w-md mx-auto bottom-0">
+      <div className="fixed w-full max-w-[344px] mx-auto bottom-0">
         <BottomAppBar statusAdmin={true} />
       </div>
       <SupplyDialog
-        externalTrigger={openSupplyDialog}
-        setExternalTrigger={setOpenSupplyDialog}
-        mode={mode}
-        id={supplyId}
+        externalTrigger={openDialog}
+        setExternalTrigger={setOpenDialog}
+        mode={selectedMode}
+        id={selectedSupplyId}
       />
     </section>
   );

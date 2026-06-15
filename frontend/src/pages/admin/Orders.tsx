@@ -10,8 +10,10 @@ import { OrderCardSkeleton } from '@/skeletons/OrderCardSkeleton';
 import { useState } from 'react';
 
 function Orders() {
-  const [filter, setFilter] = useState<'PENDING' | 'FINISHED'>('PENDING');
-  const [open, setOpen] = useState<boolean>(false);
+  const [openDrawer, setOpenDrawer] = useState<boolean>(false);
+  const [selectedStatus, setSelectedStatus] = useState<'PENDING' | 'FINISHED'>(
+    'PENDING'
+  );
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
   const [refreshKey, setRefreshKey] = useState<number>(0); // para refrescar horario
 
@@ -50,13 +52,13 @@ function Orders() {
           <div className="flex items-center justify-between gap-3">
             <div className="flex flex-1 gap-3 flex-wrap">
               <Button
-                variant={filter === 'PENDING' ? 'default' : 'outline'}
-                onClick={() => setFilter('PENDING')}
+                variant={selectedStatus === 'PENDING' ? 'default' : 'outline'}
+                onClick={() => setSelectedStatus('PENDING')}
                 className="px-4 py-6 font-normal min-w-32 rounded-sm cursor-pointer text-[17px]"
               >
                 Pedidos
                 <span
-                  className={`${filter === 'PENDING' ? 'bg-white/20' : 'bg-[#D8E9FF]/50'} rounded-full h-8 w-8 grid place-items-center text-sm`}
+                  className={`${selectedStatus === 'PENDING' ? 'bg-white/20' : 'bg-[#D8E9FF]/50'} rounded-full h-8 w-8 grid place-items-center text-sm`}
                 >
                   {
                     orders?.data?.filter(
@@ -67,8 +69,8 @@ function Orders() {
                 </span>
               </Button>
               <Button
-                variant={filter === 'FINISHED' ? 'default' : 'outline'}
-                onClick={() => setFilter('FINISHED')}
+                variant={selectedStatus === 'FINISHED' ? 'default' : 'outline'}
+                onClick={() => setSelectedStatus('FINISHED')}
                 className="px-4 py-6 font-normal min-w-32 rounded-sm cursor-pointer text-[17px]"
               >
                 Finalizados
@@ -84,14 +86,15 @@ function Orders() {
                 ))
               : orders?.data
                   ?.filter(
-                    (order: OrderListResponseType) => order.status === filter
+                    (order: OrderListResponseType) =>
+                      order.status === selectedStatus
                   )
                   .map((order: OrderListResponseType) => (
                     <OrderCard
                       key={`${order.id}-${refreshKey}`}
                       data={order}
                       handlerEvents={() => {
-                        setOpen(!open);
+                        setOpenDrawer(true);
                         setSelectedOrderId(order.id);
                       }}
                     />
@@ -99,12 +102,12 @@ function Orders() {
           </div>
         </div>
       </div>
-      <div className="fixed w-full max-w-md mx-auto bottom-0">
+      <div className="fixed w-full max-w-[344px] mx-auto bottom-0">
         <BottomAppBar statusAdmin={true} />
       </div>
       <OrderDetailsDrawer
-        externalTrigger={open}
-        setExternalTrigger={setOpen}
+        externalTrigger={openDrawer}
+        setExternalTrigger={setOpenDrawer}
         selectedOrderId={selectedOrderId}
       />
     </section>

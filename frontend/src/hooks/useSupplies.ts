@@ -15,7 +15,7 @@ export function useCreateSupply() {
     mutationFn: (data: CreateSupplyType) => suppliesService.create(data),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
-        queryKey: SuppliesKeys.byTypeId(String(variables.type_supply_id ?? '')),
+        queryKey: SuppliesKeys.byTypeId(String(variables.category_id ?? '')),
       });
       toast.success('Insumo agregado con éxito', toastStyles.success);
     },

@@ -45,12 +45,12 @@ export const SupplyDialog = ({
   mode = 'create',
   id,
 }: props) => {
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string>('');
+
   const categories = useCategories();
   const createSupply = useCreateSupply();
   const supplyById = useSupplyById(id || '');
   const updateSupply = useUpdateSupply();
-
-  const [typeSupplyId, setTypeSupplyId] = useState<string>('');
 
   const {
     register,
@@ -64,7 +64,7 @@ export const SupplyDialog = ({
 
   useEffect(() => {
     if (categories.data?.length && mode === 'create') {
-      setTypeSupplyId(categories.data[0].id);
+      setSelectedCategoryId(categories.data[0].id);
     }
   }, [categories.data, mode]);
 
@@ -75,14 +75,14 @@ export const SupplyDialog = ({
         price: supplyById.data?.price ?? 1,
         description: supplyById.data?.description ?? '',
       });
-      setTypeSupplyId(supplyById.data?.type_supply_id || '');
+      setSelectedCategoryId(supplyById.data?.category_id || '');
     } else {
       reset(supplyFormValues);
     }
   }, [supplyById.data, mode]);
 
   const selectedCategory = categories.data?.find(
-    (ts: CategoryResponse) => ts.id === typeSupplyId
+    (ts: CategoryResponse) => ts.id === selectedCategoryId
   );
 
   const isEditMode = mode === 'edit';
@@ -95,7 +95,7 @@ export const SupplyDialog = ({
           id,
           data: {
             ...data,
-            type_supply_id: typeSupplyId,
+            category_id: selectedCategoryId,
           },
         },
         {
@@ -108,7 +108,7 @@ export const SupplyDialog = ({
       createSupply.mutate(
         {
           ...data,
-          type_supply_id: typeSupplyId,
+          category_id: selectedCategoryId,
         },
         {
           onSuccess: () => {
@@ -181,8 +181,8 @@ export const SupplyDialog = ({
                   Tipo de Insumo*
                 </FieldLabel>
                 <Select
-                  value={typeSupplyId}
-                  onValueChange={(value) => setTypeSupplyId(value ?? '')}
+                  value={selectedCategoryId}
+                  onValueChange={(value) => setSelectedCategoryId(value ?? '')}
                 >
                   <SelectTrigger className="w-full bg-[#F8F9FA] border border-gray-300 rounded-lg px-3">
                     <SelectValue>{selectedCategory?.name}</SelectValue>
