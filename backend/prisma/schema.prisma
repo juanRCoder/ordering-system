@@ -27,9 +27,14 @@ enum StatusOrder {
   FINISHED
 }
 
-enum TypePayment {
+enum PaymentType {
   CASH
   YAPE
+}
+
+enum OrderType {
+  LOCAL
+  WHATSAPP
 }
 
 model Users {
@@ -73,7 +78,8 @@ model Orders {
   user_id      String?
   guest_name   String
   status       StatusOrder  @default(PENDING)
-  type_pay     TypePayment? @default(CASH)
+  payment_type PaymentType? @default(CASH)
+  order_type   OrderType    @default(LOCAL)
   total        Decimal      @default(0) @db.Decimal(10, 2)
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt

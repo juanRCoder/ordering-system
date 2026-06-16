@@ -74,7 +74,8 @@ export class OrdersService {
           observations: so.observations,
         })),
         total: order.total.toNumber(),
-        type_pay: order.type_pay,
+        payment_type: order.payment_type,
+        order_type: order.order_type,
       },
     };
   }
@@ -94,12 +95,13 @@ export class OrdersService {
         created_at: order.createdAt,
         status: order.status,
         total: order.total.toNumber(),
+        order_type: order.order_type,
       })),
     };
   }
 
   async update(id: string, updateOrderDto: UpdateOrderDto) {
-    const { status, type_pay } = updateOrderDto;
+    const { status, payment_type, order_type } = updateOrderDto;
 
     const existingOrder = await this.prisma.orders.findUnique({
       where: { id },
@@ -116,7 +118,8 @@ export class OrdersService {
       where: { id },
       data: {
         status,
-        type_pay,
+        payment_type,
+        order_type,
       },
     });
 
