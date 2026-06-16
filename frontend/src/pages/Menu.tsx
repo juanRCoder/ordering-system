@@ -75,7 +75,7 @@ function Menu() {
           </div>
         </div>
         <div className="h-[84px]" />
-        <div className="fixed w-full max-w-[344px] mx-auto bottom-0 left-0 right-0 z-50 flex flex-col gap-4">
+        <div className="fixed w-full max-w-md mx-auto bottom-0 left-0 right-0 z-50 flex flex-col gap-4">
           <BottomAppBar />
         </div>
       </div>

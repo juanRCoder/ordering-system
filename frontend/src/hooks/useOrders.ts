@@ -44,11 +44,11 @@ export function useOrderByIdQuery(id: string) {
   });
 }
 
-export function useUpdateOrderStatus() {
+export function useUpdateOrder() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: updateOrder) => ordersService.updateStatus(data),
+    mutationFn: (data: updateOrder) => ordersService.update(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: OrdersKeys.all });
       toast.success('Pedido finalizado con éxito', toastStyles.success);

@@ -29,14 +29,16 @@ export const OrderCard = ({ data, handlerEvents }: props) => {
         <p className="text-[#151C23] text-xl font-semibold">
           {data.guest_name}
         </p>
-        <p className="font-semibold text-[#5D6369] text-sm">EN LOCAL</p>
+        <p className="font-semibold text-[#5D6369] text-sm">
+          {data.order_type}
+        </p>
       </div>
       <div className="flex flex-col justify-between bg-[#EFF4FF] p-2 rounded-sm gap-0.5">
         <div className="flex items-center flex-wrap justify-between gap-0.5">
           <p className="font-mediun text-sm">MONTO TOTAL</p>
           <p className="font-semibold text-xl">S/ {data.total.toFixed(2)}</p>
         </div>
-        <p className="text-[#5D6369] text-xs">
+        <p className="text-[#5D6369] text-[10px]">
           {dayTime(data.created_at)} - Hace {relativeTime(data.created_at)}
         </p>
       </div>

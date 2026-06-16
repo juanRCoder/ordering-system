@@ -46,7 +46,6 @@ export const SupplyCard = ({ data, handlerEvents }: props) => {
           </p>
         </div>
       </section>
-
       <div className="shrink-0 flex items-center gap-2 flex-wrap">
         <Button
           variant="outline"

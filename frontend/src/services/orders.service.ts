@@ -56,7 +56,7 @@ class OrdersService {
     return result.data;
   }
 
-  async updateStatus(data: updateOrder) {
+  async update(data: updateOrder) {
     const response = await fetch(`${this.API}/orders/${data.id}`, {
       method: 'PATCH',
       credentials: 'include',
@@ -65,7 +65,8 @@ class OrdersService {
       },
       body: JSON.stringify({
         status: data.status,
-        type_pay: data.type_pay,
+        payment_type: data.payment_type,
+        order_type: data.order_type,
       }),
     });
 

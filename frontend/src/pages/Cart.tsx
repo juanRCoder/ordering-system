@@ -68,9 +68,9 @@ function Cart() {
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="mt-4">
             <InputField
-              label="Nombre del cliente"
+              label="Nombre del cliente o Nr de mesa"
               icon={User}
-              placeholder="Ej: Alejo Diaz"
+              placeholder="Ej: Alejo Diaz o Mesa 5"
               {...register('guest_name')}
               error={errors.guest_name?.message}
             />
@@ -88,7 +88,7 @@ function Cart() {
           </Button>
         </form>
       </div>
-      <div className="fixed w-full max-w-[344px] mx-auto bottom-0">
+      <div className="fixed w-full max-w-md mx-auto bottom-0">
         <BottomAppBar />
       </div>
     </section>

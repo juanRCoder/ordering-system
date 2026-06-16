@@ -55,7 +55,7 @@ function DrawerContent({
         <DrawerPrimitive.Content
           data-slot="drawer-content"
           className={cn(
-            'group/drawer-content pointer-events-auto flex h-auto flex-col bg-popover text-sm text-popover-foreground data-[vaul-drawer-direction=bottom]:mt-24 data-[vaul-drawer-direction=bottom]:max-h-[80vh] data-[vaul-drawer-direction=bottom]:rounded-t-xl data-[vaul-drawer-direction=bottom]:border-t ...',
+            'group/drawer-content pointer-events-auto flex h-auto flex-col bg-popover text-sm text-popover-foreground data-[vaul-drawer-direction=bottom]:mt-24 data-[vaul-drawer-direction=bottom]:max-h-[84vh] data-[vaul-drawer-direction=bottom]:rounded-t-xl data-[vaul-drawer-direction=bottom]:border-t ...',
             className
           )}
           {...props}

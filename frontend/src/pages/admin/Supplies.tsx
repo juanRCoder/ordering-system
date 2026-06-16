@@ -108,7 +108,7 @@ function Supplies() {
           </div>
         </div>
       </div>
-      <div className="fixed w-full max-w-[344px] mx-auto bottom-0">
+      <div className="fixed w-full max-w-md mx-auto bottom-0">
         <BottomAppBar statusAdmin={true} />
       </div>
       <SupplyDialog

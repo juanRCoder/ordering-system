@@ -11,7 +11,7 @@ const queryClient = new QueryClient();
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <section className="max-w-[344px] mx-auto min-h-screen outline relative">
+    <section className="max-w-md mx-auto min-h-screen outline relative">
       <QueryClientProvider client={queryClient}>
         <RouterProvider router={router} />
         <ReactQueryDevtools initialIsOpen={false} />
