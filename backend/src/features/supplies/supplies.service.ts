@@ -8,14 +8,31 @@ import { PrismaService } from '../../prisma.service';
 import { CreateSupplyDto } from './dto/create-supply.dto';
 import { UpdateSupplyDto } from './dto/update-supply.dto';
 import { StatusSupply } from '../../generated/prisma/enums';
+import { CloudinaryService } from '../../cloudinary/cloudinary.service';
 
 @Injectable()
 export class SuppliesService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private cloudinary: CloudinaryService
+  ) {}
 
-  async create(createSupplyDto: CreateSupplyDto) {
-    const { name, description, price, image_url, category_id, status } =
-      createSupplyDto;
+  private rootFolder = 'ordering-system';
+
+  async create(createSupplyDto: CreateSupplyDto, file?: Express.Multer.File) {
+    const { name, description, price, category_id, status } = createSupplyDto;
+
+    let imageUrl: string | null = null;
+    let imagePublicId: string | null = null;
+
+    if (file) {
+      const uploadResult = await this.cloudinary.uploadFile(
+        file,
+        `${this.rootFolder}/supplies`
+      );
+      imageUrl = uploadResult.secure_url;
+      imagePublicId = uploadResult.public_id;
+    }
 
     const category = await this.prisma.categories.findUnique({
       where: { id: category_id },
@@ -33,7 +50,8 @@ export class SuppliesService {
         name,
         description,
         price,
-        imagen_url: image_url || null,
+        imagen_url: imageUrl,
+        imagen_public_id: imagePublicId,
         category_id,
         status,
       },

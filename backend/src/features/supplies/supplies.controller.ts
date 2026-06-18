@@ -5,12 +5,15 @@ import {
   Param,
   Patch,
   Post,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { SuppliesService } from './supplies.service';
 import { CreateSupplyDto } from './dto/create-supply.dto';
 import { UpdateSupplyDto } from './dto/update-supply.dto';
 import { AdminGuard } from '../auth/auth.guard';
+import { FileUploadInterceptor } from '../../common/interceptors/file-upload.interceptor';
 
 @Controller('supplies')
 export class SuppliesController {
@@ -28,8 +31,12 @@ export class SuppliesController {
 
   @UseGuards(AdminGuard)
   @Post()
-  async create(@Body() createSupplyDto: CreateSupplyDto) {
-    return this.suppliesService.create(createSupplyDto);
+  @UseInterceptors(FileUploadInterceptor('image'))
+  async create(
+    @Body() createSupplyDto: CreateSupplyDto,
+    @UploadedFile() file: Express.Multer.File
+  ) {
+    return this.suppliesService.create(createSupplyDto, file);
   }
 
   @UseGuards(AdminGuard)

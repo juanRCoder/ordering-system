@@ -21,10 +21,6 @@ export class CreateSupplyDto {
   @IsNumber()
   price!: number;
 
-  @IsOptional()
-  @IsString()
-  image_url?: string;
-
   @IsNotEmpty()
   @IsUUID()
   category_id!: string;

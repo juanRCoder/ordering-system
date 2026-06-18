@@ -59,15 +59,16 @@ model Categories {
 }
 
 model Supplies {
-  id             String       @id @default(uuid())
-  name           String
-  description    String?
-  price          Decimal      @default(0) @db.Decimal(10, 2)
-  status         StatusSupply @default(AVAILABLE)
-  imagen_url     String?
-  category_id    String
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
+  id               String       @id @default(uuid())
+  name             String
+  description      String?
+  price            Decimal      @default(0) @db.Decimal(10, 2)
+  status           StatusSupply @default(AVAILABLE)
+  imagen_url       String?
+  imagen_public_id String?
+  category_id      String
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
 
   category       Categories   @relation(fields: [category_id], references: [id])
   suppliesOrders SuppliesOrders[]
