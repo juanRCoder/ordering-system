@@ -1,3 +1,4 @@
+import { Type } from 'class-transformer';
 import {
   IsEnum,
   IsNotEmpty,
@@ -17,6 +18,7 @@ export class CreateSupplyDto {
   @IsString()
   description?: string;
 
+  @Type(() => Number)
   @IsNotEmpty()
   @IsNumber()
   price!: number;

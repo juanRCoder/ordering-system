@@ -1,8 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import type {
-  CreateSupplyType,
-  UpdateSupplyType,
-} from '@/interfaces/supplies.interface';
+import type { UpdateSupplyType } from '@/interfaces/supplies.interface';
 import { SuppliesKeys } from '@/lib/querykeys';
 import suppliesService from '@/services/supplies.service';
 import { toast } from 'sonner';
@@ -12,10 +9,11 @@ export function useCreateSupply() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: CreateSupplyType) => suppliesService.create(data),
+    mutationFn: (data: FormData) => suppliesService.create(data),
     onSuccess: (_, variables) => {
+      const categoryId = String(variables.get('category_id') ?? '');
       queryClient.invalidateQueries({
-        queryKey: SuppliesKeys.byTypeId(String(variables.category_id ?? '')),
+        queryKey: SuppliesKeys.byTypeId(categoryId),
       });
       toast.success('Insumo agregado con éxito', toastStyles.success);
     },

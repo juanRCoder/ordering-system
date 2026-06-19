@@ -5,7 +5,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Image } from 'lucide-react';
 import { InputField } from '../InputField';
 import {
   Select,
@@ -31,6 +30,7 @@ import type { CreateSupplyType } from '@/interfaces/supplies.interface';
 import { createSupplySchema } from '@/schemas/supplies.schema';
 import { supplyFormValues } from '@/lib/default';
 import type { CategoryResponse } from '@/interfaces/categories.interface';
+import { InputFile } from '../InputFile';
 
 type props = {
   externalTrigger?: boolean;
@@ -46,6 +46,7 @@ export const SupplyDialog = ({
   id,
 }: props) => {
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>('');
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
   const categories = useCategories();
   const createSupply = useCreateSupply();
@@ -105,17 +106,21 @@ export const SupplyDialog = ({
         }
       );
     } else {
-      createSupply.mutate(
-        {
-          ...data,
-          category_id: selectedCategoryId,
+      if (imageFile) data.imageUrl = imageFile;
+
+      const formData = new FormData();
+
+      for (const key in data) {
+        const value = data[key as keyof CreateSupplyType];
+        if (value === null || value === undefined) continue;
+        formData.append(key, value);
+      }
+      formData.append('category_id', selectedCategoryId);
+      createSupply.mutate(formData, {
+        onSuccess: () => {
+          setExternalTrigger(false);
         },
-        {
-          onSuccess: () => {
-            setExternalTrigger(false);
-          },
-        }
-      );
+      });
     }
   };
 
@@ -131,32 +136,13 @@ export const SupplyDialog = ({
           <section>
             <div className="flex flex-col gap-4">
               <div className="w-1/2">
-                <label className="block text-[#43474F] font-semibold mb-2">
-                  Imagen
-                </label>
-                <label className="cursor-pointer">
-                  <input
-                    type="file"
-                    accept=".png,.jpg,.jpeg"
-                    className="hidden"
-                  />
-
-                  <div className="border border-[#C3C6D0] rounded-sm bg-[#F8F9FA] h-28 flex flex-col items-center justify-center hover:bg-[#F3F4F6] transition-colors">
-                    <Image
-                      className="w-14 h-14 text-[#6B7280] mb-2"
-                      strokeWidth={1.5}
-                    />
-
-                    <p className="text-[#6B7280] text-xs text-center">
-                      Archivos png - jpg
-                    </p>
-                    {/* <img
-                        src="/insumo.jpg"
-                        alt="insumo"
-                        className="w-full h-full object-cover"
-                      /> */}
-                  </div>
-                </label>
+                <InputFile
+                  alt="Imagen del producto"
+                  value={typeof imageFile === 'string' ? imageFile : ''}
+                  onChange={(file) => {
+                    setImageFile(file);
+                  }}
+                />
               </div>
               <InputField
                 {...register('name')}

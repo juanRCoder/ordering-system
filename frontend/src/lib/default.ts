@@ -18,4 +18,6 @@ export const supplyFormValues = {
   name: '',
   description: '',
   price: 1,
+  imageUrl: null,
+  imagePublicId: null,
 };

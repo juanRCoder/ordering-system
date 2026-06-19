@@ -1,3 +1,8 @@
 import { v2 as cloudinary } from 'cloudinary';
 
-cloudinary.config();
+export const CLOUDINARY = 'CLOUDINARY';
+
+export const CloudinaryProvider = {
+  provide: CLOUDINARY,
+  useFactory: () => cloudinary.config(true),
+};

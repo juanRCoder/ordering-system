@@ -7,9 +7,21 @@ export const FileUploadInterceptor = (fieldName: string) =>
     storage: multer.memoryStorage(),
     limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
     fileFilter: (req, file, callback) => {
-      const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+      const allowedTypes = [
+        'image/jpeg',
+        'image/png',
+        'image/jpg',
+        'image/webp',
+      ];
       if (!allowedTypes.includes(file.mimetype)) {
-        return callback(new BadRequestException('Invalid file type'), false);
+        return callback(
+          new BadRequestException({
+            message: 'Invalid image format',
+            received: file.mimetype,
+            allowed: ['jpg', 'jpeg', 'png', 'webp'],
+          }),
+          false
+        );
       }
       callback(null, true);
     },

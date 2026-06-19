@@ -72,6 +72,7 @@ export class SuppliesService {
         select: {
           id: true,
           imagen_url: true,
+          imagen_public_id: true,
           name: true,
           description: true,
           price: true,
@@ -83,7 +84,8 @@ export class SuppliesService {
         status: HttpStatus.OK,
         data: supplies.map((s) => ({
           id: s.id,
-          image_url: s.imagen_url,
+          imagen_url: s.imagen_url,
+          imagen_public_id: s.imagen_public_id,
           name: s.name,
           description: s.description,
           price: Number(s.price),
@@ -109,6 +111,7 @@ export class SuppliesService {
       select: {
         id: true,
         imagen_url: true,
+        imagen_public_id: true,
         name: true,
         description: true,
         price: true,
@@ -120,7 +123,8 @@ export class SuppliesService {
       status: HttpStatus.OK,
       data: supplies.map((s) => ({
         id: s.id,
-        image_url: s.imagen_url,
+        imagen_url: s.imagen_url,
+        imagen_public_id: s.imagen_public_id,
         name: s.name,
         description: s.description,
         price: Number(s.price),

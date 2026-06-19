@@ -31,11 +31,12 @@ export class SuppliesController {
 
   @UseGuards(AdminGuard)
   @Post()
-  @UseInterceptors(FileUploadInterceptor('image'))
+  @UseInterceptors(FileUploadInterceptor('imageUrl'))
   async create(
     @Body() createSupplyDto: CreateSupplyDto,
     @UploadedFile() file: Express.Multer.File
   ) {
+    console.log('DTO recibido:', createSupplyDto); // ¿qué imprime esto?
     return this.suppliesService.create(createSupplyDto, file);
   }
 
