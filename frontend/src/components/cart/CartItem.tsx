@@ -20,8 +20,8 @@ export const CartItem = ({ item }: props) => {
       <CardContent className="flex flex-wrap items-start gap-4 p-0">
         <div className="shrink-0 w-20 h-20 rounded-sm overflow-hidden">
           <img
-            src="./insumo.jpg"
-            alt="insumo"
+            src={item.imagen_url || '/no_image.webp'}
+            alt={item.name}
             className="w-full h-full object-cover"
           />
         </div>

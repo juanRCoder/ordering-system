@@ -50,7 +50,6 @@ export const OrderDetailsDrawer = ({
   }, [externalTrigger, orderDetail.data?.payment_type]);
 
   const updateOrderHandler = () => {
-    console.log(selectedOrderStatus[0], 'status');
     updateOrder.mutate(
       {
         id: selectedOrderId!,

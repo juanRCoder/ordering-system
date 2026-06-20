@@ -75,6 +75,8 @@ export const SupplyDialog = ({
         name: supplyById.data?.name ?? '',
         price: supplyById.data?.price ?? 1,
         description: supplyById.data?.description ?? '',
+        imageUrl: supplyById.data?.image_url ?? '',
+        imagePublicId: supplyById.data?.image_public_id ?? '',
       });
       setSelectedCategoryId(supplyById.data?.category_id || '');
     } else {
@@ -87,39 +89,31 @@ export const SupplyDialog = ({
   );
 
   const isEditMode = mode === 'edit';
+  const existingImageUrl = isEditMode ? supplyById.data?.image_url : '';
 
   const onSubmit = (data: CreateSupplyType) => {
-    if (isEditMode) {
-      if (!id) return;
+    const formData = new FormData();
+
+    for (const key in data) {
+      const value = data[key as keyof CreateSupplyType];
+      if (value === null || value === undefined) continue;
+      if (key === 'imageUrl') continue;
+      formData.append(key, value as string);
+    }
+    formData.append('category_id', selectedCategoryId);
+
+    if (imageFile) {
+      formData.append('imageUrl', imageFile);
+    }
+
+    if (mode === 'edit' && id) {
       updateSupply.mutate(
-        {
-          id,
-          data: {
-            ...data,
-            category_id: selectedCategoryId,
-          },
-        },
-        {
-          onSuccess: () => {
-            setExternalTrigger(false);
-          },
-        }
+        { id, data: formData },
+        { onSuccess: () => setExternalTrigger(false) }
       );
     } else {
-      if (imageFile) data.imageUrl = imageFile;
-
-      const formData = new FormData();
-
-      for (const key in data) {
-        const value = data[key as keyof CreateSupplyType];
-        if (value === null || value === undefined) continue;
-        formData.append(key, value);
-      }
-      formData.append('category_id', selectedCategoryId);
       createSupply.mutate(formData, {
-        onSuccess: () => {
-          setExternalTrigger(false);
-        },
+        onSuccess: () => setExternalTrigger(false),
       });
     }
   };
@@ -138,7 +132,7 @@ export const SupplyDialog = ({
               <div className="w-1/2">
                 <InputFile
                   alt="Imagen del producto"
-                  value={typeof imageFile === 'string' ? imageFile : ''}
+                  value={existingImageUrl}
                   onChange={(file) => {
                     setImageFile(file);
                   }}

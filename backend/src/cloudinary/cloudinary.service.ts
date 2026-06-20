@@ -1,5 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { v2 as cloudinary, UploadApiResponse } from 'cloudinary';
+import {
+  v2 as cloudinary,
+  UploadApiOptions,
+  UploadApiResponse,
+} from 'cloudinary';
 
 @Injectable()
 export class CloudinaryService {
@@ -9,14 +13,19 @@ export class CloudinaryService {
     public_id?: string
   ): Promise<UploadApiResponse> {
     const buffer = file.buffer;
-    return new Promise((res, rej) => {
-      const uploadStream = cloudinary.uploader.upload_stream(
-        {
+
+    const options: UploadApiOptions = public_id
+      ? { public_id, resource_type: 'image', overwrite: true }
+      : {
           folder,
-          public_id: public_id ? public_id : Date.now().toString(),
+          public_id: Date.now().toString(),
           resource_type: 'image',
           overwrite: true,
-        },
+        };
+
+    return new Promise((res, rej) => {
+      const uploadStream = cloudinary.uploader.upload_stream(
+        options,
         (error, result) => {
           if (error) {
             return rej(new Error(`Error uploading image: ${error.message}`));

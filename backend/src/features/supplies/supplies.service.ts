@@ -142,6 +142,7 @@ export class SuppliesService {
         description: true,
         price: true,
         imagen_url: true,
+        imagen_public_id: true,
         category_id: true,
       },
     });
@@ -161,6 +162,7 @@ export class SuppliesService {
         description: supply.description,
         price: Number(supply.price),
         image_url: supply.imagen_url,
+        image_public_id: supply.imagen_public_id,
         category_id: supply.category_id,
       },
     };
@@ -197,7 +199,11 @@ export class SuppliesService {
     };
   }
 
-  async update(id: string, updateSupplyDto: UpdateSupplyDto) {
+  async update(
+    id: string,
+    updateSupplyDto: UpdateSupplyDto,
+    file?: Express.Multer.File
+  ) {
     const supply = await this.prisma.supplies.findUnique({
       where: { id },
     });
@@ -209,8 +215,21 @@ export class SuppliesService {
       });
     }
 
-    const { name, description, price, image_url, category_id } =
+    const { name, description, price, imageUrl, imagePublicId, category_id } =
       updateSupplyDto;
+
+    let image_url: string | undefined | null = imageUrl;
+    let image_public_id: string | undefined | null = imagePublicId;
+
+    if (file) {
+      const uploadResult = await this.cloudinary.uploadFile(
+        file,
+        `${this.rootFolder}/supplies`,
+        imagePublicId
+      );
+      image_url = uploadResult.secure_url;
+      image_public_id = uploadResult.public_id;
+    }
 
     if (category_id) {
       const category = await this.prisma.categories.findUnique({
@@ -231,7 +250,8 @@ export class SuppliesService {
         name,
         description,
         price,
-        imagen_url: image_url || null,
+        imagen_url: image_url,
+        imagen_public_id: image_public_id,
         category_id,
       },
     });

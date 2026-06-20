@@ -1,5 +1,3 @@
-import type { UpdateSupplyType } from '@/interfaces/supplies.interface';
-
 class SuppliesService {
   private API = import.meta.env.VITE_API_DEV;
 
@@ -32,7 +30,6 @@ class SuppliesService {
         message: result.message,
       };
     }
-    console.log(result.data);
     return result.data;
   }
 
@@ -67,14 +64,11 @@ class SuppliesService {
     return result.data;
   }
 
-  async update(id: string, data: UpdateSupplyType) {
+  async update(id: string, data: FormData) {
     const response = await fetch(`${this.API}/supplies/${id}`, {
       method: 'PATCH',
       credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
+      body: data,
     });
 
     const result = await response.json();

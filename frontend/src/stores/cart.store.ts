@@ -4,6 +4,7 @@ import { create } from 'zustand';
 export type CartItemType = {
   id: string;
   name: string;
+  imagen_url?: string;
   description?: string;
   price: number;
   quantity: number;

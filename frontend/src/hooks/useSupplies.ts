@@ -1,5 +1,4 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import type { UpdateSupplyType } from '@/interfaces/supplies.interface';
 import { SuppliesKeys } from '@/lib/querykeys';
 import suppliesService from '@/services/supplies.service';
 import { toast } from 'sonner';
@@ -65,7 +64,7 @@ export function useUpdateSupply() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: UpdateSupplyType }) =>
+    mutationFn: ({ id, data }: { id: string; data: FormData }) =>
       suppliesService.update(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: SuppliesKeys.all });

@@ -1,3 +1,4 @@
+import { Type } from 'class-transformer';
 import { IsNumber, IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class UpdateSupplyDto {
@@ -9,13 +10,18 @@ export class UpdateSupplyDto {
   @IsString()
   description?: string;
 
+  @Type(() => Number)
   @IsOptional()
   @IsNumber()
   price?: number;
 
   @IsOptional()
   @IsString()
-  image_url?: string;
+  imageUrl?: string;
+
+  @IsOptional()
+  @IsString()
+  imagePublicId?: string;
 
   @IsOptional()
   @IsUUID()

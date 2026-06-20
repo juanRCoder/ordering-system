@@ -36,7 +36,6 @@ export class SuppliesController {
     @Body() createSupplyDto: CreateSupplyDto,
     @UploadedFile() file: Express.Multer.File
   ) {
-    console.log('DTO recibido:', createSupplyDto); // ¿qué imprime esto?
     return this.suppliesService.create(createSupplyDto, file);
   }
 
@@ -48,10 +47,12 @@ export class SuppliesController {
 
   @UseGuards(AdminGuard)
   @Patch(':id')
+  @UseInterceptors(FileUploadInterceptor('imageUrl'))
   async update(
     @Param('id') id: string,
-    @Body() updateSupplyDto: UpdateSupplyDto
+    @Body() updateSupplyDto: UpdateSupplyDto,
+    @UploadedFile() file: Express.Multer.File
   ) {
-    return this.suppliesService.update(id, updateSupplyDto);
+    return this.suppliesService.update(id, updateSupplyDto, file);
   }
 }

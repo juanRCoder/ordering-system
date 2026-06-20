@@ -25,9 +25,9 @@ export const SupplyCard = ({ data, handlerEvents }: props) => {
       <section className="flex flex-row flex-wrap items-start gap-2">
         <div className="shrink-0 w-20 h-20 rounded-sm overflow-hidden">
           <img
-            src={data.imagen_url || '/insumo.jpg'}
+            src={data.imagen_url || '/no_image.webp'}
             alt={data.name}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover aspect-square"
           />
         </div>
         <div className="flex-1 flex flex-col gap-1">
