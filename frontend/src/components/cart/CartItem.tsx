@@ -18,7 +18,7 @@ export const CartItem = ({ item }: props) => {
   return (
     <Card className="p-2 w-full rounded-sm">
       <CardContent className="flex flex-wrap items-start gap-4 p-0">
-        <div className="shrink-0 w-20 h-20 rounded-sm overflow-hidden">
+        <div className="shrink-0 w-20 h-20 rounded-sm overflow-hidden border">
           <img
             src={item.imagen_url || '/no_image.webp'}
             alt={item.name}

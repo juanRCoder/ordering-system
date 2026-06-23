@@ -1,6 +1,6 @@
 import { SupplyDialog } from '@/components/admin/SupplyDialog';
 import { BottomAppBar } from '@/components/BottomAppBar';
-import { InputSearch } from '@/components/InputSearch';
+// import { InputSearch } from '@/components/InputSearch';
 import { TopAppBar } from '@/components/TopAppBar';
 import { Button } from '@/components/ui/button';
 import {
@@ -18,27 +18,25 @@ import { useSuppliesByTypeId } from '@/hooks/useSupplies';
 import { SupplyCardAdminSkeleton } from '@/skeletons/SupplyCardSkeleton';
 import type { SupplyResponse } from '@/interfaces/supplies.interface';
 import { SupplyCard } from '@/components/admin/SupplyCard';
+import type { CategoryResponse } from '@/interfaces/categories.interface';
 
 function Supplies() {
   const [selectedMode, setSelectedMode] = useState<'create' | 'edit'>('create');
   const [selectedSupplyId, setSelectedSupplyId] = useState<string>('');
-  const [selectedCategoryId, setSelectedCategoryId] = useState<string>('all');
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string>('');
   const [openDialog, setOpenDialog] = useState<boolean>(false);
 
   const categories = useCategories();
   const suppliesByType = useSuppliesByTypeId(selectedCategoryId);
 
-  const defaultOption = { id: 'all', name: 'Todos' };
-  const allCategories = [defaultOption, ...(categories.data || [])];
-
   useEffect(() => {
-    if (allCategories.length) {
-      setSelectedCategoryId(allCategories[0].id);
+    if (categories.data?.length) {
+      setSelectedCategoryId(categories.data[0].id);
     }
   }, [categories.data]);
 
-  const selectedCategory = allCategories?.find(
-    (category) => category.id === selectedCategoryId
+  const selectedCategory = categories.data?.find(
+    (category: CategoryResponse) => category.id === selectedCategoryId
   );
 
   return (
@@ -52,7 +50,7 @@ function Supplies() {
       />
       <div className="flex flex-col p-3 pb-24">
         <div className="flex flex-col gap-3.5">
-          <InputSearch placeholder="Buscar general" />
+          {/* <InputSearch placeholder="Buscar general" /> */}
           <div className="flex gap-3.5">
             <Select
               value={selectedCategoryId}
@@ -63,7 +61,7 @@ function Supplies() {
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  {allCategories?.map((category) => (
+                  {categories.data?.map((category: CategoryResponse) => (
                     <SelectItem key={category.id} value={category.id}>
                       {category.name}
                     </SelectItem>

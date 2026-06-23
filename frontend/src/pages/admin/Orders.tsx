@@ -1,7 +1,7 @@
 import { OrderCard } from '@/components/admin/OrderCard';
 import { OrderDetailsDrawer } from '@/components/admin/OrderDetailsDrawer';
 import { BottomAppBar } from '@/components/BottomAppBar';
-import { InputSearch } from '@/components/InputSearch';
+// import { InputSearch } from '@/components/InputSearch';
 import { TopAppBar } from '@/components/TopAppBar';
 import { Button } from '@/components/ui/button';
 import { useOrdersQuery } from '@/hooks/useOrders';
@@ -48,7 +48,7 @@ function Orders() {
               Pedidos del dia
             </h2>
           </div>
-          <InputSearch />
+          {/* <InputSearch /> */}
           <div className="flex items-center justify-between gap-3">
             <div className="flex flex-1 gap-3 flex-wrap">
               <Button

@@ -81,7 +81,7 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-[#A3A3A3] text-foreground;
+    @apply bg-[#121212] text-foreground;
     font-family: var(--font-sans);
   }
 }

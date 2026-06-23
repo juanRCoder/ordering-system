@@ -38,7 +38,7 @@ export const OrderCard = ({ data, handlerEvents }: props) => {
           <p className="font-mediun text-sm">MONTO TOTAL</p>
           <p className="font-semibold text-xl">S/ {data.total.toFixed(2)}</p>
         </div>
-        <p className="text-[#5D6369] text-[10px]">
+        <p className="text-xs">
           {dayTime(data.created_at)} - Hace {relativeTime(data.created_at)}
         </p>
       </div>

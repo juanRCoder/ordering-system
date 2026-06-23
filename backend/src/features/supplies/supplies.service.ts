@@ -68,7 +68,7 @@ export class SuppliesService {
   async findByCategoryId(category_id: string) {
     if (category_id === 'all') {
       const supplies = await this.prisma.supplies.findMany({
-        orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
+        orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
         select: {
           id: true,
           imagen_url: true,
@@ -107,7 +107,7 @@ export class SuppliesService {
 
     const supplies = await this.prisma.supplies.findMany({
       where: { category_id },
-      orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
+      orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
       select: {
         id: true,
         imagen_url: true,

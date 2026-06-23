@@ -68,6 +68,7 @@ export const useCartStore = create<CartStore>((set) => ({
             id: item.id,
             name: item.name,
             price: item.price,
+            imagen_url: item.imagen_url,
             description: item.description,
             quantity: 1,
             observations: '',

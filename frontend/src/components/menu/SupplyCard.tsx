@@ -13,11 +13,17 @@ export const SupplyCard = ({ data }: props) => {
 
   return (
     <Card className="relative w-full rounded-sm overflow-hidden p-0 gap-0 shadow-sm border border-border">
-      <div className="relative w-full">
+      <div className="relative w-full aspect-video overflow-hidden rounded-t-sm">
+        <img
+          src={data.imagen_url || '/no_image.webp'}
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 w-full h-full object-cover scale-110 blur-xl opacity-60"
+        />
         <img
           src={data.imagen_url || '/no_image.webp'}
           alt={data.name || 'img'}
-          className="object-cover w-full aspect-video"
+          className="absolute inset-0 w-full h-full object-contain"
         />
         <Button
           onClick={() => addItem(data)}
