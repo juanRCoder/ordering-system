@@ -34,7 +34,7 @@ export const SupplyCard = ({ data }: props) => {
         </Button>
       </div>
       <div className="p-2">
-        <div className="flex items-start justify-between gap-2">
+        <div className="flex items-start justify-between gap-1">
           <h3 className="font-semibold text-[18px] text-foreground leading-snug">
             {data.name}
           </h3>

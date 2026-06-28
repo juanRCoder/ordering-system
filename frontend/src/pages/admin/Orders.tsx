@@ -79,7 +79,7 @@ function Orders() {
           </div>
         </div>
         <div className="mt-4">
-          <div className="grid grid-cols-1 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-4">
             {orders.isLoading
               ? Array.from({ length: 3 }).map((_, index) => (
                   <OrderCardSkeleton key={index} />
@@ -102,7 +102,7 @@ function Orders() {
           </div>
         </div>
       </div>
-      <div className="fixed w-full max-w-md mx-auto bottom-0">
+      <div className="fixed w-full mx-auto bottom-0">
         <BottomAppBar statusAdmin={true} />
       </div>
       <OrderDetailsDrawer

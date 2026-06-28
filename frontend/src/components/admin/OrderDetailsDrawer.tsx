@@ -92,7 +92,7 @@ export const OrderDetailsDrawer = ({
                 </div>
                 <div className="flex flex-col gap-1 mt-3">
                   <p className="text-[#42474F] text-sm font-semibold">
-                    RESUMEN DE PEDIDOS
+                    RESUMEN DE INSUMOS
                   </p>
                   {orderDetail?.data?.supplies?.map(
                     (supply: OrderDetailSupply) => (
@@ -174,7 +174,7 @@ export const OrderDetailsDrawer = ({
           </div>
           <div className="flex flex-col gap-1 py-4">
             <p className="text-[#42474F] text-sm font-semibold">
-              TIPO DE PEDIDO
+              ESTADO DEL PEDIDO
             </p>
             <ToggleGroup
               value={selectedOrderStatus}

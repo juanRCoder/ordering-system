@@ -51,7 +51,7 @@ function Supplies() {
       <div className="flex flex-col p-3 pb-24">
         <div className="flex flex-col gap-3.5">
           {/* <InputSearch placeholder="Buscar general" /> */}
-          <div className="flex gap-3.5">
+          <div className="max-w-md flex gap-3.5">
             <Select
               value={selectedCategoryId}
               onValueChange={(value) => setSelectedCategoryId(value ?? '')}
@@ -87,7 +87,7 @@ function Supplies() {
               ? ''
               : 'en ' + selectedCategory?.name}
           </h2>
-          <div className="flex flex-col gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-4">
             {suppliesByType.isLoading
               ? Array.from({ length: 3 }).map((_, i) => (
                   <SupplyCardAdminSkeleton key={i} />
@@ -106,7 +106,7 @@ function Supplies() {
           </div>
         </div>
       </div>
-      <div className="fixed w-full max-w-md mx-auto bottom-0">
+      <div className="fixed w-full mx-auto bottom-0">
         <BottomAppBar statusAdmin={true} />
       </div>
       <SupplyDialog

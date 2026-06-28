@@ -55,8 +55,8 @@ function Auth() {
   return (
     <section className="bg-[#F8F9FF] min-h-screen flex flex-col">
       <TopAppBar />
-      <div className="flex-1 flex flex-col items-center justify-center p-3">
-        <div className="w-full px-4 sm:px-8 py-12 bg-white rounded-xl">
+      <div className="flex-1 flex flex-col items-center justify-center pt-3 px-3">
+        <div className="max-w-md w-full px-4 sm:px-8 py-12 bg-white rounded-xl">
           {isLogin ? (
             <LoginForm onToggle={() => setIsLogin(false)} />
           ) : (
@@ -64,7 +64,7 @@ function Auth() {
           )}
         </div>
       </div>
-      <p className="text-center text-xs pb-8 pt-4 text-[#595F64]">
+      <p className="text-center text-xs pb-3 text-[#595F64]">
         © 2026 CraveFlow. Todos los derechos reservados.
       </p>
     </section>

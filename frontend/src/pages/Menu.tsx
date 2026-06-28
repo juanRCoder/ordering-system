@@ -60,7 +60,7 @@ function Menu() {
               {selectedCategory && firstLetterUpper(selectedCategory.name)}
             </h2>
           )}
-          <div className="grid grid-cols-1 gap-4 mt-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-4 mt-4">
             {categories.isLoading || suppliesByType.isLoading
               ? Array.from({ length: 2 }).map((_, i) => (
                   <SupplyCardSkeleton key={i} />
@@ -75,7 +75,7 @@ function Menu() {
           </div>
         </div>
         <div className="h-[84px]" />
-        <div className="fixed w-full max-w-md mx-auto bottom-0 left-0 right-0 z-50 flex flex-col gap-4">
+        <div className="fixed w-full mx-auto bottom-0 left-0 right-0 z-50 flex flex-col gap-4">
           <BottomAppBar />
         </div>
       </div>

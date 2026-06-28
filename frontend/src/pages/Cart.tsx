@@ -54,7 +54,7 @@ function Cart() {
           </p>
         </div>
         {items.length > 0 ? (
-          <div className="flex flex-col gap-4 mt-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-4 mt-4">
             {items.map((item) => (
               <CartItem key={item.id} item={item} />
             ))}
@@ -65,7 +65,10 @@ function Cart() {
             <p className="text-border">No hay items</p>
           </div>
         )}
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="max-w-lg w-full mx-auto"
+        >
           <div className="mt-4">
             <InputField
               label="Nombre del cliente o Nr de mesa"
@@ -88,7 +91,7 @@ function Cart() {
           </Button>
         </form>
       </div>
-      <div className="fixed w-full max-w-md mx-auto bottom-0">
+      <div className="fixed w-full mx-auto bottom-0">
         <BottomAppBar />
       </div>
     </section>

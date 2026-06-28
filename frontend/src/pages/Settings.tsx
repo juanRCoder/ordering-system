@@ -46,7 +46,7 @@ export default function Settings({ isAdmin }: props) {
           </p>
         </div>
       </div>
-      <div className="fixed w-full max-w-md mx-auto bottom-0">
+      <div className="fixed w-full mx-auto bottom-0">
         <BottomAppBar statusAdmin={isAdmin} />
       </div>
       <CategoriesDrawer
