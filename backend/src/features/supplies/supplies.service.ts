@@ -7,7 +7,6 @@ import {
 import { PrismaService } from '../../prisma.service';
 import { CreateSupplyDto } from './dto/create-supply.dto';
 import { UpdateSupplyDto } from './dto/update-supply.dto';
-import { StatusSupply } from '../../generated/prisma/enums';
 import { CloudinaryService } from '../../cloudinary/cloudinary.service';
 
 @Injectable()
@@ -20,7 +19,7 @@ export class SuppliesService {
   private rootFolder = 'ordering-system';
 
   async create(createSupplyDto: CreateSupplyDto, file?: Express.Multer.File) {
-    const { name, description, price, category_id, status } = createSupplyDto;
+    const { name, category_id } = createSupplyDto;
 
     let imageUrl: string | null = null;
     let imagePublicId: string | null = null;
@@ -48,12 +47,9 @@ export class SuppliesService {
     await this.prisma.supplies.create({
       data: {
         name,
-        description,
-        price,
-        imagen_url: imageUrl,
-        imagen_public_id: imagePublicId,
+        image_url: imageUrl,
+        image_public_id: imagePublicId,
         category_id,
-        status,
       },
     });
 
@@ -66,34 +62,6 @@ export class SuppliesService {
   }
 
   async findByCategoryId(category_id: string) {
-    if (category_id === 'all') {
-      const supplies = await this.prisma.supplies.findMany({
-        orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
-        select: {
-          id: true,
-          imagen_url: true,
-          imagen_public_id: true,
-          name: true,
-          description: true,
-          price: true,
-          status: true,
-        },
-      });
-
-      return {
-        status: HttpStatus.OK,
-        data: supplies.map((s) => ({
-          id: s.id,
-          imagen_url: s.imagen_url,
-          imagen_public_id: s.imagen_public_id,
-          name: s.name,
-          description: s.description,
-          price: Number(s.price),
-          status: s.status,
-        })),
-      };
-    }
-
     const category = await this.prisma.categories.findUnique({
       where: { id: category_id },
     });
@@ -107,15 +75,12 @@ export class SuppliesService {
 
     const supplies = await this.prisma.supplies.findMany({
       where: { category_id },
-      orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
+      orderBy: [{ created_at: 'desc' }, { id: 'desc' }],
       select: {
         id: true,
-        imagen_url: true,
-        imagen_public_id: true,
+        image_url: true,
+        image_public_id: true,
         name: true,
-        description: true,
-        price: true,
-        status: true,
       },
     });
 
@@ -123,12 +88,9 @@ export class SuppliesService {
       status: HttpStatus.OK,
       data: supplies.map((s) => ({
         id: s.id,
-        imagen_url: s.imagen_url,
-        imagen_public_id: s.imagen_public_id,
+        image_url: s.image_url,
+        image_public_id: s.image_public_id,
         name: s.name,
-        description: s.description,
-        price: Number(s.price),
-        status: s.status,
       })),
     };
   }
@@ -139,10 +101,8 @@ export class SuppliesService {
       select: {
         id: true,
         name: true,
-        description: true,
-        price: true,
-        imagen_url: true,
-        imagen_public_id: true,
+        image_url: true,
+        image_public_id: true,
         category_id: true,
       },
     });
@@ -159,10 +119,8 @@ export class SuppliesService {
       data: {
         id: supply.id,
         name: supply.name,
-        description: supply.description,
-        price: Number(supply.price),
-        image_url: supply.imagen_url,
-        image_public_id: supply.imagen_public_id,
+        image_url: supply.image_url,
+        image_public_id: supply.image_public_id,
         category_id: supply.category_id,
       },
     };
@@ -180,21 +138,21 @@ export class SuppliesService {
       });
     }
 
-    const newStatus =
-      supply.status === StatusSupply.AVAILABLE
-        ? StatusSupply.UNAVAILABLE
-        : StatusSupply.AVAILABLE;
+    // const newStatus =
+    //   supply.status === StatusSupply.AVAILABLE
+    //     ? StatusSupply.UNAVAILABLE
+    //     : StatusSupply.AVAILABLE;
 
-    const updatedSupply = await this.prisma.supplies.update({
-      where: { id },
-      data: { status: newStatus },
-    });
+    // const updatedSupply = await this.prisma.supplies.update({
+    //   where: { id },
+    //   data: { status: newStatus },
+    // });
 
     return {
       status: HttpStatus.OK,
       data: {
-        name: updatedSupply.name,
-        status: updatedSupply.status,
+        // name: updatedSupply.name,
+        // status: updatedSupply.status,
       },
     };
   }
@@ -215,8 +173,7 @@ export class SuppliesService {
       });
     }
 
-    const { name, description, price, imageUrl, imagePublicId, category_id } =
-      updateSupplyDto;
+    const { name, imageUrl, imagePublicId, category_id } = updateSupplyDto;
 
     let image_url: string | undefined | null = imageUrl;
     let image_public_id: string | undefined | null = imagePublicId;
@@ -248,10 +205,8 @@ export class SuppliesService {
       where: { id },
       data: {
         name,
-        description,
-        price,
-        imagen_url: image_url,
-        imagen_public_id: image_public_id,
+        image_url: image_url,
+        image_public_id: image_public_id,
         category_id,
       },
     });

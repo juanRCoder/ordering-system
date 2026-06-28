@@ -9,7 +9,7 @@ export class CategoriesService {
 
   async findAll() {
     const categories = await this.prisma.categories.findMany({
-      orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
+      orderBy: [{ created_at: 'asc' }, { id: 'asc' }],
       include: {
         _count: {
           select: { supplies: true },

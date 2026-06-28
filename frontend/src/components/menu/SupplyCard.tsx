@@ -15,13 +15,13 @@ export const SupplyCard = ({ data }: props) => {
     <Card className="relative w-full rounded-sm overflow-hidden p-0 gap-0 shadow-sm border border-border">
       <div className="relative w-full aspect-video overflow-hidden rounded-t-sm">
         <img
-          src={data.imagen_url || '/no_image.webp'}
+          src={data.image_url || '/no_image.webp'}
           alt=""
           aria-hidden="true"
           className="absolute inset-0 w-full h-full object-cover scale-110 blur-xl opacity-60"
         />
         <img
-          src={data.imagen_url || '/no_image.webp'}
+          src={data.image_url || '/no_image.webp'}
           alt={data.name || 'img'}
           className="absolute inset-0 w-full h-full object-contain"
         />
@@ -38,16 +38,16 @@ export const SupplyCard = ({ data }: props) => {
           <h3 className="font-semibold text-[18px] text-foreground leading-snug">
             {data.name}
           </h3>
-          <span className="font-normal text-[18px] text-foreground whitespace-nowrap">
+          {/* <span className="font-normal text-[18px] text-foreground whitespace-nowrap">
             S/ {data.price.toFixed(2)}
-          </span>
+          </span> */}
         </div>
 
-        {data.description && (
+        {/* {data.description && (
           <p className="mt-1 text-xs text-muted-foreground leading-snug">
             {data.description}
           </p>
-        )}
+        )} */}
       </div>
     </Card>
   );

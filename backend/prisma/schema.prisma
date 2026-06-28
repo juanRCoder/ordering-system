@@ -15,6 +15,7 @@ datasource db {
 enum Roles {
   USER
   ADMIN
+  SUPER_ADMIN
 }
 
 enum StatusSupply {
@@ -37,68 +38,126 @@ enum OrderType {
   WHATSAPP
 }
 
-model Users {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  name      String?
-  role      Roles?   @default(USER)
-  password  String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+enum SupplyOrigin {
+  PLATFORM
+  ADMIN
+}
 
-  orders Orders[]
+enum PlanType {
+  FREE_TRIAL
+  MONTHLY
+  SEMI_ANNUAL
+  ANNUAL
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  EXPIRED
+}
+
+model Users {
+  id            String   @id @default(uuid())
+  name          String?
+  business_name String?
+  email         String   @unique
+  role          Roles?   @default(USER)
+  password      String?
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  subscription    Subscriptions?
+  supplies        Supplies[]
+  admin_supplies  AdminSupplies[]
+  customer_orders Orders[] @relation("CustomerOrders")
+  admin_orders    Orders[] @relation("AdminOrders")
+}
+
+model Subscriptions {
+  id               String             @id @default(uuid())
+  admin_id         String             @unique
+  plan_type        PlanType           @default(FREE_TRIAL)
+  status           SubscriptionStatus @default(ACTIVE)
+  discount_porcent Int?               @default(0)
+  started_at       DateTime?
+  ended_at         DateTime?
+  created_at       DateTime           @default(now())
+  updated_at       DateTime           @updatedAt
+
+  admin            Users @relation(fields: [admin_id], references: [id])
 }
 
 model Categories {
-  id        String     @id @default(uuid())
-  name      String
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  id         String   @id @default(uuid())
+  name       String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
-  supplies Supplies[]
+  supplies   Supplies[]
 }
 
 model Supplies {
   id               String       @id @default(uuid())
   name             String
-  description      String?
-  price            Decimal      @default(0) @db.Decimal(10, 2)
-  status           StatusSupply @default(AVAILABLE)
-  imagen_url       String?
-  imagen_public_id String?
+  image_url        String?
+  image_public_id  String?
   category_id      String
-  createdAt        DateTime     @default(now())
-  updatedAt        DateTime     @updatedAt
+  origin           SupplyOrigin @default(PLATFORM)
+  creator_admin_id String?
+  created_at       DateTime     @default(now())
+  updated_at       DateTime     @updatedAt
 
-  category       Categories   @relation(fields: [category_id], references: [id])
-  suppliesOrders SuppliesOrders[]
+  admin            Users? @relation(fields: [creator_admin_id], references: [id])
+  category         Categories @relation(fields: [category_id], references: [id])
+
+  admin_supplies   AdminSupplies[]
+}
+
+model AdminSupplies {
+  id          String       @id @default(uuid())
+  admin_id    String
+  supply_id   String
+  price       Decimal      @default(0) @db.Decimal(10, 2)
+  description String?
+  status      StatusSupply @default(AVAILABLE)
+  created_at  DateTime     @default(now())
+  updated_at  DateTime     @updatedAt
+
+  admin       Users @relation(fields: [admin_id], references: [id])
+  supply      Supplies  @relation(fields: [supply_id], references: [id])
+
+  supplies_orders SuppliesOrders[]
+
+  @@unique([admin_id, supply_id])
 }
 
 model Orders {
   id           String       @id @default(uuid())
   user_id      String?
+  admin_id     String
   guest_name   String
   status       StatusOrder  @default(PENDING)
   payment_type PaymentType? @default(CASH)
   order_type   OrderType    @default(LOCAL)
   total        Decimal      @default(0) @db.Decimal(10, 2)
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
+  created_at   DateTime     @default(now())
+  updated_at   DateTime     @updatedAt
 
-  user           Users?           @relation(fields: [user_id], references: [id])
-  suppliesOrders SuppliesOrders[]
+  user           Users? @relation("CustomerOrders", fields: [user_id], references: [id])
+  admin          Users  @relation("AdminOrders", fields: [admin_id], references: [id])
+
+  supplies_orders SuppliesOrders[]
 }
 
 model SuppliesOrders {
-  id           String   @id @default(uuid())
-  order_id     String
-  supply_id    String
-  price        Decimal  @default(0) @db.Decimal(10, 2)
-  quantity     Int
-  observations String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id              String   @id @default(uuid())
+  order_id        String
+  admin_supply_id String
+  price           Decimal  @default(0) @db.Decimal(10, 2)
+  quantity        Int
+  observations    String?
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
 
-  order  Orders   @relation(fields: [order_id], references: [id])
-  supply Supplies @relation(fields: [supply_id], references: [id])
+  admin_supply    AdminSupplies @relation(fields: [admin_supply_id], references: [id])
+  order           Orders   @relation(fields: [order_id], references: [id])
 }

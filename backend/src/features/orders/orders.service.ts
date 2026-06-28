@@ -8,27 +8,28 @@ export class OrdersService {
   constructor(private prisma: PrismaService) {}
 
   async create(createOrderDto: CreateOrderDto) {
-    const { supplies, guest_name, total } = createOrderDto;
+    const { guest_name, total } = createOrderDto;
 
     const order = await this.prisma.$transaction(async (tx) => {
       const newOrder = await tx.orders.create({
         data: {
           guest_name,
           total,
+          admin_id: '80f89d29-c319-4e75-a886-3c8535d0928a',
         },
       });
 
-      const supplyOrderData = supplies.map((supply) => ({
-        order_id: newOrder.id,
-        supply_id: supply.id,
-        price: supply.price,
-        quantity: supply.quantity,
-        observations: supply.observations,
-      }));
+      // const supplyOrderData = supplies.map((supply) => ({
+      //   order_id: newOrder.id,
+      //   supply_id: supply.id,
+      //   price: supply.price,
+      //   quantity: supply.quantity,
+      //   observations: supply.observations,
+      // }));
 
-      await tx.suppliesOrders.createMany({
-        data: supplyOrderData,
-      });
+      // await tx.suppliesOrders.createMany({
+      //   data: supplyOrderData,
+      // });
 
       return newOrder;
     });
@@ -45,9 +46,13 @@ export class OrdersService {
     const order = await this.prisma.orders.findUnique({
       where: { id },
       include: {
-        suppliesOrders: {
+        supplies_orders: {
           include: {
-            supply: true,
+            admin_supply: {
+              include: {
+                supply: true,
+              },
+            },
           },
         },
       },
@@ -65,11 +70,11 @@ export class OrdersService {
       data: {
         id: order.id,
         guest_name: order.guest_name,
-        created_at: order.createdAt,
+        created_at: order.created_at,
         status: order.status,
-        supplies: order.suppliesOrders.map((so) => ({
+        supplies: order.supplies_orders.map((so) => ({
           quantity: so.quantity,
-          name: so.supply.name,
+          name: so.admin_supply.supply.name,
           price: so.price.toNumber(),
           observations: so.observations,
         })),
@@ -83,7 +88,7 @@ export class OrdersService {
   async findAll() {
     const orders = await this.prisma.orders.findMany({
       orderBy: {
-        createdAt: 'desc',
+        created_at: 'desc',
       },
     });
 
@@ -92,7 +97,7 @@ export class OrdersService {
       data: orders.map((order) => ({
         id: order.id,
         guest_name: order.guest_name,
-        created_at: order.createdAt,
+        created_at: order.created_at,
         status: order.status,
         total: order.total.toNumber(),
         order_type: order.order_type,

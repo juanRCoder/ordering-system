@@ -11,9 +11,7 @@ export type StatusType = 'AVAILABLE' | 'UNAVAILABLE';
 export interface SupplyResponse {
   id: string;
   name: string;
-  description?: string;
-  price: number;
-  imagen_url?: string;
+  image_url?: string;
   status?: StatusType;
 }
 

@@ -65,13 +65,9 @@ function Menu() {
               ? Array.from({ length: 2 }).map((_, i) => (
                   <SupplyCardSkeleton key={i} />
                 ))
-              : suppliesByType?.data
-                  ?.filter(
-                    (supply: SupplyResponse) => supply.status === 'AVAILABLE'
-                  )
-                  .map((supply: SupplyResponse) => (
-                    <SupplyCard key={supply.id} data={supply} />
-                  ))}
+              : suppliesByType?.data?.map((supply: SupplyResponse) => (
+                  <SupplyCard key={supply.id} data={supply} />
+                ))}
           </div>
         </div>
         <div className="h-[84px]" />
