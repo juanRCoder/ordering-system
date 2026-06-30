@@ -83,8 +83,8 @@ export const BottomAppBar = ({ statusAdmin }: props) => {
       <div className="shadow-[0_-4px_10px_rgba(0,0,0,0.1)] flex items-center justify-center gap-2 pt-4">
         {items.map(renderItem)}
       </div>
-      <p className="text-muted-foreground text-xs text-center py-1">
-        CaveFlow Plataform
+      <p className="text-muted-foreground text-[10px] text-center pt-2 pb-1">
+        CaveFlow Platform
       </p>
     </section>
   );

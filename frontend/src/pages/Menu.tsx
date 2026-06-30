@@ -16,17 +16,21 @@ import { useParams } from 'react-router-dom';
 function Menu() {
   const { slug } = useParams<{ slug: string }>();
 
-  const [selectedCategory, setSelectedCategory] =
-    useState<CategoryResponse | null>(null);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(
+    null
+  );
 
   const categories = useCategories();
-  const activeCategory = selectedCategory ?? categories.data?.[0];
-  const suppliesBySlug = useSuppliesBySlug(slug, activeCategory?.id ?? '');
+  const activeCategoryId = selectedCategoryId ?? categories.data?.[0]?.id ?? '';
+  const suppliesByType = useSuppliesBySlug(slug, activeCategoryId);
 
   const firstLetterUpper = (name: string) => {
     return name.charAt(0).toUpperCase() + name.slice(1);
   };
 
+  const selectedCategory = categories.data?.find(
+    (category: CategoryResponse) => category.id === activeCategoryId
+  );
   return (
     <section className="bg-[#F8F9FF] min-h-screen flex flex-col">
       <TopAppBar itemHeader={<CartBadget />} />
@@ -40,11 +44,9 @@ function Menu() {
               categories?.data?.map((type: CategoryResponse) => (
                 <Button
                   key={type.id}
-                  variant={
-                    activeCategory?.id === type.id ? 'default' : 'outline'
-                  }
+                  variant={activeCategoryId === type.id ? 'default' : 'outline'}
                   className="py-5 font-normal min-w-32 rounded-sm cursor-pointer text-base transition-none"
-                  onClick={() => setSelectedCategory(type)}
+                  onClick={() => setSelectedCategoryId(type.id)}
                 >
                   {type.name}
                 </Button>
@@ -61,13 +63,15 @@ function Menu() {
             </h2>
           )}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-4 mt-4">
-            {categories.isLoading || suppliesBySlug.isLoading
+            {categories.isLoading || suppliesByType.isLoading
               ? Array.from({ length: 2 }).map((_, i) => (
                   <SupplyCardSkeleton key={i} />
                 ))
-              : suppliesBySlug?.data?.map((supply: SupplyResponse) => (
-                  <SupplyCard key={supply.id} data={supply} />
-                ))}
+              : suppliesByType?.data
+                  ?.filter((s: SupplyResponse) => s.status === 'AVAILABLE')
+                  .map((supply: SupplyResponse) => (
+                    <SupplyCard key={supply.id} data={supply} />
+                  ))}
           </div>
         </div>
         <div className="h-[84px]" />

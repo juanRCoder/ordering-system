@@ -19,9 +19,13 @@ class SuppliesService {
     return result;
   }
 
-  async getBySlug(slug: string, categoryId: string) {
+  async findByAdminId(categoryId: string) {
     const response = await fetch(
-      `${this.API}/admin-supplies/${slug}?categoryId=${categoryId}`
+      `${this.API}/supplies?categoryId=${categoryId}`,
+      {
+        method: 'GET',
+        credentials: 'include',
+      }
     );
 
     const result = await response.json();
@@ -35,8 +39,10 @@ class SuppliesService {
     return result.data;
   }
 
-  async getByTypeId(type_id: string) {
-    const response = await fetch(`${this.API}/supplies/category/${type_id}`);
+  async getBySlug(slug: string, categoryId: string) {
+    const response = await fetch(
+      `${this.API}/supplies/by-slug/${slug}?categoryId=${categoryId}`
+    );
 
     const result = await response.json();
     if (!response.ok) {

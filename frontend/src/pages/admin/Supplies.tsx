@@ -13,8 +13,8 @@ import {
 } from '@/components/ui/select';
 import { useCategories } from '@/hooks/useCategories';
 import { Plus } from 'lucide-react';
-import { useEffect, useState } from 'react';
-import { useSuppliesByTypeId } from '@/hooks/useSupplies';
+import { useState } from 'react';
+import { useSuppliesByAdmin } from '@/hooks/useSupplies';
 import { SupplyCardAdminSkeleton } from '@/skeletons/SupplyCardSkeleton';
 import type { SupplyResponse } from '@/interfaces/supplies.interface';
 import { SupplyCard } from '@/components/admin/SupplyCard';
@@ -23,20 +23,17 @@ import type { CategoryResponse } from '@/interfaces/categories.interface';
 function Supplies() {
   const [selectedMode, setSelectedMode] = useState<'create' | 'edit'>('create');
   const [selectedSupplyId, setSelectedSupplyId] = useState<string>('');
-  const [selectedCategoryId, setSelectedCategoryId] = useState<string>('');
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(
+    null
+  );
   const [openDialog, setOpenDialog] = useState<boolean>(false);
 
   const categories = useCategories();
-  const suppliesByType = useSuppliesByTypeId(selectedCategoryId);
-
-  useEffect(() => {
-    if (categories.data?.length) {
-      setSelectedCategoryId(categories.data[0].id);
-    }
-  }, [categories.data]);
+  const activeCategoryId = selectedCategoryId ?? categories.data?.[0]?.id ?? '';
+  const suppliesByType = useSuppliesByAdmin(activeCategoryId);
 
   const selectedCategory = categories.data?.find(
-    (category: CategoryResponse) => category.id === selectedCategoryId
+    (category: CategoryResponse) => category.id === activeCategoryId
   );
 
   return (
@@ -88,7 +85,7 @@ function Supplies() {
               : 'en ' + selectedCategory?.name}
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-4">
-            {suppliesByType.isLoading
+            {categories.isLoading || suppliesByType.isLoading
               ? Array.from({ length: 3 }).map((_, i) => (
                   <SupplyCardAdminSkeleton key={i} />
                 ))

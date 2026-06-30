@@ -8,6 +8,7 @@ import { PrismaService } from '../../prisma.service';
 import { CreateSupplyDto } from './dto/create-supply.dto';
 import { UpdateSupplyDto } from './dto/update-supply.dto';
 import { CloudinaryService } from '../../cloudinary/cloudinary.service';
+import { StatusSupply } from '../../generated/prisma/enums';
 
 @Injectable()
 export class SuppliesService {
@@ -61,11 +62,25 @@ export class SuppliesService {
     };
   }
 
-  async findByCategoryId(category_id: string) {
-    const category = await this.prisma.categories.findUnique({
-      where: { id: category_id },
-    });
+  async findBySlug(slug: string, categoryId: string) {
+    const admin = await this.prisma.users.findUnique({ where: { slug } });
+    if (!admin) {
+      throw new NotFoundException({
+        code: 'ADMIN_NOT_FOUND',
+        message: `The business with slug "${slug}" does not exist`,
+      });
+    }
+    return this.findSuppliesForAdmin(admin.id, categoryId);
+  }
 
+  async findByAdminId(adminId: string, categoryId: string) {
+    return this.findSuppliesForAdmin(adminId, categoryId);
+  }
+
+  private async findSuppliesForAdmin(adminId: string, categoryId: string) {
+    const category = await this.prisma.categories.findUnique({
+      where: { id: categoryId },
+    });
     if (!category) {
       throw new BadRequestException({
         code: 'CATEGORY_NOT_FOUND',
@@ -73,41 +88,53 @@ export class SuppliesService {
       });
     }
 
-    const supplies = await this.prisma.supplies.findMany({
-      where: { category_id },
+    const adminSupplies = await this.prisma.adminSupplies.findMany({
+      where: {
+        admin_id: adminId,
+        supply: { category_id: categoryId },
+      },
       orderBy: [{ created_at: 'desc' }, { id: 'desc' }],
       select: {
         id: true,
-        image_url: true,
-        image_public_id: true,
-        name: true,
+        price: true,
+        description: true,
+        status: true,
+        supply: { select: { name: true, image_url: true } },
       },
     });
 
     return {
       status: HttpStatus.OK,
-      data: supplies.map((s) => ({
-        id: s.id,
-        image_url: s.image_url,
-        image_public_id: s.image_public_id,
-        name: s.name,
+      data: adminSupplies.map((as) => ({
+        id: as.id,
+        name: as.supply.name,
+        image_url: as.supply.image_url,
+        description: as.description,
+        price: as.price.toNumber(),
+        status: as.status,
       })),
     };
   }
 
   async findById(id: string) {
-    const supply = await this.prisma.supplies.findUnique({
+    const adminSupply = await this.prisma.adminSupplies.findUnique({
       where: { id },
       select: {
         id: true,
-        name: true,
-        image_url: true,
-        image_public_id: true,
-        category_id: true,
+        price: true,
+        description: true,
+        supply: {
+          select: {
+            name: true,
+            image_url: true,
+            category_id: true,
+            image_public_id: true,
+          },
+        },
       },
     });
 
-    if (!supply) {
+    if (!adminSupply) {
       throw new NotFoundException({
         code: 'SUPPLY_NOT_FOUND',
         message: 'The specified supply does not exist',
@@ -117,42 +144,52 @@ export class SuppliesService {
     return {
       status: HttpStatus.OK,
       data: {
-        id: supply.id,
-        name: supply.name,
-        image_url: supply.image_url,
-        image_public_id: supply.image_public_id,
-        category_id: supply.category_id,
+        id: adminSupply.id,
+        name: adminSupply.supply.name,
+        image_url: adminSupply.supply.image_url,
+        description: adminSupply.description,
+        price: adminSupply.price.toNumber(),
+        category_id: adminSupply.supply.category_id,
+        image_public_id: adminSupply.supply.image_public_id,
       },
     };
   }
 
-  async updateStatus(id: string) {
-    const supply = await this.prisma.supplies.findUnique({
-      where: { id },
+  async updateStatus(id: string, adminId: string) {
+    const adminSupply = await this.prisma.adminSupplies.findUnique({
+      where: { id, admin_id: adminId },
     });
 
-    if (!supply) {
+    if (!adminSupply) {
       throw new NotFoundException({
-        code: 'SUPPLY_NOT_FOUND',
+        code: 'ADMIN_SUPPLY_NOT_FOUND',
         message: 'The specified supply does not exist',
       });
     }
 
-    // const newStatus =
-    //   supply.status === StatusSupply.AVAILABLE
-    //     ? StatusSupply.UNAVAILABLE
-    //     : StatusSupply.AVAILABLE;
+    const newStatus =
+      adminSupply.status === StatusSupply.AVAILABLE
+        ? StatusSupply.UNAVAILABLE
+        : StatusSupply.AVAILABLE;
 
-    // const updatedSupply = await this.prisma.supplies.update({
-    //   where: { id },
-    //   data: { status: newStatus },
-    // });
+    const updatedSupply = await this.prisma.adminSupplies.update({
+      where: { id },
+      data: { status: newStatus },
+      select: {
+        status: true,
+        supply: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
 
     return {
       status: HttpStatus.OK,
       data: {
-        // name: updatedSupply.name,
-        // status: updatedSupply.status,
+        name: updatedSupply.supply.name,
+        status: updatedSupply.status,
       },
     };
   }
@@ -160,10 +197,11 @@ export class SuppliesService {
   async update(
     id: string,
     updateSupplyDto: UpdateSupplyDto,
-    file?: Express.Multer.File
+    file?: Express.Multer.File,
+    adminId?: string
   ) {
-    const supply = await this.prisma.supplies.findUnique({
-      where: { id },
+    const supply = await this.prisma.adminSupplies.findUnique({
+      where: { id, admin_id: adminId },
     });
 
     if (!supply) {
@@ -173,41 +211,38 @@ export class SuppliesService {
       });
     }
 
-    const { name, imageUrl, imagePublicId, category_id } = updateSupplyDto;
+    const { price } = updateSupplyDto;
 
-    let image_url: string | undefined | null = imageUrl;
-    let image_public_id: string | undefined | null = imagePublicId;
+    // let image_url: string | undefined | null = imageUrl;
+    // let image_public_id: string | undefined | null = imagePublicId;
 
-    if (file) {
-      const uploadResult = await this.cloudinary.uploadFile(
-        file,
-        `${this.rootFolder}/supplies`,
-        imagePublicId
-      );
-      image_url = uploadResult.secure_url;
-      image_public_id = uploadResult.public_id;
-    }
+    // if (file) {
+    //   const uploadResult = await this.cloudinary.uploadFile(
+    //     file,
+    //     `${this.rootFolder}/supplies`,
+    //     imagePublicId
+    //   );
+    //   image_url = uploadResult.secure_url;
+    //   image_public_id = uploadResult.public_id;
+    // }
 
-    if (category_id) {
-      const category = await this.prisma.categories.findUnique({
-        where: { id: category_id },
-      });
+    // if (category_id) {
+    //   const category = await this.prisma.categories.findUnique({
+    //     where: { id: category_id },
+    //   });
 
-      if (!category) {
-        throw new BadRequestException({
-          code: 'CATEGORY_NOT_FOUND',
-          message: 'The specified category does not exist',
-        });
-      }
-    }
+    //   if (!category) {
+    //     throw new BadRequestException({
+    //       code: 'CATEGORY_NOT_FOUND',
+    //       message: 'The specified category does not exist',
+    //     });
+    //   }
+    // }
 
-    await this.prisma.supplies.update({
+    await this.prisma.adminSupplies.update({
       where: { id },
       data: {
-        name,
-        image_url: image_url,
-        image_public_id: image_public_id,
-        category_id,
+        price,
       },
     });
 

@@ -15,7 +15,7 @@ createRoot(document.getElementById('root')!).render(
       <QueryClientProvider client={queryClient}>
         <RouterProvider router={router} />
         <ReactQueryDevtools initialIsOpen={false} />
-        <Toaster position="top-center" />
+        <Toaster position="top-center" duration={2000} />
       </QueryClientProvider>
     </section>
   </StrictMode>

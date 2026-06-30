@@ -22,19 +22,19 @@ export function useCreateSupply() {
   });
 }
 
-export function useSuppliesByTypeId(type_id: string) {
-  return useQuery({
-    queryKey: SuppliesKeys.byTypeId(type_id),
-    queryFn: () => suppliesService.getByTypeId(type_id!),
-    enabled: !!type_id,
-  });
-}
-
 export function useSuppliesBySlug(slug: string, categoryId: string) {
   return useQuery({
     queryKey: SuppliesKeys.bySlug(slug, categoryId),
     queryFn: () => suppliesService.getBySlug(slug, categoryId),
     enabled: !!slug && !!categoryId,
+  });
+}
+
+export function useSuppliesByAdmin(categoryId: string) {
+  return useQuery({
+    queryKey: SuppliesKeys.byAdmin(categoryId),
+    queryFn: () => suppliesService.findByAdminId(categoryId),
+    enabled: !!categoryId,
   });
 }
 

@@ -35,15 +35,15 @@ export const SupplyCard = ({ data, handlerEvents }: props) => {
             <h2 className="text-card-foreground text-lg font-semibold leading-6">
               {data.name}
             </h2>
-            {/* {data.description && (
+            {data.description && (
               <p className="text-xs text-muted-foreground">
                 {data.description}
               </p>
-            )} */}
+            )}
           </div>
-          {/* <p className="text-primary text-lg">
+          <p className="text-primary text-lg">
             S/ {Number(data.price).toFixed(2)}
-          </p> */}
+          </p>
         </div>
       </section>
       <div className="shrink-0 flex items-center gap-2 flex-wrap">

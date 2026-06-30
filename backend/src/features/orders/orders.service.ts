@@ -99,8 +99,14 @@ export class OrdersService {
   async findAll(adminId: string) {
     const orders = await this.prisma.orders.findMany({
       where: { admin_id: adminId },
-      orderBy: {
-        created_at: 'desc',
+      orderBy: { created_at: 'desc' },
+      select: {
+        id: true,
+        guest_name: true,
+        status: true,
+        order_type: true,
+        created_at: true,
+        total: true,
       },
     });
 

@@ -19,8 +19,8 @@ export class OrdersController {
 
   @UseGuards(AdminGuard)
   @Get()
-  async findAll(@CurrentAdmin() adminId: string) {
-    return this.ordersService.findAll(adminId);
+  async findAll(@CurrentAdmin() admin: { sub: string }) {
+    return this.ordersService.findAll(admin.sub);
   }
 
   @UseGuards(AdminGuard)

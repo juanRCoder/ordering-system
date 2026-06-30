@@ -6,7 +6,6 @@ import { AuthModule } from './features/auth/auth.module';
 import { SuppliesModule } from './features/supplies/supplies.module';
 import { CategoriesModule } from './features/categories/categories.module';
 import { OrdersModule } from './features/orders/orders.module';
-import { AdminSuppliesModule } from './features/admin-supplies/admin-supplies.module';
 import appConfig from './config/app.config';
 
 @Module({
@@ -19,7 +18,6 @@ import appConfig from './config/app.config';
     CategoriesModule,
     SuppliesModule,
     OrdersModule,
-    AdminSuppliesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
