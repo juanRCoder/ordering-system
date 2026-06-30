@@ -12,10 +12,12 @@ import { useForm } from 'react-hook-form';
 import { newOrderSchema } from '@/schemas/orders.schema';
 import type { NewOrderType } from '@/interfaces/orders.interface';
 import { defaultNewOrder } from '@/lib/default';
+import { useParams } from 'react-router-dom';
 
 function Cart() {
+  const { slug } = useParams<{ slug: string }>();
   const { items, totalPrice } = useCartStore();
-  const createOrder = useCreateOrder();
+  const createOrder = useCreateOrder(slug!);
   const {
     register,
     handleSubmit,
@@ -40,7 +42,11 @@ function Cart() {
 
   return (
     <section className="bg-[#F8F9FF] min-h-screen flex flex-col">
-      <TopAppBar leftArrowEnable leftPath="/menu" itemHeader={<CartBadget />} />
+      <TopAppBar
+        leftArrowEnable
+        leftPath={`/${slug}/menu`}
+        itemHeader={<CartBadget />}
+      />
       <div className="flex-1 flex flex-col p-3 pb-24">
         <h2 className="text-2xl font-bold text-primary tracking-tighter">
           Resumen del Pedido

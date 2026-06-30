@@ -3,6 +3,7 @@ export const baseKeys = {
   typesSupplies: ['types-supplies'] as const,
   supplies: ['supplies'] as const,
   orders: ['orders'] as const,
+  adminSupplies: ['admin-supplies'] as const,
 };
 
 export const UsersKeys = {
@@ -19,6 +20,8 @@ export const SuppliesKeys = {
   all: baseKeys.supplies,
   byTypeId: (type_id: string) =>
     [...baseKeys.supplies, 'type_id', type_id] as const,
+  bySlug: (slug: string, categoryId: string) =>
+    [...baseKeys.supplies, 'slug', slug, categoryId] as const,
   byId: (id: string) => [...baseKeys.supplies, 'id', id] as const,
 };
 

@@ -38,16 +38,16 @@ export const SupplyCard = ({ data }: props) => {
           <h3 className="font-semibold text-[18px] text-foreground leading-snug">
             {data.name}
           </h3>
-          {/* <span className="font-normal text-[18px] text-foreground whitespace-nowrap">
+          <span className="font-normal text-[18px] text-foreground whitespace-nowrap">
             S/ {data.price.toFixed(2)}
-          </span> */}
+          </span>
         </div>
 
-        {/* {data.description && (
+        {data.description && (
           <p className="mt-1 text-xs text-muted-foreground leading-snug">
             {data.description}
           </p>
-        )} */}
+        )}
       </div>
     </Card>
   );

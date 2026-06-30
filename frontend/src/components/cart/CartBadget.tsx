@@ -1,11 +1,12 @@
 import { ShoppingBag } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useCartStore } from '@/stores/cart.store';
 
 export const CartBadget = () => {
+  const { slug } = useParams<{ slug: string }>();
   const { totalSupplies } = useCartStore();
   return (
-    <Link to="/cart">
+    <Link to={`/${slug}/cart`}>
       <div className="relative cursor-pointer">
         <ShoppingBag className="h-6 w-6 text-primary" />
         {totalSupplies > 0 && (

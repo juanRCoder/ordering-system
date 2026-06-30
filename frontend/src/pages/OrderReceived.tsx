@@ -4,7 +4,7 @@ import { TopAppBar } from '@/components/TopAppBar';
 import { Check } from 'lucide-react';
 
 function OrderReceived() {
-  const { orderId } = useParams<{ orderId: string }>();
+  const { slug, orderId } = useParams<{ slug: string; orderId: string }>();
 
   return (
     <section className="bg-[#F8F9FF] min-h-screen flex flex-col">
@@ -26,7 +26,7 @@ function OrderReceived() {
             </span>{' '}
             ha sido agendado para su preparacion por nuestro equipo de cocina.
           </p>
-          <Link to="/menu" onClick={useCartStore.getState().clear}>
+          <Link to={`/${slug}/menu`} onClick={useCartStore.getState().clear}>
             <button className="bg-primary text-white px-6 py-3 rounded-sm w-full mt-6 cursor-pointer">
               Regresar al Menú
             </button>

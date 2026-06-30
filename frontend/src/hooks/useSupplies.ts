@@ -30,6 +30,14 @@ export function useSuppliesByTypeId(type_id: string) {
   });
 }
 
+export function useSuppliesBySlug(slug: string, categoryId: string) {
+  return useQuery({
+    queryKey: SuppliesKeys.bySlug(slug, categoryId),
+    queryFn: () => suppliesService.getBySlug(slug, categoryId),
+    enabled: !!slug && !!categoryId,
+  });
+}
+
 export function useSupplyById(id: string) {
   return useQuery({
     queryKey: SuppliesKeys.byId(id),

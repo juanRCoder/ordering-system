@@ -1,22 +1,24 @@
 import { Link } from 'react-router-dom';
 
 function App() {
+  const slug = 'pizzeria-ramirez';
+
   return (
     <div className="bg-white">
       <p className="text-xl font-bold underline">HOLA MUNDO</p>
       <Link to="/auth" className="block">
         Auth
       </Link>
-      <Link to="/menu" className="block">
+      <Link to={`${slug}/menu`} className="block">
         Menu
       </Link>
-      <Link to="/cart" className="block">
+      <Link to={`${slug}/cart`} className="block">
         Cart
       </Link>
-      <Link to="/order-received" className="block">
+      <Link to={`${slug}/order-received`} className="block">
         Order Received
       </Link>
-      <Link to="/settings" className="block">
+      <Link to={`${slug}/settings`} className="block">
         Settings
       </Link>
       {/* Admin routes */}

@@ -4,7 +4,7 @@ import { create } from 'zustand';
 export type CartItemType = {
   id: string;
   name: string;
-  imagen_url?: string;
+  image_url?: string;
   description?: string;
   price: number;
   quantity: number;
@@ -67,9 +67,9 @@ export const useCartStore = create<CartStore>((set) => ({
           {
             id: item.id,
             name: item.name,
-            price: 0,
-            imagen_url: item.image_url,
-            description: '',
+            price: item.price,
+            image_url: item.image_url,
+            description: item.description,
             quantity: 1,
             observations: '',
           },

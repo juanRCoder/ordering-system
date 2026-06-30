@@ -7,29 +7,40 @@ import { UpdateOrderDto } from './dto/update-order.dto';
 export class OrdersService {
   constructor(private prisma: PrismaService) {}
 
-  async create(createOrderDto: CreateOrderDto) {
-    const { guest_name, total } = createOrderDto;
+  async create(slug: string, createOrderDto: CreateOrderDto) {
+    const { guest_name, total, supplies } = createOrderDto;
+
+    const admin = await this.prisma.users.findUnique({
+      where: { slug },
+    });
+
+    if (!admin) {
+      throw new NotFoundException({
+        code: 'ADMIN_NOT_FOUND',
+        message: `The admin with slug "${slug}" does not exist`,
+      });
+    }
 
     const order = await this.prisma.$transaction(async (tx) => {
       const newOrder = await tx.orders.create({
         data: {
           guest_name,
           total,
-          admin_id: '80f89d29-c319-4e75-a886-3c8535d0928a',
+          admin_id: admin.id,
         },
       });
 
-      // const supplyOrderData = supplies.map((supply) => ({
-      //   order_id: newOrder.id,
-      //   supply_id: supply.id,
-      //   price: supply.price,
-      //   quantity: supply.quantity,
-      //   observations: supply.observations,
-      // }));
+      const supplyOrderData = supplies.map((supply) => ({
+        order_id: newOrder.id,
+        admin_supply_id: supply.id,
+        price: supply.price,
+        quantity: supply.quantity,
+        observations: supply.observations,
+      }));
 
-      // await tx.suppliesOrders.createMany({
-      //   data: supplyOrderData,
-      // });
+      await tx.suppliesOrders.createMany({
+        data: supplyOrderData,
+      });
 
       return newOrder;
     });
@@ -37,7 +48,7 @@ export class OrdersService {
     return {
       status: HttpStatus.CREATED,
       data: {
-        id: order.id,
+        order_id: order.id,
       },
     };
   }
@@ -85,8 +96,9 @@ export class OrdersService {
     };
   }
 
-  async findAll() {
+  async findAll(adminId: string) {
     const orders = await this.prisma.orders.findMany({
+      where: { admin_id: adminId },
       orderBy: {
         created_at: 'desc',
       },
@@ -96,11 +108,11 @@ export class OrdersService {
       status: HttpStatus.OK,
       data: orders.map((order) => ({
         id: order.id,
-        guest_name: order.guest_name,
-        created_at: order.created_at,
         status: order.status,
-        total: order.total.toNumber(),
+        guest_name: order.guest_name,
         order_type: order.order_type,
+        created_at: order.created_at,
+        total: order.total.toNumber(),
       })),
     };
   }

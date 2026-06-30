@@ -20,11 +20,16 @@ export const router = createBrowserRouter([
     ),
   },
   { path: '/auth', element: <Auth /> },
-  { path: '/menu', element: <Menu /> },
-  { path: '/cart', element: <Cart /> },
-  { path: '/order-received/:orderId', element: <OrderReceived /> },
-  { path: '/settings', element: <Setting /> },
-  // Admin routes
+  {
+    path: ':slug',
+    children: [
+      { index: true, element: <Navigate to="menu" replace /> },
+      { path: 'menu', element: <Menu /> },
+      { path: 'cart', element: <Cart /> },
+      { path: 'order-received/:orderId', element: <OrderReceived /> },
+      { path: 'settings', element: <Setting /> },
+    ],
+  },
   {
     path: '/admin',
     children: [

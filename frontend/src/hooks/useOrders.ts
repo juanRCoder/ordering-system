@@ -11,17 +11,17 @@ import { toast } from 'sonner';
 import { toastStyles } from '@/lib/toast';
 import { useCartStore } from '@/stores/cart.store';
 
-export function useCreateOrder() {
+export function useCreateOrder(slug: string) {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
   return useMutation({
-    mutationFn: (data: NewOrderType) => ordersService.create(data),
+    mutationFn: (data: NewOrderType) => ordersService.create(data, slug),
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: OrdersKeys.all });
       useCartStore.getState().clear();
       toast.success('Pedido creado con éxito', toastStyles.success);
-      navigate(`/order-received/${response.data.id}`);
+      navigate(`/${slug}/order-received/${response.data.order_id}`);
     },
     onError: () => {
       toast.error('Error al crear pedido', toastStyles.error);

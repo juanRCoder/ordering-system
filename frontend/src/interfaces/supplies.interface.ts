@@ -12,7 +12,8 @@ export interface SupplyResponse {
   id: string;
   name: string;
   image_url?: string;
-  status?: StatusType;
+  description?: string;
+  price: number;
 }
 
 export interface UpdateSupplyStatusResponse {

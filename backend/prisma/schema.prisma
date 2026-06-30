@@ -59,6 +59,7 @@ model Users {
   id            String   @id @default(uuid())
   name          String?
   business_name String?
+  slug          String?  @unique
   email         String   @unique
   role          Roles?   @default(USER)
   password      String?

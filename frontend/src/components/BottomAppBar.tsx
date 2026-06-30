@@ -1,5 +1,5 @@
 import { Bolt, Utensils, type LucideIcon, ScrollText, Box } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 
 type props = {
   statusAdmin?: boolean;
@@ -7,6 +7,7 @@ type props = {
 
 export const BottomAppBar = ({ statusAdmin }: props) => {
   const location = useLocation();
+  const { slug } = useParams<{ slug: string }>();
 
   const items = [];
 
@@ -34,13 +35,13 @@ export const BottomAppBar = ({ statusAdmin }: props) => {
       id: 'menu',
       label: 'Menu',
       icon: Utensils,
-      to: '/menu',
+      to: `/${slug}/menu`,
     });
     items.push({
       id: 'ajustes',
       label: 'Ajustes',
       icon: Bolt,
-      to: '/settings',
+      to: `/${slug}/settings`,
     });
   }
 
@@ -78,8 +79,13 @@ export const BottomAppBar = ({ statusAdmin }: props) => {
   };
 
   return (
-    <div className="shadow-[0_-4px_10px_rgba(0,0,0,0.1)] bg-card flex items-center justify-center gap-2 h-20">
-      {items.map(renderItem)}
-    </div>
+    <section className="bg-card flex flex-col relative">
+      <div className="shadow-[0_-4px_10px_rgba(0,0,0,0.1)] flex items-center justify-center gap-2 pt-4">
+        {items.map(renderItem)}
+      </div>
+      <p className="text-muted-foreground text-xs text-center py-1">
+        CaveFlow Plataform
+      </p>
+    </section>
   );
 };

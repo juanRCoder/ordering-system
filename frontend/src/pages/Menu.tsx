@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { SupplyCard } from '@/components/menu/SupplyCard';
 import { TopAppBar } from '@/components/TopAppBar';
 import { InputSearch } from '@/components/InputSearch';
@@ -7,21 +7,21 @@ import { BottomAppBar } from '@/components/BottomAppBar';
 import { useCategories } from '@/hooks/useCategories';
 import type { CategoryResponse } from '@/interfaces/categories.interface';
 import { CategorySkeleton } from '@/skeletons/CategorySkeleton';
-import { useSuppliesByTypeId } from '@/hooks/useSupplies';
+import { useSuppliesBySlug } from '@/hooks/useSupplies';
 import type { SupplyResponse } from '@/interfaces/supplies.interface';
 import { SupplyCardSkeleton } from '@/skeletons/SupplyCardSkeleton';
 import { CartBadget } from '@/components/cart/CartBadget';
+import { useParams } from 'react-router-dom';
 
 function Menu() {
+  const { slug } = useParams<{ slug: string }>();
+
   const [selectedCategory, setSelectedCategory] =
     useState<CategoryResponse | null>(null);
 
   const categories = useCategories();
-  const suppliesByType = useSuppliesByTypeId(selectedCategory?.id || '');
-
-  useEffect(() => {
-    if (categories.data) setSelectedCategory(categories.data[0]);
-  }, [categories.data]);
+  const activeCategory = selectedCategory ?? categories.data?.[0];
+  const suppliesBySlug = useSuppliesBySlug(slug, activeCategory?.id ?? '');
 
   const firstLetterUpper = (name: string) => {
     return name.charAt(0).toUpperCase() + name.slice(1);
@@ -41,9 +41,9 @@ function Menu() {
                 <Button
                   key={type.id}
                   variant={
-                    selectedCategory?.id === type.id ? 'default' : 'outline'
+                    activeCategory?.id === type.id ? 'default' : 'outline'
                   }
-                  className="py-5 font-normal min-w-32 rounded-sm cursor-pointer text-base"
+                  className="py-5 font-normal min-w-32 rounded-sm cursor-pointer text-base transition-none"
                   onClick={() => setSelectedCategory(type)}
                 >
                   {type.name}
@@ -61,11 +61,11 @@ function Menu() {
             </h2>
           )}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-4 mt-4">
-            {categories.isLoading || suppliesByType.isLoading
+            {categories.isLoading || suppliesBySlug.isLoading
               ? Array.from({ length: 2 }).map((_, i) => (
                   <SupplyCardSkeleton key={i} />
                 ))
-              : suppliesByType?.data?.map((supply: SupplyResponse) => (
+              : suppliesBySlug?.data?.map((supply: SupplyResponse) => (
                   <SupplyCard key={supply.id} data={supply} />
                 ))}
           </div>

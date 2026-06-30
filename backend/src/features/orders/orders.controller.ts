@@ -11,6 +11,7 @@ import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { AdminGuard } from '../auth/auth.guard';
+import { CurrentAdmin } from '../../common/decorators/current-admin.decorator';
 
 @Controller('orders')
 export class OrdersController {
@@ -18,8 +19,8 @@ export class OrdersController {
 
   @UseGuards(AdminGuard)
   @Get()
-  async findAll() {
-    return this.ordersService.findAll();
+  async findAll(@CurrentAdmin() adminId: string) {
+    return this.ordersService.findAll(adminId);
   }
 
   @UseGuards(AdminGuard)
@@ -28,9 +29,12 @@ export class OrdersController {
     return this.ordersService.findOne(id);
   }
 
-  @Post()
-  async create(@Body() createOrderDto: CreateOrderDto) {
-    return this.ordersService.create(createOrderDto);
+  @Post(':slug')
+  async create(
+    @Param('slug') slug: string,
+    @Body() createOrderDto: CreateOrderDto
+  ) {
+    return this.ordersService.create(slug, createOrderDto);
   }
 
   @UseGuards(AdminGuard)

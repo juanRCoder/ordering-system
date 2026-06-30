@@ -1,5 +1,5 @@
 import { ArrowLeft } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 
 type props = {
   itemHeader?: React.ReactNode;
@@ -14,21 +14,22 @@ export const TopAppBar = ({
   leftPath,
   subtitle,
 }: props) => {
+  const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   return (
     <div className="px-4 h-16 flex items-center justify-between bg-white stroke-1 shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)]">
       <div className="flex items-center justify-center gap-2 min-w-0">
         {leftArrowEnable && (
-          <Link to={leftPath || '/menu'}>
+          <Link to={leftPath || `/${slug}/menu`}>
             <ArrowLeft className="w-6 h-6 text-primary cursor-pointer" />
           </Link>
         )}
         <div className="flex flex-col min-w-0">
           <h1
-            onClick={() => navigate('/menu')}
+            onClick={() => navigate(`/${slug}/menu`)}
             className="text-2xl font-extrabold text-primary tracking-tighter drop-shadow-sm cursor-pointer"
           >
-            CaveFlow
+            Pizzeria Ramirez
           </h1>
           {subtitle}
         </div>

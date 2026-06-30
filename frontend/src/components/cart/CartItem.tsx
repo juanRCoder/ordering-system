@@ -20,7 +20,7 @@ export const CartItem = ({ item }: props) => {
       <CardContent className="flex flex-wrap items-start gap-4 p-0">
         <div className="shrink-0 w-20 h-20 rounded-sm overflow-hidden border">
           <img
-            src={item.imagen_url || '/no_image.webp'}
+            src={item.image_url || '/no_image.webp'}
             alt={item.name}
             className="w-full h-full object-cover"
           />
