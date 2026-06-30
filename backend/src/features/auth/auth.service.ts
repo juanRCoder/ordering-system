@@ -73,16 +73,16 @@ export class AuthService {
     const payload = {
       sub: user.id,
       role: user.role,
-      business_name: user.business_name,
     };
 
     return {
       status: HttpStatus.OK,
       data: {
-        sub: user.id,
         name: user.name,
         access_token: await this.jwtService.signAsync(payload),
         role: user.role,
+        business_name: user.business_name,
+        slug: user.slug,
       },
     };
   }

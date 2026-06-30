@@ -47,13 +47,23 @@ export const SupplyCard = ({ data, handlerEvents }: props) => {
         </div>
       </section>
       <div className="shrink-0 flex items-center gap-2 flex-wrap">
-        <Button
-          variant="outline"
-          onClick={handlerEvents}
-          className="text-[#151C23] flex-1 rounded-sm cursor-pointer min-w-32"
-        >
-          Editar
-        </Button>
+        {data.origin === 'PLATFORM' ? (
+          <Button
+            variant="outline"
+            onClick={handlerEvents}
+            className="text-[#151C23] flex-1 rounded-sm cursor-pointer min-w-32"
+          >
+            Editar Precio
+          </Button>
+        ) : (
+          <Button
+            variant="outline"
+            onClick={handlerEvents}
+            className="text-[#151C23] flex-1 rounded-sm cursor-pointer min-w-32"
+          >
+            Editar
+          </Button>
+        )}
         <span
           className={cn(
             'flex flex-col items-center gap-0 justify-center shrink-0 w-[74px]',

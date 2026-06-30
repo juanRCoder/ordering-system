@@ -21,6 +21,7 @@ import { SupplyCard } from '@/components/admin/SupplyCard';
 import type { CategoryResponse } from '@/interfaces/categories.interface';
 
 function Supplies() {
+  const [supplyOrigin, setSupplyOrigin] = useState('PLATFORM');
   const [selectedMode, setSelectedMode] = useState<'create' | 'edit'>('create');
   const [selectedSupplyId, setSelectedSupplyId] = useState<string>('');
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(
@@ -97,6 +98,8 @@ function Supplies() {
                       setOpenDialog(true);
                       setSelectedMode('edit');
                       setSelectedSupplyId(supply.id);
+                      console.log(supply.origin);
+                      setSupplyOrigin(supply.origin);
                     }}
                   />
                 ))}
@@ -111,6 +114,7 @@ function Supplies() {
         setExternalTrigger={setOpenDialog}
         mode={selectedMode}
         id={selectedSupplyId}
+        origin={supplyOrigin}
       />
     </section>
   );

@@ -37,6 +37,7 @@ type props = {
   setExternalTrigger: (e: boolean) => void;
   mode?: 'create' | 'edit';
   id?: string;
+  origin?: string;
 };
 
 export const SupplyDialog = ({
@@ -44,6 +45,7 @@ export const SupplyDialog = ({
   setExternalTrigger,
   mode = 'create',
   id,
+  origin,
 }: props) => {
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>('');
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -130,13 +132,26 @@ export const SupplyDialog = ({
           <section>
             <div className="flex flex-col gap-4">
               <div className="w-1/2">
-                <InputFile
-                  alt="Imagen del producto"
-                  value={existingImageUrl}
-                  onChange={(file) => {
-                    setImageFile(file);
-                  }}
-                />
+                {origin === 'PLATFORM' ? (
+                  <>
+                    <label className="block text-[#43474F] font-semibold mb-2 text-sm">
+                      Imagen
+                    </label>
+                    <img
+                      src={supplyById.data?.image_url}
+                      alt={supplyById.data?.name}
+                      className="object-contain w-full h-full rounded-sm"
+                    />
+                  </>
+                ) : (
+                  <InputFile
+                    alt="Imagen del producto"
+                    value={existingImageUrl}
+                    onChange={(file) => {
+                      setImageFile(file);
+                    }}
+                  />
+                )}
               </div>
               <InputField
                 {...register('name')}

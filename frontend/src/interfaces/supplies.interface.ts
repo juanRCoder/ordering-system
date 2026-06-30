@@ -7,6 +7,7 @@ import type z from 'zod';
 export type CreateSupplyType = z.infer<typeof createSupplySchema>;
 export type UpdateSupplyType = z.infer<typeof updateSupplySchema>;
 export type StatusType = 'AVAILABLE' | 'UNAVAILABLE';
+export type OriginType = 'PLATFORM' | 'ADMIN';
 
 export interface SupplyResponse {
   id: string;
@@ -16,6 +17,7 @@ export interface SupplyResponse {
   price: number;
   // admin
   status?: StatusType;
+  origin?: OriginType;
 }
 
 export interface UpdateSupplyStatusResponse {

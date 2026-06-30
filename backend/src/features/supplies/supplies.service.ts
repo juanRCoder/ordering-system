@@ -99,7 +99,7 @@ export class SuppliesService {
         price: true,
         description: true,
         status: true,
-        supply: { select: { name: true, image_url: true } },
+        supply: { select: { name: true, image_url: true, origin: true } },
       },
     });
 
@@ -112,6 +112,7 @@ export class SuppliesService {
         description: as.description,
         price: as.price.toNumber(),
         status: as.status,
+        origin: as.supply.origin,
       })),
     };
   }
