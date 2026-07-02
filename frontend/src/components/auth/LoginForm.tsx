@@ -7,7 +7,7 @@ import { useLogin } from '@/hooks/useAuth';
 import { defaultLoginFormValues } from '@/lib/default';
 import { InputField } from '../InputField';
 import { Button } from '../ui/button';
-import { GoogleButton, HeaderForm } from '@/pages/Auth';
+import { HeaderForm } from '@/pages/Auth';
 
 export const LoginForm = ({ onToggle }: { onToggle: () => void }) => {
   const login = useLogin();
@@ -64,12 +64,6 @@ export const LoginForm = ({ onToggle }: { onToggle: () => void }) => {
           Crear Cuenta
         </span>
       </p>
-      <div className="flex items-center gap-3">
-        <hr className="flex-1 border-[#C3C6D0]" />
-        <span className="text-sm text-[#9CA3AF]">O iniciar sesión con</span>
-        <hr className="flex-1 border-[#C3C6D0]" />
-      </div>
-      <GoogleButton label="Iniciar sesión con Google" />
     </div>
   );
 };

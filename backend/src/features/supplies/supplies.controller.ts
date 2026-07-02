@@ -47,10 +47,11 @@ export class SuppliesController {
   @Post()
   @UseInterceptors(FileUploadInterceptor('image_url'))
   async create(
+    @CurrentAdmin() admin: { sub: string },
     @Body() createSupplyDto: CreateSupplyDto,
     @UploadedFile() file: Express.Multer.File
   ) {
-    return this.suppliesService.create(createSupplyDto, file);
+    return this.suppliesService.create(createSupplyDto, admin.sub, file);
   }
 
   @UseGuards(AdminGuard)
@@ -64,7 +65,7 @@ export class SuppliesController {
 
   @UseGuards(AdminGuard)
   @Patch(':id')
-  @UseInterceptors(FileUploadInterceptor('imageUrl'))
+  @UseInterceptors(FileUploadInterceptor('image_url'))
   async update(
     @CurrentAdmin() admin: { sub: string },
     @Param('id') id: string,

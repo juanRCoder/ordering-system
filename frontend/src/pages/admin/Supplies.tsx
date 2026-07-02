@@ -98,7 +98,6 @@ function Supplies() {
                       setOpenDialog(true);
                       setSelectedMode('edit');
                       setSelectedSupplyId(supply.id);
-                      console.log(supply.origin);
                       setSupplyOrigin(supply.origin);
                     }}
                   />

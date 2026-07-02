@@ -19,8 +19,19 @@ export class SuppliesService {
 
   private rootFolder = 'ordering-system';
 
-  async create(createSupplyDto: CreateSupplyDto, file?: Express.Multer.File) {
-    const { name, category_id } = createSupplyDto;
+  async create(
+    createSupplyDto: CreateSupplyDto,
+    adminId: string,
+    file?: Express.Multer.File
+  ) {
+    const { name, price, category_id } = createSupplyDto;
+
+    if (!adminId) {
+      throw new NotFoundException({
+        code: 'ADMIN_NOT_FOUND',
+        message: `The admin with id "${adminId}" does not exist`,
+      });
+    }
 
     let imageUrl: string | null = null;
     let imagePublicId: string | null = null;
@@ -45,12 +56,22 @@ export class SuppliesService {
       });
     }
 
-    await this.prisma.supplies.create({
+    const newSupply = await this.prisma.supplies.create({
       data: {
         name,
         image_url: imageUrl,
         image_public_id: imagePublicId,
         category_id,
+        origin: 'ADMIN',
+        creator_admin_id: adminId,
+      },
+    });
+
+    await this.prisma.adminSupplies.create({
+      data: {
+        admin_id: adminId,
+        supply_id: newSupply.id,
+        price,
       },
     });
 

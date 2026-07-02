@@ -77,8 +77,8 @@ export const SupplyDialog = ({
         name: supplyById.data?.name ?? '',
         price: supplyById.data?.price ?? 1,
         description: supplyById.data?.description ?? '',
-        imageUrl: supplyById.data?.image_url ?? '',
-        imagePublicId: supplyById.data?.image_public_id ?? '',
+        image_url: supplyById.data?.image_url ?? '',
+        image_public_id: supplyById.data?.image_public_id ?? '',
       });
       setSelectedCategoryId(supplyById.data?.category_id || '');
     } else {
@@ -99,13 +99,13 @@ export const SupplyDialog = ({
     for (const key in data) {
       const value = data[key as keyof CreateSupplyType];
       if (value === null || value === undefined) continue;
-      if (key === 'imageUrl') continue;
+      if (key === 'image_url') continue;
       formData.append(key, value as string);
     }
     formData.append('category_id', selectedCategoryId);
 
     if (imageFile) {
-      formData.append('imageUrl', imageFile);
+      formData.append('image_url', imageFile);
     }
 
     if (mode === 'edit' && id) {
@@ -122,7 +122,7 @@ export const SupplyDialog = ({
 
   return (
     <Dialog open={externalTrigger} onOpenChange={setExternalTrigger}>
-      <DialogContent className="w-full sm:max-w-104 rounded-sm">
+      <DialogContent className="w-full sm:max-w-104 rounded-sm px-3">
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogHeader className="mb-4">
             <DialogTitle className="text-xl">
@@ -132,7 +132,7 @@ export const SupplyDialog = ({
           <section>
             <div className="flex flex-col gap-4">
               <div className="w-1/2">
-                {origin === 'PLATFORM' ? (
+                {origin === 'PLATFORM' && isEditMode ? (
                   <>
                     <label className="block text-[#43474F] font-semibold mb-2 text-sm">
                       Imagen
@@ -140,7 +140,7 @@ export const SupplyDialog = ({
                     <img
                       src={supplyById.data?.image_url}
                       alt={supplyById.data?.name}
-                      className="object-contain w-full h-full rounded-sm"
+                      className="object-contain w-full max-h-28 rounded-sm shrink"
                     />
                   </>
                 ) : (
@@ -153,12 +153,29 @@ export const SupplyDialog = ({
                   />
                 )}
               </div>
-              <InputField
-                {...register('name')}
-                error={errors.name?.message}
-                label="Nombre*"
-                type="text"
-              />
+              {origin === 'PLATFORM' && isEditMode ? (
+                <div className="flex flex-row flex-wrap gap-2">
+                  <div className="flex-1">
+                    <label className="block text-[#43474F] font-semibold text-sm">
+                      Nombre
+                    </label>
+                    <span>{supplyById.data?.name}</span>
+                  </div>
+                  <div className="flex-1">
+                    <label className="block text-[#43474F] font-semibold text-sm">
+                      Tipo de Insumo
+                    </label>
+                    <span>{selectedCategory?.name}</span>
+                  </div>
+                </div>
+              ) : (
+                <InputField
+                  {...register('name')}
+                  error={errors.name?.message}
+                  label="Nombre*"
+                  type="text"
+                />
+              )}
               <InputField
                 {...register('price', {
                   valueAsNumber: true,
@@ -171,29 +188,34 @@ export const SupplyDialog = ({
                   <span className="text-[#6B7280] font-semibold">S/.</span>
                 }
               />
-              <div className="w-full">
-                <FieldLabel className="text-[#43474F] font-semibold mb-2">
-                  Tipo de Insumo*
-                </FieldLabel>
-                <Select
-                  value={selectedCategoryId}
-                  onValueChange={(value) => setSelectedCategoryId(value ?? '')}
-                >
-                  <SelectTrigger className="w-full bg-[#F8F9FA] border border-gray-300 rounded-lg px-3">
-                    <SelectValue>{selectedCategory?.name}</SelectValue>
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectLabel>Tipos</SelectLabel>
-                      {categories.data?.map((ts: CategoryResponse) => (
-                        <SelectItem key={ts.id} value={ts.id}>
-                          {ts.name}
-                        </SelectItem>
-                      ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </div>
+              {origin === 'ADMIN' ||
+                (!isEditMode && (
+                  <div className="w-full">
+                    <FieldLabel className="text-[#43474F] font-semibold mb-2">
+                      Tipo de Insumo*
+                    </FieldLabel>
+                    <Select
+                      value={selectedCategoryId}
+                      onValueChange={(value) =>
+                        setSelectedCategoryId(value ?? '')
+                      }
+                    >
+                      <SelectTrigger className="w-full bg-[#F8F9FA] border border-gray-300 rounded-lg px-3">
+                        <SelectValue>{selectedCategory?.name}</SelectValue>
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectLabel>Tipos</SelectLabel>
+                          {categories.data?.map((ts: CategoryResponse) => (
+                            <SelectItem key={ts.id} value={ts.id}>
+                              {ts.name}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                ))}
             </div>
           </section>
           <DialogFooter>

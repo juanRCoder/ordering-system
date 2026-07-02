@@ -5,7 +5,7 @@ import { useRegister } from '@/hooks/useAuth';
 import { InputField } from '@/components/InputField';
 import type { RegisterFormType } from '@/interfaces/auth.interface';
 import { defaultRegisterFormValues } from '@/lib/default';
-import { GoogleButton, HeaderForm } from '@/pages/Auth';
+import { HeaderForm } from '@/pages/Auth';
 import { Button } from '@/components/ui/button';
 import { LockKeyhole, Mail, User } from 'lucide-react';
 
@@ -72,12 +72,6 @@ export const RegisterForm = ({ onToggle }: { onToggle: () => void }) => {
           Inicia Sesión
         </span>
       </p>
-      <div className="flex items-center gap-3">
-        <hr className="flex-1 border-[#C3C6D0]" />
-        <span className="text-sm text-[#9CA3AF]">o regístrate con</span>
-        <hr className="flex-1 border-[#C3C6D0]" />
-      </div>
-      <GoogleButton label="Regístrate con Google" />
     </div>
   );
 };

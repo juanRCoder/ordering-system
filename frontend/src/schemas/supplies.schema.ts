@@ -9,8 +9,8 @@ export const createSupplySchema = z.object({
     })
     .min(1, 'El precio mínimo es S/. 1'),
   category_id: z.string().uuidv4().optional(),
-  imageUrl: z.any().optional().nullable(),
-  imagePublicId: z.string().optional().nullable(),
+  image_url: z.any().optional().nullable(),
+  image_public_id: z.string().optional().nullable(),
 });
 
 export const updateSupplySchema = z.object({
@@ -22,7 +22,7 @@ export const updateSupplySchema = z.object({
     })
     .min(1, 'El precio mínimo es S/. 1')
     .optional(),
-  imageUrl: z.any().optional().nullable(),
-  imagePublicId: z.string().optional().nullable(),
+  image_url: z.any().optional().nullable(),
+  image_public_id: z.string().optional().nullable(),
   category_id: z.string().uuidv4().optional(),
 });
