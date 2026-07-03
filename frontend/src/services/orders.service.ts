@@ -1,9 +1,12 @@
-import type { NewOrderType, updateOrder } from '@/interfaces/orders.interface';
+import type {
+  CreateOrderPayload,
+  updateOrder,
+} from '@/interfaces/orders.interface';
 
 class OrdersService {
   private API = import.meta.env.VITE_API_DEV;
 
-  async create(data: NewOrderType, slug: string) {
+  async create(data: CreateOrderPayload, slug: string) {
     const response = await fetch(`${this.API}/orders/${slug}`, {
       method: 'POST',
       headers: {

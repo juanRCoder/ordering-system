@@ -12,6 +12,7 @@ export const defaultNewOrder = {
   supplies: [],
   guest_name: '',
   total: 0,
+  order_id: null,
 };
 
 export const supplyFormValues = {

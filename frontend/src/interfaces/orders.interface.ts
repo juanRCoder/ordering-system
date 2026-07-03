@@ -3,6 +3,8 @@ import type { newOrderSchema } from '@/schemas/orders.schema';
 
 export type NewOrderType = z.infer<typeof newOrderSchema>;
 
+export type CreateOrderPayload = NewOrderType;
+
 export type OrderListResponseType = {
   id: string;
   guest_name: string;

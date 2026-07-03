@@ -10,26 +10,40 @@ import { useCreateOrder } from '@/hooks/useOrders';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { newOrderSchema } from '@/schemas/orders.schema';
-import type { NewOrderType } from '@/interfaces/orders.interface';
+import type {
+  CreateOrderPayload,
+  NewOrderType,
+} from '@/interfaces/orders.interface';
 import { defaultNewOrder } from '@/lib/default';
 import { useParams } from 'react-router-dom';
+import { useBusinessStore } from '@/stores/business.store';
+import { useEffect } from 'react';
 
 function Cart() {
   const { slug } = useParams<{ slug: string }>();
   const { items, totalPrice } = useCartStore();
+  const { order_id, guest_name } = useBusinessStore();
   const createOrder = useCreateOrder(slug!);
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<NewOrderType>({
     resolver: zodResolver(newOrderSchema),
     defaultValues: defaultNewOrder,
   });
 
+  useEffect(() => {
+    setValue('order_id', order_id ?? null);
+    if (order_id && guest_name) {
+      setValue('guest_name', guest_name);
+    }
+  }, [order_id, guest_name, setValue]);
+
   const onSubmit = (data: NewOrderType) => {
-    createOrder.mutate({
-      ...data,
+    const payload: CreateOrderPayload = {
+      guest_name: data.guest_name,
       total: totalPrice,
       supplies: items.map((item) => ({
         id: item.id,
@@ -37,7 +51,17 @@ function Cart() {
         quantity: item.quantity,
         observations: item.observations,
       })),
-    });
+      order_id: data.order_id,
+    };
+
+    createOrder.mutate(payload);
+  };
+
+  const buttonText = () => {
+    if (order_id) {
+      return createOrder.isPending ? 'Agregando...' : 'Agregar al pedido';
+    }
+    return createOrder.isPending ? 'Creando pedido...' : 'Solicitar Pedido';
   };
 
   return (
@@ -49,7 +73,7 @@ function Cart() {
       />
       <div className="flex-1 flex flex-col p-3 pb-24">
         <h2 className="text-2xl font-bold text-primary tracking-tighter">
-          Resumen del Pedido
+          {order_id ? 'Agregar al pedido' : 'Resumen del Pedido'}
         </h2>
         <p className="text-sm text-muted-foreground">
           Revisa los detalles antes de continuar
@@ -76,16 +100,27 @@ function Cart() {
           className="max-w-lg w-full mx-auto"
         >
           <div className="mt-4">
-            <InputField
-              label="Nombre del cliente o Nr de mesa"
-              icon={User}
-              placeholder="Ej: Alejo Diaz o Mesa 5"
-              {...register('guest_name')}
-              error={errors.guest_name?.message}
-            />
+            {order_id ? (
+              <div>
+                <label className="block text-[#43474F] font-semibold text-sm">
+                  Nombre del cliente o Nr de mesa
+                </label>
+                <span className="text-[#161D17]">{guest_name}</span>
+              </div>
+            ) : (
+              <InputField
+                label="Nombre del cliente o Nr de mesa"
+                icon={User}
+                placeholder="Ej: Alejo Diaz o Mesa 5"
+                {...register('guest_name')}
+                error={errors.guest_name?.message}
+              />
+            )}
           </div>
           <div className="flex justify-between flex-wrap gap-2 items-center p-4 rounded-sm bg-[#EFF4FF] mt-6 text-base">
-            <p className="text-[#161D17] font-semibold">Total a pagar</p>
+            <p className="text-[#161D17] font-semibold">
+              {order_id ? 'Monto adicional' : 'Monto Total'}
+            </p>
             <p className="text-primary font-bold">S/ {totalPrice.toFixed(2)}</p>
           </div>
           <Button
@@ -93,7 +128,7 @@ function Cart() {
             disabled={items.length === 0 || createOrder.isPending}
             type="submit"
           >
-            {createOrder.isPending ? 'Creando pedido...' : 'Solicitar Pedido'}
+            {buttonText()}
           </Button>
         </form>
       </div>

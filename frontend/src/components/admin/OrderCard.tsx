@@ -3,6 +3,8 @@ import { Button } from '../ui/button';
 import { Card } from '../ui/card';
 import type { OrderListResponseType } from '@/interfaces/orders.interface';
 import { dayTime, relativeTime } from '@/lib/time';
+import { useNavigate } from 'react-router-dom';
+import { useBusinessStore } from '@/stores/business.store';
 
 type props = {
   data: OrderListResponseType;
@@ -10,7 +12,14 @@ type props = {
 };
 
 export const OrderCard = ({ data, handlerEvents }: props) => {
+  const navigate = useNavigate();
+  const { slug, setOrder } = useBusinessStore();
   const isOrderCompleted = data.status === 'FINISHED';
+
+  const handlerAddNewSupply = () => {
+    setOrder({ order_id: data.id, guest_name: data.guest_name });
+    navigate(`/${slug}/menu`);
+  };
 
   return (
     <Card className="rounded-sm p-3 gap-2">
@@ -50,7 +59,10 @@ export const OrderCard = ({ data, handlerEvents }: props) => {
         >
           Detalles del pedido
         </Button>
-        <Button className="px-3 rounded-sm cursor-pointer">
+        <Button
+          onClick={handlerAddNewSupply}
+          className="px-3 rounded-sm cursor-pointer"
+        >
           <ListPlus className="h-6! w-6!" strokeWidth={1.5} />
         </Button>
       </div>

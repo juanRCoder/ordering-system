@@ -7,8 +7,20 @@ export const supplyOrderSchema = z.object({
   observations: z.string().optional(),
 });
 
-export const newOrderSchema = z.object({
-  supplies: z.array(supplyOrderSchema),
-  guest_name: z.string().min(1, 'El nombre del cliente es requerido'),
-  total: z.number().min(0, 'El total debe ser mayor o igual a 0'),
-});
+export const newOrderSchema = z
+  .object({
+    supplies: z.array(supplyOrderSchema),
+    guest_name: z.string(),
+    total: z.number().min(0, 'El total debe ser mayor o igual a 0'),
+    order_id: z.string().nullable().optional(),
+  })
+  .refine(
+    (data) => {
+      if (data.order_id) return true;
+      return data.guest_name.trim().length > 0;
+    },
+    {
+      message: 'El nombre del cliente es requerido',
+      path: ['guest_name'],
+    }
+  );

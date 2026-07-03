@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import type {
-  NewOrderType,
+  CreateOrderPayload,
   updateOrder,
   // OrderDetailResponseType,
 } from '@/interfaces/orders.interface';
@@ -10,18 +10,25 @@ import ordersService from '@/services/orders.service';
 import { toast } from 'sonner';
 import { toastStyles } from '@/lib/toast';
 import { useCartStore } from '@/stores/cart.store';
+import { useBusinessStore } from '@/stores/business.store';
 
 export function useCreateOrder(slug: string) {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const { order_id } = useBusinessStore();
 
   return useMutation({
-    mutationFn: (data: NewOrderType) => ordersService.create(data, slug),
+    mutationFn: (data: CreateOrderPayload) => ordersService.create(data, slug),
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: OrdersKeys.all });
       useCartStore.getState().clear();
-      toast.success('Pedido creado con éxito', toastStyles.success);
-      navigate(`/${slug}/order-received/${response.data.order_id}`);
+      if (order_id) {
+        toast.success('Pedido actualizado', toastStyles.success);
+        navigate('/admin/orders');
+      } else {
+        toast.success('Pedido creado con éxito', toastStyles.success);
+        navigate(`/${slug}/order-received/${response.data.order_id}`);
+      }
     },
     onError: () => {
       toast.error('Error al crear pedido', toastStyles.error);

@@ -39,4 +39,8 @@ export class CreateOrderDto {
   @IsNotEmpty()
   @IsNumber()
   total!: number;
+
+  @IsOptional()
+  @IsString()
+  order_id?: string;
 }

@@ -8,7 +8,7 @@ export class OrdersService {
   constructor(private prisma: PrismaService) {}
 
   async create(slug: string, createOrderDto: CreateOrderDto) {
-    const { guest_name, total, supplies } = createOrderDto;
+    const { guest_name, total, supplies, order_id } = createOrderDto;
 
     const admin = await this.prisma.users.findUnique({
       where: { slug },
@@ -22,16 +22,38 @@ export class OrdersService {
     }
 
     const order = await this.prisma.$transaction(async (tx) => {
-      const newOrder = await tx.orders.create({
-        data: {
-          guest_name,
-          total,
-          admin_id: admin.id,
-        },
-      });
+      let currentOrder;
+
+      if (order_id) {
+        const findOrder = await tx.orders.findUnique({
+          where: { id: order_id },
+        });
+
+        if (!findOrder) {
+          throw new NotFoundException({
+            code: 'ORDER_NOT_FOUND',
+            message: `The order with ID ${order_id} does not exist`,
+          });
+        }
+
+        currentOrder = await tx.orders.update({
+          where: { id: order_id },
+          data: {
+            total: { increment: total },
+          },
+        });
+      } else {
+        currentOrder = await tx.orders.create({
+          data: {
+            guest_name,
+            total,
+            admin_id: admin.id,
+          },
+        });
+      }
 
       const supplyOrderData = supplies.map((supply) => ({
-        order_id: newOrder.id,
+        order_id: currentOrder.id,
         admin_supply_id: supply.id,
         price: supply.price,
         quantity: supply.quantity,
@@ -42,7 +64,7 @@ export class OrdersService {
         data: supplyOrderData,
       });
 
-      return newOrder;
+      return currentOrder;
     });
 
     return {
