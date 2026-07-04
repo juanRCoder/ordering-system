@@ -27,6 +27,9 @@ export function useSuppliesBySlug(slug: string, categoryId: string) {
     queryKey: SuppliesKeys.bySlug(slug, categoryId),
     queryFn: () => suppliesService.getBySlug(slug, categoryId),
     enabled: !!slug && !!categoryId,
+    staleTime: 1000 * 60 * 5,
+    refetchOnMount: true,
+    refetchOnWindowFocus: false,
   });
 }
 

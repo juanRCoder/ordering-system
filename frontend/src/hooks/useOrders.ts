@@ -25,6 +25,7 @@ export function useCreateOrder(slug: string) {
       if (order_id) {
         toast.success('Pedido actualizado', toastStyles.success);
         navigate('/admin/orders');
+        useBusinessStore.getState().clearBusiness();
       } else {
         toast.success('Pedido creado con éxito', toastStyles.success);
         navigate(`/${slug}/order-received/${response.data.order_id}`);

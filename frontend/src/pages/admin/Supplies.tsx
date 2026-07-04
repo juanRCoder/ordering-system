@@ -98,7 +98,7 @@ function Supplies() {
                       setOpenDialog(true);
                       setSelectedMode('edit');
                       setSelectedSupplyId(supply.id);
-                      setSupplyOrigin(supply.origin);
+                      setSupplyOrigin(supply.origin || '');
                     }}
                   />
                 ))}

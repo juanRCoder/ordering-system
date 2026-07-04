@@ -1,7 +1,9 @@
 import { Link } from 'react-router-dom';
+import { useBusinessStore } from './stores/business.store';
 
 function App() {
-  const slug = 'pizzeria-ramirez';
+  const slugDefault = 'pizzeria-ramirez';
+  const { business_name } = useBusinessStore();
 
   return (
     <div className="bg-white">
@@ -9,16 +11,19 @@ function App() {
       <Link to="/auth" className="block">
         Auth
       </Link>
-      <Link to={`${slug}/menu`} className="block">
+      <Link to={`${slugDefault || business_name}/menu`} className="block">
         Menu
       </Link>
-      <Link to={`${slug}/cart`} className="block">
+      <Link to={`${slugDefault || business_name}/cart`} className="block">
         Cart
       </Link>
-      <Link to={`${slug}/order-received`} className="block">
+      <Link
+        to={`${slugDefault || business_name}/order-received`}
+        className="block"
+      >
         Order Received
       </Link>
-      <Link to={`${slug}/settings`} className="block">
+      <Link to={`${slugDefault || business_name}/settings`} className="block">
         Settings
       </Link>
       {/* Admin routes */}

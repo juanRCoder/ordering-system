@@ -35,10 +35,10 @@ function Cart() {
   });
 
   useEffect(() => {
-    setValue('order_id', order_id ?? null);
-    if (order_id && guest_name) {
-      setValue('guest_name', guest_name);
-    }
+    if (!order_id || !guest_name) return;
+
+    setValue('order_id', order_id);
+    setValue('guest_name', guest_name);
   }, [order_id, guest_name, setValue]);
 
   const onSubmit = (data: NewOrderType) => {
@@ -51,7 +51,7 @@ function Cart() {
         quantity: item.quantity,
         observations: item.observations,
       })),
-      order_id: data.order_id,
+      order_id: data.order_id ?? null,
     };
 
     createOrder.mutate(payload);
