@@ -3,8 +3,11 @@ import { BottomAppBar } from '@/components/BottomAppBar';
 import { TopAppBar } from '@/components/TopAppBar';
 import { Button } from '@/components/ui/button';
 import { useLogout } from '@/hooks/useAuth';
-import { LogOut } from 'lucide-react';
+import { toastStyles } from '@/lib/toast';
+import { useBusinessStore } from '@/stores/business.store';
+import { Copy, LogOut } from 'lucide-react';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 type props = {
   isAdmin?: boolean;
@@ -12,8 +15,17 @@ type props = {
 
 export default function Settings({ isAdmin }: props) {
   const logout = useLogout();
+  const { slug, owner_name, business_name } = useBusinessStore();
+
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
   const [isClosed, setIsClosed] = useState<boolean>(false);
+
+  const handleCopy = async () => {
+    await navigator.clipboard.writeText(
+      `http://localhost:5173/${slug}/menu?wa=5191167588699`
+    );
+    toast.success('Enlace copiado!', toastStyles.success);
+  };
 
   return (
     <section className="bg-[#F8F9FF] min-h-screen flex flex-col">
@@ -42,7 +54,7 @@ export default function Settings({ isAdmin }: props) {
               <div>
                 <p className="text-xs text-neutral-500 mb-0.5">Propietario</p>
                 <p className="text-base font-medium text-neutral-900">
-                  Jose Perez
+                  {owner_name || 'N/A'}
                 </p>
               </div>
               <div>
@@ -50,9 +62,28 @@ export default function Settings({ isAdmin }: props) {
                   Nombre del negocio
                 </p>
                 <p className="text-base font-medium text-neutral-900">
-                  Pizzeria Ramirez
+                  {business_name || 'N/A'}
                 </p>
               </div>
+            </div>
+          </div>
+          <div className="flex flex-col gap-3 bg-white border border-neutral-200 rounded-xl px-5 py-4 mb-2">
+            <div className="flex flex-col">
+              <p className="text-[15px] font-medium">
+                Link de menu para clientes
+              </p>
+              <p className="text-xs text-neutral-500">
+                Envio de ordenes directo a tu whatsapp como respaldo
+              </p>
+            </div>
+            <div
+              onClick={handleCopy}
+              className="cursor-pointer px-2 py-4 flex justify-between items-center rounded-sm overflow-hidden bg-neutral-100"
+            >
+              <p className="select-none text-[#1b6298] font-light rounded-none outline-none border-none focus-visible:ring-0! text-xs bg-transparent">
+                http://localhost:5173/{`${slug}/menu`}?wa=5191167588699
+              </p>
+              <Copy className="h-4 w-4 text-muted-foreground" />
             </div>
           </div>
           <div className="bg-white border border-neutral-200 rounded-xl px-5 py-4 flex items-center justify-between gap-3">

@@ -15,12 +15,18 @@ import type {
   NewOrderType,
 } from '@/interfaces/orders.interface';
 import { defaultNewOrder } from '@/lib/default';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useBusinessStore } from '@/stores/business.store';
 import { useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { toastStyles } from '@/lib/toast';
+import { toast } from 'sonner';
 
 function Cart() {
+  const navigate = useNavigate();
   const { slug } = useParams<{ slug: string }>();
+  const [searchParams] = useSearchParams();
+  const whatsappNumber = searchParams.get('wa');
   const { items, totalPrice } = useCartStore();
   const { order_id, guest_name } = useBusinessStore();
   const createOrder = useCreateOrder(slug!);
@@ -54,7 +60,21 @@ function Cart() {
       order_id: data.order_id ?? null,
     };
 
-    createOrder.mutate(payload);
+    createOrder.mutate(payload, {
+      onSuccess: (response) => {
+        console.log({
+          whatsappNumber,
+          order_id,
+        });
+
+        if (whatsappNumber) {
+          window.location.href = `https://wa.me/${whatsappNumber}?text=Hola%2C%20quisiera%20hacer%20un%20pedido`;
+        } else {
+          toast.success('Pedido creado con éxito', toastStyles.success);
+          navigate(`/${slug}/order-received/${response.data.order_id}`);
+        }
+      },
+    });
   };
 
   const buttonText = () => {

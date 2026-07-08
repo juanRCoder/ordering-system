@@ -1,12 +1,14 @@
 import { ShoppingBag } from 'lucide-react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { useCartStore } from '@/stores/cart.store';
 
 export const CartBadget = () => {
   const { slug } = useParams<{ slug: string }>();
+  const [searchParams] = useSearchParams();
+  const whatsappNumber = searchParams.get('wa');
   const { totalSupplies } = useCartStore();
   return (
-    <Link to={`/${slug}/cart`}>
+    <Link to={`/${slug}/cart?${whatsappNumber ? `wa=${whatsappNumber}` : ''}`}>
       <div className="relative cursor-pointer">
         <ShoppingBag className="h-6 w-6 text-primary" />
         {totalSupplies > 0 && (

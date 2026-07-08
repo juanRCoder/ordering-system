@@ -22,7 +22,11 @@ export function useLogin() {
       queryClient.invalidateQueries({ queryKey: UsersKeys.me });
       toast.success('Inicio de sesión exitoso', toastStyles.success);
       if (data.role === 'ADMIN') {
-        setBusiness({ business_name: data.business_name, slug: data.slug });
+        setBusiness({
+          business_name: data.business_name,
+          slug: data.slug,
+          owner_name: data.name,
+        });
         navigate('/admin/orders');
       } else {
         navigate('/menu');

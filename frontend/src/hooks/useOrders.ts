@@ -19,16 +19,13 @@ export function useCreateOrder(slug: string) {
 
   return useMutation({
     mutationFn: (data: CreateOrderPayload) => ordersService.create(data, slug),
-    onSuccess: (response) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: OrdersKeys.all });
       useCartStore.getState().clear();
       if (order_id) {
         toast.success('Pedido actualizado', toastStyles.success);
         navigate('/admin/orders');
         useBusinessStore.getState().clearBusiness();
-      } else {
-        toast.success('Pedido creado con éxito', toastStyles.success);
-        navigate(`/${slug}/order-received/${response.data.order_id}`);
       }
     },
     onError: () => {
