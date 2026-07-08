@@ -1,6 +1,5 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
-import OrderReceived from './pages/OrderReceived.tsx';
 
 const App = lazy(() => import('./App.tsx'));
 const Auth = lazy(() => import('./pages/Auth.tsx'));
@@ -9,6 +8,7 @@ const Cart = lazy(() => import('./pages/Cart.tsx'));
 const Setting = lazy(() => import('./pages/Settings.tsx'));
 const Orders = lazy(() => import('./pages/admin/Orders.tsx'));
 const Supplies = lazy(() => import('./pages/admin/Supplies.tsx'));
+const OrderReceived = lazy(() => import('./pages/OrderReceived.tsx'));
 
 export const router = createBrowserRouter([
   {
