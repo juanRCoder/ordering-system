@@ -3,7 +3,6 @@ import { SupplyCard } from '@/components/menu/SupplyCard';
 import { TopAppBar } from '@/components/TopAppBar';
 import { InputSearch } from '@/components/InputSearch';
 import { Button } from '@/components/ui/button';
-import { BottomAppBar } from '@/components/BottomAppBar';
 import { useCategories } from '@/hooks/useCategories';
 import type { CategoryResponse } from '@/interfaces/categories.interface';
 import { CategorySkeleton } from '@/skeletons/CategorySkeleton';
@@ -79,10 +78,10 @@ function Menu() {
                   ))}
           </div>
         </div>
-        <div className="h-[84px]" />
+        {/* <div className="h-[84px]" />
         <div className="fixed w-full mx-auto bottom-0 left-0 right-0 z-50 flex flex-col gap-4">
           <BottomAppBar />
-        </div>
+        </div> */}
       </div>
     </section>
   );

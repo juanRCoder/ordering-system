@@ -2,7 +2,6 @@ import { TopAppBar } from '@/components/TopAppBar';
 import { CartItem } from '@/components/cart/CartItem';
 import { InputField } from '@/components/InputField';
 import { Button } from '@/components/ui/button';
-import { BottomAppBar } from '@/components/BottomAppBar';
 import { useCartStore } from '@/stores/cart.store';
 import { CartBadget } from '@/components/cart/CartBadget';
 import { ShoppingBag, User } from 'lucide-react';
@@ -28,7 +27,7 @@ function Cart() {
   const [searchParams] = useSearchParams();
   const whatsappNumber = searchParams.get('wa');
   const { items, totalPrice } = useCartStore();
-  const { order_id, guest_name } = useBusinessStore();
+  const { order_id, guest_name, business_name } = useBusinessStore();
   const createOrder = useCreateOrder(slug!);
   const {
     register,
@@ -68,7 +67,30 @@ function Cart() {
         });
 
         if (whatsappNumber) {
-          window.location.href = `https://wa.me/${whatsappNumber}?text=Hola%2C%20quisiera%20hacer%20un%20pedido`;
+          const productsMessage = items
+            .map((item) => {
+              const observations = item.observations?.trim()
+                ? `\n   Obs: ${item.observations.trim()}`
+                : '';
+
+              return `${item.quantity}x ${item.name}${observations}`;
+            })
+            .join('\n');
+
+          const message = [
+            `🔔 *${business_name}*`,
+            `*Nuevo Pedido #${response.data.order_id.slice(0, 6)}*`,
+            `*Cliente*: ${data.guest_name}`,
+            '',
+            '*Preparar:*',
+            productsMessage,
+            '',
+            `*Total a pagar:* S/ ${totalPrice.toFixed(2)}`,
+          ].join('\n');
+          window.open(
+            `https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${encodeURIComponent(message)}`,
+            '_blank'
+          );
         } else {
           toast.success('Pedido creado con éxito', toastStyles.success);
           navigate(`/${slug}/order-received/${response.data.order_id}`);
@@ -88,10 +110,10 @@ function Cart() {
     <section className="bg-[#F8F9FF] min-h-screen flex flex-col">
       <TopAppBar
         leftArrowEnable
-        leftPath={`/${slug}/menu`}
+        leftPath={`/${slug}/menu?${whatsappNumber ? `wa=${whatsappNumber}` : ''}`}
         itemHeader={<CartBadget />}
       />
-      <div className="flex-1 flex flex-col p-3 pb-24">
+      <div className="flex-1 flex flex-col p-3">
         <h2 className="text-2xl font-bold text-primary tracking-tighter">
           {order_id ? 'Agregar al pedido' : 'Resumen del Pedido'}
         </h2>
@@ -123,7 +145,9 @@ function Cart() {
             {order_id ? (
               <div>
                 <label className="block text-[#43474F] font-semibold text-sm">
-                  Nombre del cliente o Nr de mesa
+                  {whatsappNumber
+                    ? 'Nombre del cliente'
+                    : 'Nombre del cliente o Nr de mesa'}
                 </label>
                 <span className="text-[#161D17]">{guest_name}</span>
               </div>
@@ -151,9 +175,6 @@ function Cart() {
             {buttonText()}
           </Button>
         </form>
-      </div>
-      <div className="fixed w-full mx-auto bottom-0">
-        <BottomAppBar />
       </div>
     </section>
   );
