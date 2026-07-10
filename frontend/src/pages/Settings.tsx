@@ -78,9 +78,9 @@ export default function Settings({ isAdmin }: props) {
             </div>
             <div
               onClick={handleCopy}
-              className="cursor-pointer px-2 py-4 flex justify-between items-center rounded-sm overflow-hidden bg-neutral-100"
+              className="cursor-pointer px-2 py-4 flex gap-3 justify-between items-center rounded-sm overflow-hidden bg-neutral-100"
             >
-              <p className="select-none text-[#1b6298] font-light rounded-none outline-none border-none focus-visible:ring-0! text-xs bg-transparent">
+              <p className="select-none text-[#1b6298] font-light rounded-none outline-none border-none focus-visible:ring-0! text-xs bg-transparent truncate">
                 http://localhost:5173/{`${slug}/menu`}?wa=51956402456
               </p>
               <Copy className="h-4 w-4 text-muted-foreground" />

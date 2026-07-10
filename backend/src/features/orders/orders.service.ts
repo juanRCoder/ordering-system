@@ -8,7 +8,8 @@ export class OrdersService {
   constructor(private prisma: PrismaService) {}
 
   async create(slug: string, createOrderDto: CreateOrderDto) {
-    const { guest_name, total, supplies, order_id } = createOrderDto;
+    const { guest_name, total, supplies, order_id, order_type } =
+      createOrderDto;
 
     const admin = await this.prisma.users.findUnique({
       where: { slug },
@@ -48,6 +49,7 @@ export class OrdersService {
             guest_name,
             total,
             admin_id: admin.id,
+            order_type: order_type ?? 'LOCAL',
           },
         });
       }
@@ -170,6 +172,35 @@ export class OrdersService {
 
     return {
       status: HttpStatus.CREATED,
+      data: {
+        ok: true,
+      },
+    };
+  }
+
+  async delete(id: string) {
+    const existingOrder = await this.prisma.orders.findUnique({
+      where: { id },
+    });
+
+    if (!existingOrder) {
+      throw new NotFoundException({
+        code: 'ORDER_NOT_FOUND',
+        message: `The order with ID ${id} does not exist`,
+      });
+    }
+
+    await this.prisma.$transaction(async (tx) => {
+      await tx.suppliesOrders.deleteMany({
+        where: { order_id: id },
+      });
+      await tx.orders.delete({
+        where: { id },
+      });
+    });
+
+    return {
+      status: HttpStatus.OK,
       data: {
         ok: true,
       },

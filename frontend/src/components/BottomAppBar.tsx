@@ -1,5 +1,5 @@
-import { Bolt, Utensils, type LucideIcon, ScrollText, Box } from 'lucide-react';
-import { Link, useLocation, useParams } from 'react-router-dom';
+import { type LucideIcon, ScrollText, Box, User } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
 
 type props = {
   statusAdmin?: boolean;
@@ -7,7 +7,6 @@ type props = {
 
 export const BottomAppBar = ({ statusAdmin }: props) => {
   const location = useLocation();
-  const { slug } = useParams<{ slug: string }>();
 
   const items = [];
 
@@ -25,23 +24,10 @@ export const BottomAppBar = ({ statusAdmin }: props) => {
       to: '/admin/supplies',
     });
     items.push({
-      id: 'settings',
-      label: 'Ajustes',
-      icon: Bolt,
+      id: 'perfil',
+      label: 'perfil',
+      icon: User,
       to: '/admin/settings',
-    });
-  } else {
-    items.push({
-      id: 'menu',
-      label: 'Menu',
-      icon: Utensils,
-      to: `/${slug}/menu`,
-    });
-    items.push({
-      id: 'ajustes',
-      label: 'Ajustes',
-      icon: Bolt,
-      to: `/${slug}/settings`,
     });
   }
 

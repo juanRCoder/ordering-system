@@ -34,8 +34,8 @@ export const useBusinessStore = create<BusinessState>()(
         set({ order_id: data.order_id, guest_name: data.guest_name }),
       clearBusiness: () =>
         set({
-          business_name: null,
           slug: null,
+          business_name: null,
           order_id: null,
           guest_name: null,
           owner_name: null,

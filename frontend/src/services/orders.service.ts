@@ -84,6 +84,24 @@ class OrdersService {
 
     return result;
   }
+
+  async delete(id: string) {
+    const response = await fetch(`${this.API}/orders/${id}`, {
+      method: 'DELETE',
+      credentials: 'include',
+    });
+
+    const result = await response.json();
+    if (!response.ok) {
+      throw {
+        status: response.status,
+        code: result.code,
+        message: result.message,
+      };
+    }
+
+    return result;
+  }
 }
 
 export default new OrdersService();

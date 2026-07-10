@@ -43,4 +43,8 @@ export class CreateOrderDto {
   @IsOptional()
   @IsString()
   order_id?: string;
+
+  @IsOptional()
+  @IsString()
+  order_type?: 'LOCAL' | 'WHATSAPP';
 }

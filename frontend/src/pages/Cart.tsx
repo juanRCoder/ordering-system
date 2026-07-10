@@ -57,15 +57,12 @@ function Cart() {
         observations: item.observations,
       })),
       order_id: data.order_id ?? null,
+      order_type: whatsappNumber ? 'WHATSAPP' : 'LOCAL',
     };
 
     createOrder.mutate(payload, {
       onSuccess: (response) => {
-        console.log({
-          whatsappNumber,
-          order_id,
-        });
-
+        if (order_id) return;
         if (whatsappNumber) {
           const productsMessage = items
             .map((item) => {

@@ -3,7 +3,9 @@ import type { newOrderSchema } from '@/schemas/orders.schema';
 
 export type NewOrderType = z.infer<typeof newOrderSchema>;
 
-export type CreateOrderPayload = NewOrderType;
+export type CreateOrderPayload = NewOrderType & {
+  order_type?: 'LOCAL' | 'WHATSAPP';
+};
 
 export type OrderListResponseType = {
   id: string;

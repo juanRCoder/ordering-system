@@ -1,10 +1,11 @@
-import { ListPlus } from 'lucide-react';
+import { ListPlus, Trash2 } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
 import type { OrderListResponseType } from '@/interfaces/orders.interface';
 import { dayTime, relativeTime } from '@/lib/time';
 import { useNavigate } from 'react-router-dom';
 import { useBusinessStore } from '@/stores/business.store';
+import { useState } from 'react';
 
 type props = {
   data: OrderListResponseType;
@@ -14,7 +15,18 @@ type props = {
 export const OrderCard = ({ data, handlerEvents }: props) => {
   const navigate = useNavigate();
   const { slug, setOrder } = useBusinessStore();
+  const [confirmedOrder, setConfirmedOrder] = useState(
+    () => localStorage.getItem(`order-${data.id}-confirmed`) === 'true'
+  );
+
   const isOrderCompleted = data.status === 'FINISHED';
+  const isWhatsappOrder = data.order_type === 'WHATSAPP';
+  const showWhatsappActions = isWhatsappOrder && !confirmedOrder;
+
+  const handlerConfirm = () => {
+    localStorage.setItem(`order-${data.id}-confirmed`, 'true');
+    setConfirmedOrder(true);
+  };
 
   const handlerAddNewSupply = () => {
     setOrder({ order_id: data.id, guest_name: data.guest_name });
@@ -38,7 +50,11 @@ export const OrderCard = ({ data, handlerEvents }: props) => {
         <p className="text-[#151C23] text-xl font-semibold">
           {data.guest_name}
         </p>
-        <p className="font-semibold text-[#5D6369] text-sm">
+        <p
+          className={`font-semibold text-sm
+            ${isWhatsappOrder ? 'text-[#4FC238]' : 'text-[#5D6369]'}
+          `}
+        >
           {data.order_type}
         </p>
       </div>
@@ -52,19 +68,40 @@ export const OrderCard = ({ data, handlerEvents }: props) => {
         </p>
       </div>
       <div className="flex gap-2 flex-wrap">
-        <Button
-          variant="outline"
-          onClick={handlerEvents}
-          className="text-[#151C23] flex-1 rounded-sm cursor-pointer"
-        >
-          Detalles del pedido
-        </Button>
-        <Button
-          onClick={handlerAddNewSupply}
-          className="px-3 rounded-sm cursor-pointer"
-        >
-          <ListPlus className="h-6! w-6!" strokeWidth={1.5} />
-        </Button>
+        {showWhatsappActions ? (
+          <>
+            <Button
+              variant="outline"
+              onClick={handlerConfirm}
+              className="text-[#151C23] flex-1 rounded-sm cursor-pointer"
+            >
+              Confirmar pedido
+            </Button>
+            <Button
+              variant="outline"
+              // onClick={handlerDeleteOrder}
+              className="px-3 rounded-sm cursor-pointer text-red-500 border-red-300 hover:bg-red-50"
+            >
+              <Trash2 className="h-6! w-6!" strokeWidth={1.5} />
+            </Button>
+          </>
+        ) : (
+          <>
+            <Button
+              variant="outline"
+              onClick={handlerEvents}
+              className="text-[#151C23] flex-1 rounded-sm cursor-pointer"
+            >
+              Detalles del pedido
+            </Button>
+            <Button
+              onClick={handlerAddNewSupply}
+              className="px-3 rounded-sm cursor-pointer"
+            >
+              <ListPlus className="h-6! w-6!" strokeWidth={1.5} />
+            </Button>
+          </>
+        )}
       </div>
     </Card>
   );

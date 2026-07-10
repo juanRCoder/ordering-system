@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -44,5 +45,11 @@ export class OrdersController {
     @Body() updateOrderDto: UpdateOrderDto
   ) {
     return this.ordersService.update(id, updateOrderDto);
+  }
+
+  @UseGuards(AdminGuard)
+  @Delete(':id')
+  async remove(@Param('id') id: string) {
+    return this.ordersService.delete(id);
   }
 }

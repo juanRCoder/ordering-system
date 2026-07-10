@@ -127,7 +127,10 @@ export const OrderDetailsDrawer = ({
             <p className="text-[#42474F] text-sm font-semibold">
               TIPO DE PEDIDO
             </p>
-            <span className="bg-white border border-border p-2 w-fit rounded-sm">
+            <span
+              className={`bg-white border border-border p-2 w-fit rounded-sm 
+              ${orderDetail?.data?.order_type === 'WHATSAPP' ? 'text-[#4FC238]' : 'text-[#5D6369]'}`}
+            >
               {orderDetail?.data?.order_type}
             </span>
           </div>

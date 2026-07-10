@@ -69,13 +69,12 @@ export function useRegister() {
 export function useLogout() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const { clearBusiness } = useBusinessStore();
 
   return useMutation({
     mutationFn: () => authService.logout(),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: UsersKeys.me });
-      clearBusiness();
+      useBusinessStore.getState().clearBusiness();
       navigate('/auth', { replace: true });
     },
     onError: () => {

@@ -25,7 +25,6 @@ export function useCreateOrder(slug: string) {
       if (order_id) {
         toast.success('Pedido actualizado', toastStyles.success);
         navigate('/admin/orders');
-        useBusinessStore.getState().clearBusiness();
       }
     },
     onError: () => {
@@ -60,6 +59,21 @@ export function useUpdateOrder() {
     },
     onError: () => {
       toast.error('Error al finalizar el pedido', toastStyles.error);
+    },
+  });
+}
+
+export function useDeleteOrder() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => ordersService.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: OrdersKeys.all });
+      toast.success('Pedido eliminado con éxito', toastStyles.success);
+    },
+    onError: () => {
+      toast.error('Error al eliminar el pedido', toastStyles.error);
     },
   });
 }

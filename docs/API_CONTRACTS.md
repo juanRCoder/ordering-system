@@ -15,6 +15,7 @@ Prefijo base: `/api`
 | GET    | `/orders/:id`                 | Obtiene un pedido por ID.                   |
 | POST   | `/orders`                     | Crea un nuevo pedido.                       |
 | PATCH  | `/orders/:id`                 | Actualiza el estado de un pedido.           |
+| DELETE | `/orders/:id`                 | Elimina un pedido por ID.                   |
 | GET    | `/supplies/:id`               | Obtiene un insumo por ID.                   |
 | GET    | `/supplies/category/:type_id` | Lista los insumos por ID de tipo de insumo. |
 | POST   | `/supplies`                   | Crea un nuevo insumo.                       |
@@ -250,6 +251,35 @@ Prefijo base: `/api`
   "data": {
     "ok": true
   }
+}
+```
+
+## Eliminar un pedido por ID
+
+**Endpoint:** `DELETE /orders/:id`
+
+**Description:** Elimina un pedido y todos sus insumos relacionados por su ID. Requiere privilegios de ADMIN.
+
+**Response:**
+
+### Success
+
+```json
+{
+  "status": 200,
+  "data": {
+    "ok": true
+  }
+}
+```
+
+### Error
+
+```json
+{
+  "status": 404,
+  "code": "ORDER_NOT_FOUND",
+  "message": "The order with ID :id does not exist"
 }
 ```
 
