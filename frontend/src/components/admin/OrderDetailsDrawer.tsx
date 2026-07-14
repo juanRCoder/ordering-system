@@ -108,12 +108,17 @@ export const OrderDetailsDrawer = ({
                             <p className="text-[#161D17]">{supply.name}</p>
                           </div>
                           <span className="text-primary font-medium">
-                            S/ {supply.price}
+                            S/ {(supply.price * supply.quantity).toFixed(2)}
                           </span>
                         </div>
                         {supply.observations && (
                           <p className="text-[#43474F] text-xs border-l border-border ml-3 px-3 mt-2">
-                            {supply.observations}
+                            {supply.observations
+                              ?.split('\n')
+                              .filter(Boolean)
+                              .map((obs, i) => (
+                                <p key={i}>• {obs.trim()}</p>
+                              ))}
                           </p>
                         )}
                       </div>

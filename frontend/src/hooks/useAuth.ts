@@ -39,7 +39,10 @@ export function useLogin() {
       ) {
         toast.error('Usuario o contraseña incorrectos', toastStyles.error);
       } else {
-        toast.error('Error al iniciar sesión', toastStyles.error);
+        toast.error(
+          `Error al iniciar sesión: ${error.message}`,
+          toastStyles.error
+        );
       }
     },
   });
