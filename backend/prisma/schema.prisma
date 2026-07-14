@@ -161,4 +161,6 @@ model SuppliesOrders {
 
   admin_supply    AdminSupplies @relation(fields: [admin_supply_id], references: [id])
   order           Orders   @relation(fields: [order_id], references: [id])
+
+  @@unique([order_id, admin_supply_id])
 }

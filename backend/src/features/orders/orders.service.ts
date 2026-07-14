@@ -54,17 +54,54 @@ export class OrdersService {
         });
       }
 
-      const supplyOrderData = supplies.map((supply) => ({
-        order_id: currentOrder.id,
-        admin_supply_id: supply.id,
-        price: supply.price,
-        quantity: supply.quantity,
-        observations: supply.observations,
-      }));
+      const supplyIds = supplies.map((s) => s.id);
 
-      await tx.suppliesOrders.createMany({
-        data: supplyOrderData,
+      const existingSuppliesOrder = await tx.suppliesOrders.findMany({
+        where: {
+          order_id: currentOrder.id,
+          admin_supply_id: { in: supplyIds },
+        },
       });
+      const existingMap = new Map(
+        existingSuppliesOrder.map((s) => [s.admin_supply_id, s])
+      );
+
+      const createSupplieOrder = [];
+      const updateSupplieOrder = [];
+
+      for (const supply of supplies) {
+        const existing = existingMap.get(supply.id);
+        if (existing) {
+          updateSupplieOrder.push(
+            tx.suppliesOrders.update({
+              where: { id: existing.id },
+              data: {
+                quantity: { increment: supply.quantity },
+                observations: supply.observations
+                  ? [existing.observations, supply.observations]
+                      .filter(Boolean)
+                      .join('\n')
+                  : existing.observations,
+              },
+            })
+          );
+        } else {
+          createSupplieOrder.push({
+            order_id: currentOrder.id,
+            admin_supply_id: supply.id,
+            price: supply.price,
+            quantity: supply.quantity,
+            observations: supply.observations,
+          });
+        }
+      }
+
+      await Promise.all(updateSupplieOrder);
+      if (createSupplieOrder.length > 0) {
+        await tx.suppliesOrders.createMany({
+          data: createSupplieOrder,
+        });
+      }
 
       return currentOrder;
     });
