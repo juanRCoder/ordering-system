@@ -83,6 +83,7 @@ export class AuthService {
         role: user.role,
         business_name: user.business_name,
         slug: user.slug,
+        is_business_open: user.is_business_open,
       },
     };
   }
@@ -109,6 +110,22 @@ export class AuthService {
         sub: user.id,
         name: user.name,
         access_token: await this.jwtService.signAsync(payload),
+      },
+    };
+  }
+
+  async updateIsBusinessOpen(adminId: string, is_business_open: boolean) {
+    await this.prisma.users.update({
+      where: { id: adminId },
+      data: {
+        is_business_open,
+      },
+    });
+
+    return {
+      status: HttpStatus.OK,
+      data: {
+        ok: true,
       },
     };
   }

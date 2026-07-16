@@ -1,10 +1,11 @@
-import { Body, Controller, Post, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Patch, Post, Res, UseGuards } from '@nestjs/common';
 import { Response } from 'express';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { AdminGuard } from './auth.guard';
 import appConfig from '../../config/app.config';
+import { CurrentAdmin } from '../../common/decorators/current-admin.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -58,5 +59,14 @@ export class AuthController {
   @Post('create-admin')
   createAdmin(@Body() registerDto: RegisterDto) {
     return this.authService.createAdmin(registerDto);
+  }
+
+  @UseGuards(AdminGuard)
+  @Patch('is-business-open')
+  updateIsBusinessOpen(
+    @CurrentAdmin() admin: { sub: string },
+    @Body('is_business_open') is_business_open: boolean
+  ) {
+    return this.authService.updateIsBusinessOpen(admin.sub, is_business_open);
   }
 }

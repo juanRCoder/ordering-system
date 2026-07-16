@@ -91,14 +91,31 @@ export class SuppliesService {
         message: `The business with slug "${slug}" does not exist`,
       });
     }
-    return this.findSuppliesForAdmin(admin.id, categoryId);
+    const getAdmin = {
+      id: admin.id,
+      is_business_open: admin.is_business_open,
+    };
+    return this.findSuppliesForAdmin(getAdmin, categoryId);
   }
 
   async findByAdminId(adminId: string, categoryId: string) {
-    return this.findSuppliesForAdmin(adminId, categoryId);
+    const admin = await this.prisma.users.findUnique({
+      where: { id: adminId },
+    });
+    if (!admin) {
+      throw new NotFoundException({
+        code: 'ADMIN_NOT_FOUND',
+        message: `The admin with id "${adminId}" does not exist`,
+      });
+    }
+    const getAdmin = { id: adminId, is_business_open: admin.is_business_open };
+    return this.findSuppliesForAdmin(getAdmin, categoryId);
   }
 
-  private async findSuppliesForAdmin(adminId: string, categoryId: string) {
+  private async findSuppliesForAdmin(
+    admin: { id: string; is_business_open: boolean },
+    categoryId: string
+  ) {
     const category = await this.prisma.categories.findUnique({
       where: { id: categoryId },
     });
@@ -111,7 +128,7 @@ export class SuppliesService {
 
     const adminSupplies = await this.prisma.adminSupplies.findMany({
       where: {
-        admin_id: adminId,
+        admin_id: admin.id,
         supply: { category_id: categoryId },
       },
       orderBy: [{ created_at: 'desc' }, { id: 'desc' }],
@@ -126,6 +143,7 @@ export class SuppliesService {
 
     return {
       status: HttpStatus.OK,
+      is_business_open: admin.is_business_open,
       data: adminSupplies.map((as) => ({
         id: as.id,
         name: as.supply.name,
