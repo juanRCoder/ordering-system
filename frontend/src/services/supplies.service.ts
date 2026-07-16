@@ -52,7 +52,7 @@ class SuppliesService {
         message: result.message,
       };
     }
-    return result.data;
+    return result;
   }
 
   async getById(id: string) {

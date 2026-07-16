@@ -6,7 +6,7 @@ import type {
   RegisterFormType,
 } from '@/interfaces/auth.interface';
 import authService from '@/services/auth.service';
-import { UsersKeys } from '@/lib/querykeys';
+import { SuppliesKeys, UsersKeys } from '@/lib/querykeys';
 import { toast } from 'sonner';
 import { toastStyles } from '@/lib/toast';
 import { useBusinessStore } from '@/stores/business.store';
@@ -26,6 +26,7 @@ export function useLogin() {
           business_name: data.business_name,
           slug: data.slug,
           owner_name: data.name,
+          is_business_open: data.is_business_open,
         });
         navigate('/admin/orders');
       } else {
@@ -82,6 +83,25 @@ export function useLogout() {
     },
     onError: () => {
       toast.error('Error al cerrar sesión', toastStyles.error);
+    },
+  });
+}
+
+export function useUpdateBusinessStatus() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (is_business_open: boolean) =>
+      authService.updateBusinessStatus(is_business_open),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: SuppliesKeys.all });
+      toast.success('Estado del negocio actualizado', toastStyles.success);
+    },
+    onError: () => {
+      toast.error(
+        'Error al actualizar el estado del negocio',
+        toastStyles.error
+      );
     },
   });
 }

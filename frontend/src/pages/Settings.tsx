@@ -2,7 +2,7 @@ import { CategoriesDrawer } from '@/components/admin/CategoriesDrawer';
 import { BottomAppBar } from '@/components/BottomAppBar';
 import { TopAppBar } from '@/components/TopAppBar';
 import { Button } from '@/components/ui/button';
-import { useLogout } from '@/hooks/useAuth';
+import { useLogout, useUpdateBusinessStatus } from '@/hooks/useAuth';
 import { toastStyles } from '@/lib/toast';
 import { useBusinessStore } from '@/stores/business.store';
 import { Copy, LogOut } from 'lucide-react';
@@ -15,16 +15,25 @@ type props = {
 
 export default function Settings({ isAdmin }: props) {
   const logout = useLogout();
-  const { slug, owner_name, business_name } = useBusinessStore();
+  const { slug, owner_name, business_name, is_business_open } =
+    useBusinessStore();
+  const update = useUpdateBusinessStatus();
 
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
-  const [isClosed, setIsClosed] = useState<boolean>(false);
+  const [isClosed, setIsClosed] = useState<boolean>(is_business_open ?? false);
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(
       `http://localhost:5173/${slug}/menu?wa=51956402456`
     );
     toast.success('Enlace copiado!', toastStyles.success);
+  };
+
+  const handleStatusChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const status = e.target.checked;
+    update.mutate(status);
+    setIsClosed(status);
+    console.log(status);
   };
 
   return (
@@ -99,7 +108,7 @@ export default function Settings({ isAdmin }: props) {
               <input
                 type="checkbox"
                 checked={isClosed}
-                onChange={(e) => setIsClosed(e.target.checked)}
+                onChange={handleStatusChange}
                 className="sr-only peer"
               />
               <div className="w-11 h-6 bg-neutral-300 peer-checked:bg-red-500 rounded-full transition-colors" />

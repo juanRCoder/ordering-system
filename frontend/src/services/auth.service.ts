@@ -2,7 +2,6 @@ import type {
   LoginFormType,
   RegisterFormType,
 } from '@/interfaces/auth.interface';
-import { toast } from 'sonner';
 
 class AuthService {
   private API = import.meta.env.VITE_API_DEV;
@@ -28,28 +27,24 @@ class AuthService {
   }
 
   async login(data: LoginFormType) {
-    try {
-      const response = await fetch(`${this.API}/auth/login`, {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
+    const response = await fetch(`${this.API}/auth/login`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
 
-      const result = await response.json();
-      if (!response.ok) {
-        throw {
-          status: response.status,
-          code: result.code,
-          message: result.message,
-        };
-      }
-      return result.data;
-    } catch (e) {
-      toast.error(e);
+    const result = await response.json();
+    if (!response.ok) {
+      throw {
+        status: response.status,
+        code: result.code,
+        message: result.message,
+      };
     }
+    return result.data;
   }
 
   async logout() {
@@ -64,6 +59,27 @@ class AuthService {
         status: response.status,
         code: result?.code,
         message: result?.message,
+      };
+    }
+    return result.data;
+  }
+
+  async updateBusinessStatus(is_business_open: boolean) {
+    const response = await fetch(`${this.API}/auth/is-business-open`, {
+      method: 'PATCH',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ is_business_open }),
+    });
+
+    const result = await response.json();
+    if (!response.ok) {
+      throw {
+        status: response.status,
+        code: result.code,
+        message: result.message,
       };
     }
     return result.data;
