@@ -20,7 +20,7 @@ export default function Settings({ isAdmin }: props) {
   const update = useUpdateBusinessStatus();
 
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
-  const [isClosed, setIsClosed] = useState<boolean>(is_business_open ?? false);
+  const [isClosed, setIsClosed] = useState<boolean>(is_business_open);
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(
@@ -33,6 +33,7 @@ export default function Settings({ isAdmin }: props) {
     const status = e.target.checked;
     update.mutate(status);
     setIsClosed(status);
+    useBusinessStore.setState({ is_business_open: status });
   };
 
   return (
