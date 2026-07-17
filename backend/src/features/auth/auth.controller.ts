@@ -1,4 +1,14 @@
-import { Body, Controller, Patch, Post, Res, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  MessageEvent,
+  Param,
+  Patch,
+  Post,
+  Res,
+  Sse,
+  UseGuards,
+} from '@nestjs/common';
 import { Response } from 'express';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
@@ -6,6 +16,7 @@ import { LoginDto } from './dto/login.dto';
 import { AdminGuard } from './auth.guard';
 import appConfig from '../../config/app.config';
 import { CurrentAdmin } from '../../common/decorators/current-admin.decorator';
+import { map, Observable } from 'rxjs';
 
 @Controller('auth')
 export class AuthController {
@@ -68,5 +79,14 @@ export class AuthController {
     @Body('is_business_open') is_business_open: boolean
   ) {
     return this.authService.updateIsBusinessOpen(admin.sub, is_business_open);
+  }
+
+  @Sse('stream/:slug')
+  streamBusinessStatus(@Param('slug') slug: string): Observable<MessageEvent> {
+    return this.authService.getBusinessStatusStream(slug).pipe(
+      map((user) => ({
+        data: { is_business_open: user.is_business_open },
+      }))
+    );
   }
 }

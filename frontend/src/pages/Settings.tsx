@@ -33,7 +33,6 @@ export default function Settings({ isAdmin }: props) {
     const status = e.target.checked;
     update.mutate(status);
     setIsClosed(status);
-    console.log(status);
   };
 
   return (
@@ -137,19 +136,4 @@ export default function Settings({ isAdmin }: props) {
       />
     </section>
   );
-}
-
-{
-  // CATEGORIAS
-  /* {isAdmin && (
-            <>
-              <p
-                className="cursor-pointer w-fit"
-                onClick={() => setOpenDrawer(true)}
-              >
-                Gestion de Categorias
-              </p>
-              <span className="block border-b border-muted-foreground/10 w-full"></span>
-            </>
-          )} */
 }

@@ -4,12 +4,14 @@ import { BottomAppBar } from '@/components/BottomAppBar';
 // import { InputSearch } from '@/components/InputSearch';
 import { TopAppBar } from '@/components/TopAppBar';
 import { Button } from '@/components/ui/button';
-import { useOrdersQuery } from '@/hooks/useOrders';
+import { useOrdersQuery, useOrdersStream } from '@/hooks/useOrders';
 import type { OrderListResponseType } from '@/interfaces/orders.interface';
 import { OrderCardSkeleton } from '@/skeletons/OrderCardSkeleton';
 import { useState } from 'react';
+import { useBusinessStore } from '@/stores/business.store';
 
 function Orders() {
+  const { slug } = useBusinessStore();
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
   const [selectedStatus, setSelectedStatus] = useState<'PENDING' | 'FINISHED'>(
     'PENDING'
@@ -18,6 +20,7 @@ function Orders() {
   const [refreshKey, setRefreshKey] = useState<number>(0); // para refrescar horario
 
   const orders = useOrdersQuery();
+  useOrdersStream(slug || '');
 
   return (
     <section className="bg-[#F8F9FF] min-h-screen flex flex-col">

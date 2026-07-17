@@ -1,11 +1,13 @@
 import {
   Body,
   Controller,
+  MessageEvent,
   Delete,
   Get,
   Param,
   Patch,
   Post,
+  Sse,
   UseGuards,
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
@@ -13,6 +15,7 @@ import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { AdminGuard } from '../auth/auth.guard';
 import { CurrentAdmin } from '../../common/decorators/current-admin.decorator';
+import { map, Observable } from 'rxjs';
 
 @Controller('orders')
 export class OrdersController {
@@ -36,6 +39,15 @@ export class OrdersController {
     @Body() createOrderDto: CreateOrderDto
   ) {
     return this.ordersService.create(slug, createOrderDto);
+  }
+
+  @Sse('stream/:slug')
+  getStream(@Param('slug') slug: string): Observable<MessageEvent> {
+    return this.ordersService.getOrdersStream(slug).pipe(
+      map(() => ({
+        data: { updated: true }, // no importa el contenido, solo es el "aviso"
+      }))
+    );
   }
 
   @UseGuards(AdminGuard)

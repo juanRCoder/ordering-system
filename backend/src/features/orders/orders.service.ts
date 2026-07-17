@@ -2,10 +2,21 @@ import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
+import { Subject } from 'rxjs';
+import { Orders } from '../../generated/prisma/client';
 
 @Injectable()
 export class OrdersService {
+  private channels = new Map<string, Subject<Orders>>();
+
   constructor(private prisma: PrismaService) {}
+
+  private getChannel(slug: string): Subject<Orders> {
+    if (!this.channels.has(slug)) {
+      this.channels.set(slug, new Subject<Orders>());
+    }
+    return this.channels.get(slug)!;
+  }
 
   async create(slug: string, createOrderDto: CreateOrderDto) {
     const { guest_name, total, supplies, order_id, order_type } =
@@ -105,6 +116,7 @@ export class OrdersService {
 
       return currentOrder;
     });
+    this.getChannel(admin.slug!).next(order);
 
     return {
       status: HttpStatus.CREATED,
@@ -112,6 +124,10 @@ export class OrdersService {
         order_id: order.id,
       },
     };
+  }
+
+  getOrdersStream(slug: string) {
+    return this.getChannel(slug).asObservable();
   }
 
   async findOne(id: string) {

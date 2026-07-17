@@ -9,9 +9,20 @@ import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../../prisma.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
+import { Subject } from 'rxjs';
+import { Users } from '../../generated/prisma/client';
 
 @Injectable()
 export class AuthService {
+  private channels = new Map<string, Subject<Users>>();
+
+  private getChannel(slug: string): Subject<Users> {
+    if (!this.channels.has(slug)) {
+      this.channels.set(slug, new Subject<Users>());
+    }
+    return this.channels.get(slug)!;
+  }
+
   constructor(
     private prisma: PrismaService,
     private jwtService: JwtService
@@ -115,12 +126,14 @@ export class AuthService {
   }
 
   async updateIsBusinessOpen(adminId: string, is_business_open: boolean) {
-    await this.prisma.users.update({
+    const user = await this.prisma.users.update({
       where: { id: adminId },
       data: {
         is_business_open,
       },
     });
+
+    this.getChannel(user.slug!).next(user); // seleccionar tenant para actualizar estado
 
     return {
       status: HttpStatus.OK,
@@ -128,5 +141,9 @@ export class AuthService {
         ok: true,
       },
     };
+  }
+
+  getBusinessStatusStream(slug: string) {
+    return this.getChannel(slug).asObservable();
   }
 }

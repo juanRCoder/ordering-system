@@ -11,6 +11,7 @@ import { toast } from 'sonner';
 import { toastStyles } from '@/lib/toast';
 import { useCartStore } from '@/stores/cart.store';
 import { useBusinessStore } from '@/stores/business.store';
+import { useEffect } from 'react';
 
 export function useCreateOrder(slug: string) {
   const queryClient = useQueryClient();
@@ -76,4 +77,27 @@ export function useDeleteOrder() {
       toast.error('Error al eliminar el pedido', toastStyles.error);
     },
   });
+}
+
+export function useOrdersStream(slug: string) {
+  const queryClient = useQueryClient();
+  const API = import.meta.env.VITE_API_DEV;
+
+  useEffect(() => {
+    if (!slug) return;
+
+    const eventSource = new EventSource(`${API}/orders/stream/${slug}`);
+
+    eventSource.onmessage = () => {
+      queryClient.invalidateQueries({ queryKey: OrdersKeys.all });
+    };
+
+    eventSource.onerror = () => {
+      eventSource.close();
+    };
+
+    return () => {
+      eventSource.close();
+    };
+  }, [slug, queryClient]);
 }

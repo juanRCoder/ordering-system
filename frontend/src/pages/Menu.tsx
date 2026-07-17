@@ -11,6 +11,7 @@ import type { SupplyResponse } from '@/interfaces/supplies.interface';
 import { SupplyCardSkeleton } from '@/skeletons/SupplyCardSkeleton';
 import { CartBadget } from '@/components/cart/CartBadget';
 import { useParams } from 'react-router-dom';
+import { useBusinessStatusStream } from '@/hooks/useAuth';
 
 function Menu() {
   const { slug } = useParams<{ slug: string }>();
@@ -21,6 +22,8 @@ function Menu() {
   const categories = useCategories();
   const activeCategoryId = selectedCategoryId ?? categories.data?.[0]?.id ?? '';
   const suppliesByType = useSuppliesBySlug(slug || '', activeCategoryId);
+  useBusinessStatusStream(slug || '');
+
   const firstLetterUpper = (name: string) => {
     return name.charAt(0).toUpperCase() + name.slice(1);
   };
