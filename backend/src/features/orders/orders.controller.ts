@@ -13,6 +13,7 @@ import {
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
+import { ConfirmOrderDto } from './dto/confirm-order.dto';
 import { AdminGuard } from '../auth/auth.guard';
 import { CurrentAdmin } from '../../common/decorators/current-admin.decorator';
 import { map, Observable } from 'rxjs';
@@ -54,9 +55,20 @@ export class OrdersController {
   @Patch(':id')
   async update(
     @Param('id') id: string,
-    @Body() updateOrderDto: UpdateOrderDto
+    @Body() updateOrderDto: UpdateOrderDto,
+    @CurrentAdmin() admin: { sub: string }
   ) {
-    return this.ordersService.update(id, updateOrderDto);
+    return this.ordersService.update(id, updateOrderDto, admin.sub);
+  }
+
+  @UseGuards(AdminGuard)
+  @Patch(':id/confirm')
+  async confirm(
+    @Param('id') id: string,
+    @Body() confirmOrderDto: ConfirmOrderDto,
+    @CurrentAdmin() admin: { sub: string }
+  ) {
+    return this.ordersService.confirm(id, confirmOrderDto, admin.sub);
   }
 
   @UseGuards(AdminGuard)

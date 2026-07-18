@@ -2,6 +2,7 @@ import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
+import { ConfirmOrderDto } from './dto/confirm-order.dto';
 import { Subject } from 'rxjs';
 import { Orders } from '../../generated/prisma/client';
 
@@ -184,6 +185,7 @@ export class OrdersService {
         order_type: true,
         created_at: true,
         total: true,
+        is_confirmed: true,
       },
     });
 
@@ -195,16 +197,17 @@ export class OrdersService {
         guest_name: order.guest_name,
         order_type: order.order_type,
         created_at: order.created_at,
+        is_confirmed: order.is_confirmed,
         total: order.total.toNumber(),
       })),
     };
   }
 
-  async update(id: string, updateOrderDto: UpdateOrderDto) {
+  async update(id: string, updateOrderDto: UpdateOrderDto, adminId: string) {
     const { status, payment_type, order_type } = updateOrderDto;
 
     const existingOrder = await this.prisma.orders.findUnique({
-      where: { id },
+      where: { id, admin_id: adminId },
     });
 
     if (!existingOrder) {
@@ -225,6 +228,35 @@ export class OrdersService {
 
     return {
       status: HttpStatus.CREATED,
+      data: {
+        ok: true,
+      },
+    };
+  }
+
+  async confirm(
+    id: string,
+    { is_confirmed }: ConfirmOrderDto,
+    adminId: string
+  ) {
+    const existingOrder = await this.prisma.orders.findUnique({
+      where: { id },
+    });
+
+    if (!existingOrder) {
+      throw new NotFoundException({
+        code: 'ORDER_NOT_FOUND',
+        message: `The order with ID ${id} does not exist`,
+      });
+    }
+
+    await this.prisma.orders.update({
+      where: { id, admin_id: adminId },
+      data: { is_confirmed },
+    });
+
+    return {
+      status: HttpStatus.OK,
       data: {
         ok: true,
       },
