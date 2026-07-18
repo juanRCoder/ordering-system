@@ -20,13 +20,31 @@ export default function Settings({ isAdmin }: props) {
   const update = useUpdateBusinessStatus();
 
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
-  const [isClosed, setIsClosed] = useState<boolean>(is_business_open);
+  const [isClosed, setIsClosed] = useState<boolean>(is_business_open!);
 
   const handleCopy = async () => {
-    await navigator.clipboard.writeText(
-      `http://localhost:5173/${slug}/menu?wa=51956402456`
-    );
-    toast.success('Enlace copiado!', toastStyles.success);
+    const url = `${window.location.origin}/${slug}/menu?wa=51956402456`;
+    try {
+      await navigator.clipboard.writeText(url);
+      // toast.success('Enlace copiado!', toastStyles.success);
+    } catch {
+      console.error('error');
+    }
+
+    const textarea = document.createElement('textarea');
+    textarea.value = url;
+    textarea.style.position = 'fixed';
+    textarea.style.opacity = '0';
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+    try {
+      document.execCommand('copy');
+      toast.success('Enlace copiado!', toastStyles.success);
+    } catch {
+      toast.error('No se pudo copiar. Copialo manualmente.', toastStyles.error);
+    }
+    document.body.removeChild(textarea);
   };
 
   const handleStatusChange = (e: React.ChangeEvent<HTMLInputElement>) => {

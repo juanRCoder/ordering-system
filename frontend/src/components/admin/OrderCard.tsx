@@ -6,6 +6,7 @@ import { dayTime, relativeTime } from '@/lib/time';
 import { useNavigate } from 'react-router-dom';
 import { useBusinessStore } from '@/stores/business.store';
 import { useEffect, useState } from 'react';
+import { useDeleteOrder } from '@/hooks/useOrders';
 
 type props = {
   data: OrderListResponseType;
@@ -15,6 +16,7 @@ type props = {
 export const OrderCard = ({ data, handlerEvents }: props) => {
   const navigate = useNavigate();
   const { slug, setOrder } = useBusinessStore();
+  const deleteOrder = useDeleteOrder();
 
   const [confirmedOrder, setConfirmedOrder] = useState<boolean>(
     () => localStorage.getItem(`order-${data.id}-confirmed`) === 'true'
@@ -87,7 +89,7 @@ export const OrderCard = ({ data, handlerEvents }: props) => {
             </Button>
             <Button
               variant="outline"
-              // onClick={handlerDeleteOrder}
+              onClick={() => deleteOrder.mutate(data.id!)}
               className="px-3 rounded-sm cursor-pointer text-red-500 border-red-300 hover:bg-red-50"
             >
               <Trash2 className="h-6! w-6!" strokeWidth={1.5} />

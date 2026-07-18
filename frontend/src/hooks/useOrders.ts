@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import type {
   CreateOrderPayload,
   updateOrder,
-  // OrderDetailResponseType,
 } from '@/interfaces/orders.interface';
 import { OrdersKeys } from '@/lib/querykeys';
 import ordersService from '@/services/orders.service';
