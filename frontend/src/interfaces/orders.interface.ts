@@ -13,6 +13,7 @@ export type OrderListResponseType = {
   created_at: string;
   status: 'PENDING' | 'FINISHED';
   order_type: 'LOCAL' | 'WHATSAPP';
+  is_confirmed: boolean;
   total: number;
 };
 

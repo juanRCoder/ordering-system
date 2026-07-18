@@ -102,6 +102,28 @@ class OrdersService {
 
     return result;
   }
+
+  async confirm(id: string, is_confirmed: boolean) {
+    const response = await fetch(`${this.API}/orders/${id}/confirm`, {
+      method: 'PATCH',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ is_confirmed }),
+    });
+
+    const result = await response.json();
+    if (!response.ok) {
+      throw {
+        status: response.status,
+        code: result.code,
+        message: result.message,
+      };
+    }
+
+    return result;
+  }
 }
 
 export default new OrdersService();

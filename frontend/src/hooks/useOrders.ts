@@ -100,3 +100,18 @@ export function useOrdersStream(slug: string) {
     };
   }, [slug, queryClient]);
 }
+
+export function useConfirmOrder() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, is_confirmed }: { id: string; is_confirmed: boolean }) =>
+      ordersService.confirm(id, is_confirmed),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: OrdersKeys.all });
+    },
+    onError: () => {
+      toast.error('Error al confirmar el pedido', toastStyles.error);
+    },
+  });
+}

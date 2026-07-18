@@ -5,8 +5,7 @@ import type { OrderListResponseType } from '@/interfaces/orders.interface';
 import { dayTime, relativeTime } from '@/lib/time';
 import { useNavigate } from 'react-router-dom';
 import { useBusinessStore } from '@/stores/business.store';
-import { useEffect, useState } from 'react';
-import { useDeleteOrder } from '@/hooks/useOrders';
+import { useConfirmOrder, useDeleteOrder } from '@/hooks/useOrders';
 
 type props = {
   data: OrderListResponseType;
@@ -17,25 +16,15 @@ export const OrderCard = ({ data, handlerEvents }: props) => {
   const navigate = useNavigate();
   const { slug, setOrder } = useBusinessStore();
   const deleteOrder = useDeleteOrder();
-
-  const [confirmedOrder, setConfirmedOrder] = useState<boolean>(
-    () => localStorage.getItem(`order-${data.id}-confirmed`) === 'true'
-  );
+  const confirmOrder = useConfirmOrder();
 
   const isOrderCompleted = data.status === 'FINISHED';
   const isWhatsappOrder = data.order_type === 'WHATSAPP';
   const showWhatsappActions =
-    isWhatsappOrder && !confirmedOrder && !isOrderCompleted;
-
-  useEffect(() => {
-    if (isOrderCompleted) {
-      localStorage.removeItem(`order-${data.id}-confirmed`);
-    }
-  }, [isOrderCompleted, data.id]);
+    isWhatsappOrder && !data.is_confirmed && !isOrderCompleted;
 
   const handlerConfirm = () => {
-    localStorage.setItem(`order-${data.id}-confirmed`, 'true');
-    setConfirmedOrder(true);
+    confirmOrder.mutate({ id: data.id!, is_confirmed: true });
   };
 
   const handlerAddNewSupply = () => {
