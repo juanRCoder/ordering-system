@@ -20,8 +20,18 @@ export const SuppliesKeys = {
   all: baseKeys.supplies,
   byTypeId: (type_id: string) =>
     [...baseKeys.supplies, 'type_id', type_id] as const,
-  bySlug: (slug: string, categoryId: string) =>
-    [...baseKeys.supplies, 'slug', slug, categoryId] as const,
+  bySlug: (slug: string, categoryId: string, letters: string, page: number) =>
+    [
+      ...baseKeys.supplies,
+      'slug',
+      slug,
+      'categoryId',
+      categoryId,
+      'letters',
+      letters,
+      'page',
+      page,
+    ] as const,
   byAdmin: (categoryId: string) =>
     [...baseKeys.supplies, 'category', categoryId] as const,
   byId: (id: string) => [...baseKeys.supplies, 'id', id] as const,

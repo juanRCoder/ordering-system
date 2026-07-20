@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { SupplyCard } from '@/components/menu/SupplyCard';
 import { TopAppBar } from '@/components/TopAppBar';
 import { InputSearch } from '@/components/InputSearch';
@@ -12,16 +12,44 @@ import { SupplyCardSkeleton } from '@/skeletons/SupplyCardSkeleton';
 import { CartBadget } from '@/components/cart/CartBadget';
 import { useParams } from 'react-router-dom';
 import { useBusinessStatusStream } from '@/hooks/useAuth';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination';
 
 function Menu() {
   const { slug } = useParams<{ slug: string }>();
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(
     null
   );
+  const [letters, setLetters] = useState<string>('');
+  const [debouncedLetters, setDebouncedLetters] = useState('');
+  const [page, setPage] = useState(1);
 
   const categories = useCategories();
+
   const activeCategoryId = selectedCategoryId ?? categories.data?.[0]?.id ?? '';
-  const suppliesByType = useSuppliesBySlug(slug || '', activeCategoryId);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedLetters(letters);
+      setPage(1);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [letters]);
+
+  const suppliesByType = useSuppliesBySlug(
+    slug || '',
+    activeCategoryId,
+    debouncedLetters,
+    page
+  );
+
   useBusinessStatusStream(slug || '');
 
   const firstLetterUpper = (name: string) => {
@@ -70,7 +98,11 @@ function Menu() {
         } flex-1 flex-col p-3`}
       >
         <div className="flex flex-col gap-3">
-          <InputSearch placeholder="Buscar por nombre de insumo" />
+          <InputSearch
+            value={letters}
+            onChange={setLetters}
+            placeholder="Buscar por nombre de insumo"
+          />
           <div className="flex gap-3 overflow-x-auto">
             {categories.isLoading ? (
               <CategorySkeleton />
@@ -78,9 +110,13 @@ function Menu() {
               categories?.data?.map((type: CategoryResponse) => (
                 <Button
                   key={type.id}
+                  disabled={!!letters}
                   variant={activeCategoryId === type.id ? 'default' : 'outline'}
                   className="py-5 font-normal min-w-32 rounded-sm cursor-pointer text-base transition-none"
-                  onClick={() => setSelectedCategoryId(type.id)}
+                  onClick={() => {
+                    setSelectedCategoryId(type.id);
+                    setPage(1);
+                  }}
                 >
                   {type.name}
                 </Button>
@@ -109,6 +145,62 @@ function Menu() {
                 ))}
         </div>
       </div>
+      <Pagination className="mb-6">
+        <PaginationContent>
+          <PaginationItem>
+            <PaginationPrevious
+              href="#"
+              aria-disabled={page === 1}
+              onClick={(e) => {
+                e.preventDefault();
+                if (page > 1) {
+                  setPage(page - 1);
+                }
+              }}
+            />
+          </PaginationItem>
+
+          {Array.from(
+            {
+              length:
+                suppliesByType?.data?.metadata?.pagination?.totalPages ?? 0,
+            },
+            (_, i) => (
+              <PaginationItem key={i + 1}>
+                <PaginationLink
+                  href="#"
+                  isActive={page === i + 1}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setPage(i + 1);
+                  }}
+                >
+                  {i + 1}
+                </PaginationLink>
+              </PaginationItem>
+            )
+          )}
+
+          <PaginationItem>
+            <PaginationNext
+              href="#"
+              aria-disabled={
+                page === suppliesByType?.data?.metadata?.pagination?.totalPages
+              }
+              onClick={(e) => {
+                e.preventDefault();
+
+                if (
+                  page <
+                  (suppliesByType?.data?.metadata?.pagination?.totalPages ?? 1)
+                ) {
+                  setPage(page + 1);
+                }
+              }}
+            />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
     </section>
   );
 }

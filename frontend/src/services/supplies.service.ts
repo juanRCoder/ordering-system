@@ -39,10 +39,19 @@ class SuppliesService {
     return result.data;
   }
 
-  async getBySlug(slug: string, categoryId: string) {
-    const response = await fetch(
-      `${this.API}/supplies/by-slug/${slug}?categoryId=${categoryId}`
-    );
+  async getBySlug(
+    slug: string,
+    categoryId?: string,
+    letters?: string,
+    page = 1
+  ) {
+    let url = `${this.API}/supplies/by-slug/${slug}?categoryId=${categoryId}&page=${page}`;
+
+    if (letters) {
+      url += `&letters=${letters}`;
+    }
+
+    const response = await fetch(url);
 
     const result = await response.json();
     if (!response.ok) {

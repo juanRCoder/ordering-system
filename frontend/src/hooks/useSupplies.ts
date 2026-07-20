@@ -22,11 +22,16 @@ export function useCreateSupply() {
   });
 }
 
-export function useSuppliesBySlug(slug: string, categoryId: string) {
+export function useSuppliesBySlug(
+  slug: string,
+  categoryId?: string,
+  letters?: string,
+  page = 1
+) {
   return useQuery({
-    queryKey: SuppliesKeys.bySlug(slug, categoryId),
-    queryFn: () => suppliesService.getBySlug(slug, categoryId),
-    enabled: !!slug && !!categoryId,
+    queryKey: SuppliesKeys.bySlug(slug, categoryId, letters, page),
+    queryFn: () => suppliesService.getBySlug(slug, categoryId, letters, page),
+    enabled: !!slug,
     staleTime: 1000 * 60 * 5,
     refetchOnMount: true,
     refetchOnWindowFocus: false,
