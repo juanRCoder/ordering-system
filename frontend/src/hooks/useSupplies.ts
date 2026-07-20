@@ -29,8 +29,9 @@ export function useSuppliesBySlug(
   page = 1
 ) {
   return useQuery({
-    queryKey: SuppliesKeys.bySlug(slug, categoryId, letters, page),
-    queryFn: () => suppliesService.getBySlug(slug, categoryId, letters, page),
+    queryKey: SuppliesKeys.bySlug(slug, categoryId || '', letters || '', page),
+    queryFn: () =>
+      suppliesService.getBySlug(slug, categoryId || '', letters || '', page),
     enabled: !!slug,
     staleTime: 1000 * 60 * 5,
     refetchOnMount: true,
