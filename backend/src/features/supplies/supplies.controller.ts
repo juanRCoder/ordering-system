@@ -24,9 +24,11 @@ export class SuppliesController {
   @Get('by-slug/:slug')
   async findBySlug(
     @Param('slug') slug: string,
-    @Query('categoryId') categoryId: string
+    @Query('categoryId') categoryId?: string,
+    @Query('letters') letters?: string,
+    @Query('page') page: number = 1
   ) {
-    return this.suppliesService.findBySlug(slug, categoryId);
+    return this.suppliesService.findBySlug(slug, categoryId, letters, page);
   }
 
   @Get(':id')

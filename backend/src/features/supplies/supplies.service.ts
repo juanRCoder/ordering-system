@@ -83,7 +83,12 @@ export class SuppliesService {
     };
   }
 
-  async findBySlug(slug: string, categoryId: string) {
+  async findBySlug(
+    slug: string,
+    categoryId?: string,
+    letters?: string,
+    page: number = 1
+  ) {
     const admin = await this.prisma.users.findUnique({ where: { slug } });
     if (!admin) {
       throw new NotFoundException({
@@ -95,10 +100,10 @@ export class SuppliesService {
       id: admin.id,
       is_business_open: admin.is_business_open,
     };
-    return this.findSuppliesForAdmin(getAdmin, categoryId);
+    return this.findSuppliesForAdmin(getAdmin, categoryId, letters, page);
   }
 
-  async findByAdminId(adminId: string, categoryId: string) {
+  async findByAdminId(adminId: string, categoryId: string, letters?: string) {
     const admin = await this.prisma.users.findUnique({
       where: { id: adminId },
     });
@@ -109,37 +114,50 @@ export class SuppliesService {
       });
     }
     const getAdmin = { id: adminId, is_business_open: admin.is_business_open };
-    return this.findSuppliesForAdmin(getAdmin, categoryId);
+    return this.findSuppliesForAdmin(getAdmin, categoryId, letters);
   }
 
   private async findSuppliesForAdmin(
     admin: { id: string; is_business_open: boolean },
-    categoryId: string
+    categoryId?: string,
+    letters?: string,
+    page: number = 1
   ) {
-    const category = await this.prisma.categories.findUnique({
-      where: { id: categoryId },
-    });
-    if (!category) {
-      throw new BadRequestException({
-        code: 'CATEGORY_NOT_FOUND',
-        message: 'The specified category does not exist',
-      });
-    }
+    const limit = 2;
+    const startCount = (page - 1) * limit;
 
-    const adminSupplies = await this.prisma.adminSupplies.findMany({
-      where: {
-        admin_id: admin.id,
-        supply: { category_id: categoryId },
-      },
-      orderBy: [{ created_at: 'desc' }, { id: 'desc' }],
-      select: {
-        id: true,
-        price: true,
-        description: true,
-        status: true,
-        supply: { select: { name: true, image_url: true, origin: true } },
-      },
-    });
+    const search = letters?.trim();
+
+    const [adminSupplies, total] = await Promise.all([
+      this.prisma.adminSupplies.findMany({
+        where: {
+          admin_id: admin.id,
+          supply: {
+            ...(search
+              ? { name: { contains: search, mode: 'insensitive' } }
+              : { category_id: categoryId }),
+          },
+        },
+        orderBy: [{ created_at: 'desc' }, { id: 'desc' }],
+        select: {
+          id: true,
+          price: true,
+          description: true,
+          status: true,
+          supply: { select: { name: true, image_url: true, origin: true } },
+        },
+        skip: startCount,
+        take: limit,
+      }),
+      this.prisma.adminSupplies.count({
+        where: {
+          admin_id: admin.id,
+          supply: { category_id: categoryId },
+        },
+      }),
+    ]);
+
+    const totalPages = Math.ceil(total / limit);
 
     return {
       status: HttpStatus.OK,
@@ -153,6 +171,13 @@ export class SuppliesService {
         status: as.status,
         origin: as.supply.origin,
       })),
+      metadata: {
+        pagination: {
+          total,
+          totalPages,
+          page,
+        },
+      },
     };
   }
 
