@@ -1,11 +1,13 @@
 import {
   Body,
+  MessageEvent,
   Controller,
   Get,
   Param,
   Patch,
   Post,
   Query,
+  Sse,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -16,6 +18,7 @@ import { UpdateSupplyDto } from './dto/update-supply.dto';
 import { AdminGuard } from '../auth/auth.guard';
 import { FileUploadInterceptor } from '../../common/interceptors/file-upload.interceptor';
 import { CurrentAdmin } from '../../common/decorators/current-admin.decorator';
+import { map, Observable } from 'rxjs';
 
 @Controller('supplies')
 export class SuppliesController {
@@ -66,6 +69,16 @@ export class SuppliesController {
   }
 
   @UseGuards(AdminGuard)
+  @Sse('stream/:slug/status')
+  getStream(@Param('slug') slug: string): Observable<MessageEvent> {
+    return this.suppliesService.getAdminSupplyUpdateStream(slug).pipe(
+      map(() => ({
+        data: { updated: true }, // no importa el contenido, solo es el "aviso "
+      }))
+    );
+  }
+
+  @UseGuards(AdminGuard)
   @Patch(':id')
   @UseInterceptors(FileUploadInterceptor('image_url'))
   async update(
@@ -75,5 +88,15 @@ export class SuppliesController {
     @UploadedFile() file: Express.Multer.File
   ) {
     return this.suppliesService.update(id, updateSupplyDto, file, admin.sub);
+  }
+
+  @UseGuards(AdminGuard)
+  @Sse('stream/:slug/price')
+  getStreamPrice(@Param('slug') slug: string): Observable<MessageEvent> {
+    return this.suppliesService.getAdminSupplyUpdatePriceStream(slug).pipe(
+      map(() => ({
+        data: { updated: true }, // no importa el contenido, solo es el "aviso "
+      }))
+    );
   }
 }

@@ -66,7 +66,7 @@ export const SupplyCard = ({ data, handlerEvents }: props) => {
         )}
         <span
           className={cn(
-            'flex flex-col items-center gap-0 justify-center shrink-0 w-[74px]',
+            'flex flex-col items-center gap-0 justify-center shrink-0 w-18.5',
             enabled ? 'text-primary' : 'text-muted-foreground'
           )}
         >

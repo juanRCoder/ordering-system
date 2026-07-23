@@ -2,7 +2,6 @@ import { SupplyDialog } from '@/components/admin/SupplyDialog';
 import { BottomAppBar } from '@/components/BottomAppBar';
 // import { InputSearch } from '@/components/InputSearch';
 import { TopAppBar } from '@/components/TopAppBar';
-import { Button } from '@/components/ui/button';
 import {
   Select,
   SelectContent,
@@ -12,7 +11,6 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useCategories } from '@/hooks/useCategories';
-import { Plus } from 'lucide-react';
 import { useState } from 'react';
 import { useSuppliesByAdmin } from '@/hooks/useSupplies';
 import { SupplyCardAdminSkeleton } from '@/skeletons/SupplyCardSkeleton';
@@ -41,7 +39,7 @@ function Supplies() {
     <section className="bg-[#F8F9FF] min-h-screen flex flex-col">
       <TopAppBar
         subtitle={
-          <p className="text-sm text-muted-foreground truncate max-w-[180px]">
+          <p className="text-sm text-muted-foreground truncate max-w-45">
             Panel de Administrativo
           </p>
         }
@@ -54,7 +52,7 @@ function Supplies() {
               value={selectedCategoryId}
               onValueChange={(value) => setSelectedCategoryId(value ?? '')}
             >
-              <SelectTrigger className="w-full bg-[#F8F9FA] border border-gray-300 rounded-sm px-3 h-[46px]!">
+              <SelectTrigger className="w-full bg-[#F8F9FA] border border-gray-300 rounded-sm px-3 h-11.5!">
                 <SelectValue>{selectedCategory?.name}</SelectValue>
               </SelectTrigger>
               <SelectContent>
@@ -67,7 +65,7 @@ function Supplies() {
                 </SelectGroup>
               </SelectContent>
             </Select>
-            <Button
+            {/* <Button
               variant="outline"
               className="cursor-pointer rounded-sm py-5.5"
               onClick={() => {
@@ -77,7 +75,7 @@ function Supplies() {
             >
               <Plus className="h-6! w-6!" strokeWidth={1.5} />
               Agregar Insumo
-            </Button>
+            </Button> */}
           </div>
           <h2 className="text-xl font-semibold text-[#161D17]">
             {suppliesByType.data?.length} resultados{' '}

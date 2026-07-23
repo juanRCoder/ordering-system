@@ -129,7 +129,7 @@ function Cart() {
             ))}
           </div>
         ) : (
-          <div className="h-[200px] w-full flex flex-col items-center justify-center gap-2">
+          <div className="h-50 w-full flex flex-col items-center justify-center gap-2">
             <ShoppingBag className="w-12 h-12 text-primary/70" />
             <p className="text-border">No hay items</p>
           </div>

@@ -17,11 +17,11 @@ export class UpdateSupplyDto {
 
   @IsOptional()
   @IsString()
-  imageUrl?: string;
+  image_url?: string;
 
   @IsOptional()
   @IsString()
-  imagePublicId?: string;
+  image_public_id?: string;
 
   @IsOptional()
   @IsUUID()

@@ -26,7 +26,7 @@ function Orders() {
     <section className="bg-[#F8F9FF] min-h-screen flex flex-col">
       <TopAppBar
         subtitle={
-          <p className="text-sm text-muted-foreground truncate max-w-[180px]">
+          <p className="text-sm text-muted-foreground truncate max-w-45">
             Panel de Administrativo
           </p>
         }

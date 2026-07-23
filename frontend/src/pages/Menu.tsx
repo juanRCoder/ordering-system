@@ -6,7 +6,11 @@ import { Button } from '@/components/ui/button';
 import { useCategories } from '@/hooks/useCategories';
 import type { CategoryResponse } from '@/interfaces/categories.interface';
 import { CategorySkeleton } from '@/skeletons/CategorySkeleton';
-import { useSuppliesBySlug } from '@/hooks/useSupplies';
+import {
+  useSuppliesBySlug,
+  useSuppliesStream,
+  useUpdateSupplyPriceStream,
+} from '@/hooks/useSupplies';
 import type { SupplyResponse } from '@/interfaces/supplies.interface';
 import { SupplyCardSkeleton } from '@/skeletons/SupplyCardSkeleton';
 import { CartBadget } from '@/components/cart/CartBadget';
@@ -51,6 +55,8 @@ function Menu() {
   );
 
   useBusinessStatusStream(slug || '');
+  useSuppliesStream(slug || '');
+  useUpdateSupplyPriceStream(slug || '');
 
   const firstLetterUpper = (name: string) => {
     return name.charAt(0).toUpperCase() + name.slice(1);
@@ -86,7 +92,7 @@ function Menu() {
             />
           </svg>
         </div>
-        <h2 className="text-lg font-semibold text-gray-900">Puesto cerrada</h2>
+        <h2 className="text-lg font-semibold text-gray-900">Puesto cerrado</h2>
         <p className="mt-2 text-sm text-gray-500">
           En este momento no estamos recibiendo pedidos. Vuelve a intentarlo más
           tarde.
@@ -118,7 +124,7 @@ function Menu() {
                     setPage(1);
                   }}
                 >
-                  {type.name}
+                  {firstLetterUpper(type.name)}
                 </Button>
               ))
             )}
@@ -145,62 +151,68 @@ function Menu() {
                 ))}
         </div>
       </div>
-      <Pagination className="mb-6">
-        <PaginationContent>
-          <PaginationItem>
-            <PaginationPrevious
-              href="#"
-              aria-disabled={page === 1}
-              onClick={(e) => {
-                e.preventDefault();
-                if (page > 1) {
-                  setPage(page - 1);
+      {!categories.isLoading && !suppliesByType.isLoading && (
+        <Pagination
+          className={`${suppliesByType.data?.is_business_open ? 'hidden' : ''} mb-6`}
+        >
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                text="Anterior"
+                aria-disabled={page === 1}
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (page > 1) {
+                    setPage(page - 1);
+                  }
+                }}
+              />
+            </PaginationItem>
+
+            {Array.from(
+              {
+                length:
+                  suppliesByType?.data?.metadata?.pagination?.totalPages ?? 0,
+              },
+              (_, i) => (
+                <PaginationItem key={i + 1}>
+                  <PaginationLink
+                    href="#"
+                    isActive={page === i + 1}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setPage(i + 1);
+                    }}
+                  >
+                    {i + 1}
+                  </PaginationLink>
+                </PaginationItem>
+              )
+            )}
+
+            <PaginationItem>
+              <PaginationNext
+                text="Siguiente"
+                aria-disabled={
+                  page ===
+                  suppliesByType?.data?.metadata?.pagination?.totalPages
                 }
-              }}
-            />
-          </PaginationItem>
+                onClick={(e) => {
+                  e.preventDefault();
 
-          {Array.from(
-            {
-              length:
-                suppliesByType?.data?.metadata?.pagination?.totalPages ?? 0,
-            },
-            (_, i) => (
-              <PaginationItem key={i + 1}>
-                <PaginationLink
-                  href="#"
-                  isActive={page === i + 1}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setPage(i + 1);
-                  }}
-                >
-                  {i + 1}
-                </PaginationLink>
-              </PaginationItem>
-            )
-          )}
-
-          <PaginationItem>
-            <PaginationNext
-              href="#"
-              aria-disabled={
-                page === suppliesByType?.data?.metadata?.pagination?.totalPages
-              }
-              onClick={(e) => {
-                e.preventDefault();
-
-                if (
-                  page <
-                  (suppliesByType?.data?.metadata?.pagination?.totalPages ?? 1)
-                ) {
-                  setPage(page + 1);
-                }
-              }}
-            />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
+                  if (
+                    page <
+                    (suppliesByType?.data?.metadata?.pagination?.totalPages ??
+                      1)
+                  ) {
+                    setPage(page + 1);
+                  }
+                }}
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      )}
     </section>
   );
 }

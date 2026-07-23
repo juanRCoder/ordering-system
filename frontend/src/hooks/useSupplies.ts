@@ -3,6 +3,7 @@ import { SuppliesKeys } from '@/lib/querykeys';
 import suppliesService from '@/services/supplies.service';
 import { toast } from 'sonner';
 import { toastStyles } from '@/lib/toast';
+import { useEffect } from 'react';
 
 export function useCreateSupply() {
   const queryClient = useQueryClient();
@@ -77,6 +78,32 @@ export function useUpdateSupplyStatus() {
   });
 }
 
+export function useSuppliesStream(slug: string) {
+  const queryClient = useQueryClient();
+  const API = import.meta.env.VITE_API_DEV;
+
+  useEffect(() => {
+    if (!slug) return;
+
+    const eventSource = new EventSource(
+      `${API}/supplies/stream/${slug}/status`,
+      { withCredentials: true }
+    );
+
+    eventSource.onmessage = () => {
+      queryClient.invalidateQueries({ queryKey: SuppliesKeys.all });
+    };
+
+    eventSource.onerror = () => {
+      eventSource.close();
+    };
+
+    return () => {
+      eventSource.close();
+    };
+  }, [slug, queryClient]);
+}
+
 export function useUpdateSupply() {
   const queryClient = useQueryClient();
 
@@ -91,4 +118,30 @@ export function useUpdateSupply() {
       toast.error('Error al actualizar el insumo', toastStyles.error);
     },
   });
+}
+
+export function useUpdateSupplyPriceStream(slug: string) {
+  const queryClient = useQueryClient();
+  const API = import.meta.env.VITE_API_DEV;
+
+  useEffect(() => {
+    if (!slug) return;
+
+    const eventSource = new EventSource(
+      `${API}/supplies/stream/${slug}/price`,
+      { withCredentials: true }
+    );
+
+    eventSource.onmessage = () => {
+      queryClient.invalidateQueries({ queryKey: SuppliesKeys.all });
+    };
+
+    eventSource.onerror = () => {
+      eventSource.close();
+    };
+
+    return () => {
+      eventSource.close();
+    };
+  }, [slug, queryClient]);
 }

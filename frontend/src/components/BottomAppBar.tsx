@@ -25,7 +25,7 @@ export const BottomAppBar = ({ statusAdmin }: props) => {
     });
     items.push({
       id: 'perfil',
-      label: 'perfil',
+      label: 'Perfil',
       icon: User,
       to: '/admin/settings',
     });

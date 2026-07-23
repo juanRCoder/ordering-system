@@ -9,6 +9,8 @@ import { CreateSupplyDto } from './dto/create-supply.dto';
 import { UpdateSupplyDto } from './dto/update-supply.dto';
 import { CloudinaryService } from '../../cloudinary/cloudinary.service';
 import { StatusSupply } from '../../generated/prisma/enums';
+import { Subject } from 'rxjs';
+import { EventSupplyDto, EventUpdatePriceDto } from './dto/event-supply.dto';
 
 @Injectable()
 export class SuppliesService {
@@ -18,6 +20,22 @@ export class SuppliesService {
   ) {}
 
   private rootFolder = 'ordering-system';
+  private channels = new Map<string, Subject<EventSupplyDto>>();
+  private channelUpdatePrice = new Map<string, Subject<EventUpdatePriceDto>>();
+
+  private getChannel(slug: string): Subject<EventSupplyDto> {
+    if (!this.channels.has(slug)) {
+      this.channels.set(slug, new Subject<EventSupplyDto>());
+    }
+    return this.channels.get(slug)!;
+  }
+
+  private getChannelUpdatePrice(slug: string): Subject<EventUpdatePriceDto> {
+    if (!this.channelUpdatePrice.has(slug)) {
+      this.channelUpdatePrice.set(slug, new Subject<EventUpdatePriceDto>());
+    }
+    return this.channelUpdatePrice.get(slug)!;
+  }
 
   async create(
     createSupplyDto: CreateSupplyDto,
@@ -123,7 +141,7 @@ export class SuppliesService {
     letters?: string,
     page: number = 1
   ) {
-    const limit = 2;
+    const limit = 10;
     const startCount = (page - 1) * limit;
 
     const search = letters?.trim();
@@ -221,6 +239,16 @@ export class SuppliesService {
   }
 
   async updateStatus(id: string, adminId: string) {
+    const admin = await this.prisma.users.findUnique({
+      where: { id: adminId },
+    });
+    if (!admin) {
+      throw new NotFoundException({
+        code: 'ADMIN_NOT_FOUND',
+        message: `The admin with id "${adminId}" does not exist`,
+      });
+    }
+
     const adminSupply = await this.prisma.adminSupplies.findUnique({
       where: { id, admin_id: adminId },
     });
@@ -250,6 +278,10 @@ export class SuppliesService {
       },
     });
 
+    this.getChannel(admin.slug!).next({
+      status: updatedSupply.status,
+    });
+
     return {
       status: HttpStatus.OK,
       data: {
@@ -259,12 +291,26 @@ export class SuppliesService {
     };
   }
 
+  getAdminSupplyUpdateStream(slug: string) {
+    return this.getChannel(slug).asObservable();
+  }
+
   async update(
     id: string,
     updateSupplyDto: UpdateSupplyDto,
     file?: Express.Multer.File,
     adminId?: string
   ) {
+    const admin = await this.prisma.users.findUnique({
+      where: { id: adminId },
+    });
+    if (!admin) {
+      throw new NotFoundException({
+        code: 'ADMIN_NOT_FOUND',
+        message: `The admin with id "${adminId}" does not exist`,
+      });
+    }
+
     const supply = await this.prisma.adminSupplies.findUnique({
       where: { id, admin_id: adminId },
     });
@@ -304,11 +350,15 @@ export class SuppliesService {
     //   }
     // }
 
-    await this.prisma.adminSupplies.update({
+    const updateAdminSupply = await this.prisma.adminSupplies.update({
       where: { id },
       data: {
         price,
       },
+    });
+
+    this.getChannelUpdatePrice(admin.slug!).next({
+      price: updateAdminSupply.price,
     });
 
     return {
@@ -317,5 +367,9 @@ export class SuppliesService {
         ok: true,
       },
     };
+  }
+
+  getAdminSupplyUpdatePriceStream(slug: string) {
+    return this.getChannelUpdatePrice(slug).asObservable();
   }
 }
