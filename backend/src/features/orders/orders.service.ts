@@ -4,7 +4,7 @@ import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { ConfirmOrderDto } from './dto/confirm-order.dto';
 import { Subject } from 'rxjs';
-import { Orders } from '../../generated/prisma/client';
+import { Orders, StatusOrder } from '../../generated/prisma/client';
 
 @Injectable()
 export class OrdersService {
@@ -174,20 +174,34 @@ export class OrdersService {
     };
   }
 
-  async findAll(adminId: string) {
-    const orders = await this.prisma.orders.findMany({
-      where: { admin_id: adminId },
-      orderBy: { created_at: 'desc' },
-      select: {
-        id: true,
-        guest_name: true,
-        status: true,
-        order_type: true,
-        created_at: true,
-        total: true,
-        is_confirmed: true,
-      },
-    });
+  async findAll(
+    adminId: string,
+    page: number = 1,
+    status: StatusOrder = 'PENDING'
+  ) {
+    const limit = 2;
+    const startCount = (page - 1) * limit;
+
+    const [orders, total] = await Promise.all([
+      this.prisma.orders.findMany({
+        where: { admin_id: adminId, status },
+        orderBy: [{ created_at: 'desc' }],
+        select: {
+          id: true,
+          guest_name: true,
+          status: true,
+          order_type: true,
+          created_at: true,
+          total: true,
+          is_confirmed: true,
+        },
+        skip: startCount,
+        take: limit,
+      }),
+      this.prisma.orders.count({ where: { admin_id: adminId, status } }),
+    ]);
+
+    const totalPages = Math.ceil(total / limit);
 
     return {
       status: HttpStatus.OK,
@@ -200,6 +214,18 @@ export class OrdersService {
         is_confirmed: order.is_confirmed,
         total: order.total.toNumber(),
       })),
+      counts: {
+        pending: await this.prisma.orders.count({
+          where: { admin_id: adminId, status: 'PENDING' },
+        }),
+      },
+      metadata: {
+        pagination: {
+          total,
+          totalPages,
+          page,
+        },
+      },
     };
   }
 

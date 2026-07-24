@@ -121,7 +121,12 @@ export class SuppliesService {
     return this.findSuppliesForAdmin(getAdmin, categoryId, letters, page);
   }
 
-  async findByAdminId(adminId: string, categoryId: string, letters?: string) {
+  async findByAdminId(
+    adminId: string,
+    categoryId: string,
+    letters?: string,
+    page: number = 1
+  ) {
     const admin = await this.prisma.users.findUnique({
       where: { id: adminId },
     });
@@ -132,7 +137,7 @@ export class SuppliesService {
       });
     }
     const getAdmin = { id: adminId, is_business_open: admin.is_business_open };
-    return this.findSuppliesForAdmin(getAdmin, categoryId, letters);
+    return this.findSuppliesForAdmin(getAdmin, categoryId, letters, page);
   }
 
   private async findSuppliesForAdmin(

@@ -43,9 +43,16 @@ export class SuppliesController {
   @Get()
   async findByAdminId(
     @CurrentAdmin() admin: { sub: string },
-    @Query('categoryId') categoryId: string
+    @Query('categoryId') categoryId: string,
+    @Query('letters') letters?: string,
+    @Query('page') page: number = 1
   ) {
-    return this.suppliesService.findByAdminId(admin.sub, categoryId);
+    return this.suppliesService.findByAdminId(
+      admin.sub,
+      categoryId,
+      letters,
+      page
+    );
   }
 
   @UseGuards(AdminGuard)

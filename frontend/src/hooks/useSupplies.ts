@@ -40,11 +40,19 @@ export function useSuppliesBySlug(
   });
 }
 
-export function useSuppliesByAdmin(categoryId: string) {
+export function useSuppliesByAdmin(
+  categoryId: string,
+  letters?: string,
+  page = 1
+) {
   return useQuery({
-    queryKey: SuppliesKeys.byAdmin(categoryId),
-    queryFn: () => suppliesService.findByAdminId(categoryId),
+    queryKey: SuppliesKeys.byAdmin(categoryId, letters || '', page),
+    queryFn: () =>
+      suppliesService.findByAdminId(categoryId, letters || '', page),
     enabled: !!categoryId,
+    staleTime: 1000 * 60 * 5,
+    refetchOnMount: true,
+    refetchOnWindowFocus: false,
   });
 }
 

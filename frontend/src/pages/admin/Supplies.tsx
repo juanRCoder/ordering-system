@@ -11,12 +11,21 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useCategories } from '@/hooks/useCategories';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSuppliesByAdmin } from '@/hooks/useSupplies';
 import { SupplyCardAdminSkeleton } from '@/skeletons/SupplyCardSkeleton';
 import type { SupplyResponse } from '@/interfaces/supplies.interface';
 import { SupplyCard } from '@/components/admin/SupplyCard';
 import type { CategoryResponse } from '@/interfaces/categories.interface';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination';
+import { InputSearch } from '@/components/InputSearch';
 
 function Supplies() {
   const [supplyOrigin, setSupplyOrigin] = useState('PLATFORM');
@@ -25,11 +34,28 @@ function Supplies() {
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(
     null
   );
+  const [letters, setLetters] = useState<string>('');
+  const [debouncedLetters, setDebouncedLetters] = useState('');
+  const [page, setPage] = useState(1);
   const [openDialog, setOpenDialog] = useState<boolean>(false);
 
   const categories = useCategories();
   const activeCategoryId = selectedCategoryId ?? categories.data?.[0]?.id ?? '';
-  const suppliesByType = useSuppliesByAdmin(activeCategoryId);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedLetters(letters);
+      setPage(1);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [letters]);
+
+  const suppliesByType = useSuppliesByAdmin(
+    activeCategoryId,
+    debouncedLetters,
+    page
+  );
 
   const selectedCategory = categories.data?.find(
     (category: CategoryResponse) => category.id === activeCategoryId
@@ -46,7 +72,11 @@ function Supplies() {
       />
       <div className="flex flex-col p-3 pb-24">
         <div className="flex flex-col gap-3.5">
-          {/* <InputSearch placeholder="Buscar general" /> */}
+          <InputSearch
+            value={letters}
+            onChange={setLetters}
+            placeholder="Buscar por nombre de insumo"
+          />
           <div className="max-w-md flex gap-3.5">
             <Select
               value={selectedCategoryId}
@@ -78,7 +108,7 @@ function Supplies() {
             </Button> */}
           </div>
           <h2 className="text-xl font-semibold text-[#161D17]">
-            {suppliesByType.data?.length} resultados{' '}
+            {suppliesByType.data?.data?.length} resultados{' '}
             {selectedCategory?.name === 'Todos'
               ? ''
               : 'en ' + selectedCategory?.name}
@@ -88,7 +118,7 @@ function Supplies() {
               ? Array.from({ length: 3 }).map((_, i) => (
                   <SupplyCardAdminSkeleton key={i} />
                 ))
-              : suppliesByType.data?.map((supply: SupplyResponse) => (
+              : suppliesByType.data.data?.map((supply: SupplyResponse) => (
                   <SupplyCard
                     key={supply.id}
                     data={supply}
@@ -102,6 +132,63 @@ function Supplies() {
                 ))}
           </div>
         </div>
+        <Pagination className={`my-6`}>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                text="Anterior"
+                aria-disabled={page === 1}
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (page > 1) {
+                    setPage(page - 1);
+                  }
+                }}
+              />
+            </PaginationItem>
+
+            {Array.from(
+              {
+                length:
+                  suppliesByType?.data?.metadata?.pagination?.totalPages ?? 0,
+              },
+              (_, i) => (
+                <PaginationItem key={i + 1}>
+                  <PaginationLink
+                    isActive={page === i + 1}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setPage(i + 1);
+                    }}
+                  >
+                    {i + 1}
+                  </PaginationLink>
+                </PaginationItem>
+              )
+            )}
+
+            <PaginationItem>
+              <PaginationNext
+                text="Siguiente"
+                aria-disabled={
+                  page ===
+                  suppliesByType?.data?.metadata?.pagination?.totalPages
+                }
+                onClick={(e) => {
+                  e.preventDefault();
+
+                  if (
+                    page <
+                    (suppliesByType?.data?.metadata?.pagination?.totalPages ??
+                      1)
+                  ) {
+                    setPage(page + 1);
+                  }
+                }}
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
       </div>
       <div className="fixed w-full mx-auto bottom-0">
         <BottomAppBar statusAdmin={true} />

@@ -19,14 +19,17 @@ class SuppliesService {
     return result;
   }
 
-  async findByAdminId(categoryId: string) {
-    const response = await fetch(
-      `${this.API}/supplies?categoryId=${categoryId}`,
-      {
-        method: 'GET',
-        credentials: 'include',
-      }
-    );
+  async findByAdminId(categoryId: string, letters?: string, page = 1) {
+    let url = `${this.API}/supplies?categoryId=${categoryId}&page=${page}`;
+
+    if (letters) {
+      url += `&letters=${letters}`;
+    }
+
+    const response = await fetch(url, {
+      method: 'GET',
+      credentials: 'include',
+    });
 
     const result = await response.json();
     if (!response.ok) {
@@ -36,7 +39,7 @@ class SuppliesService {
         message: result.message,
       };
     }
-    return result.data;
+    return result;
   }
 
   async getBySlug(

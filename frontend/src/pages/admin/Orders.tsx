@@ -9,6 +9,14 @@ import type { OrderListResponseType } from '@/interfaces/orders.interface';
 import { OrderCardSkeleton } from '@/skeletons/OrderCardSkeleton';
 import { useState } from 'react';
 import { useBusinessStore } from '@/stores/business.store';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination';
 
 function Orders() {
   const { slug } = useBusinessStore();
@@ -18,9 +26,14 @@ function Orders() {
   );
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
   const [refreshKey, setRefreshKey] = useState<number>(0); // para refrescar horario
-
-  const orders = useOrdersQuery();
+  const [page, setPage] = useState(1);
+  const orders = useOrdersQuery(page, selectedStatus);
   useOrdersStream(slug || '');
+
+  const handlerSelectTab = (status: 'PENDING' | 'FINISHED') => {
+    setSelectedStatus(status);
+    setPage(1);
+  };
 
   return (
     <section className="bg-[#F8F9FF] min-h-screen flex flex-col">
@@ -56,24 +69,19 @@ function Orders() {
             <div className="flex flex-1 gap-3 flex-wrap">
               <Button
                 variant={selectedStatus === 'PENDING' ? 'default' : 'outline'}
-                onClick={() => setSelectedStatus('PENDING')}
+                onClick={() => handlerSelectTab('PENDING')}
                 className="px-4 py-6 font-normal min-w-32 rounded-sm cursor-pointer text-[17px]"
               >
                 Pedidos
                 <span
                   className={`${selectedStatus === 'PENDING' ? 'bg-white/20' : 'bg-[#D8E9FF]/50'} rounded-full h-8 w-8 grid place-items-center text-sm`}
                 >
-                  {
-                    orders?.data?.filter(
-                      (order: OrderListResponseType) =>
-                        order.status === 'PENDING'
-                    )?.length
-                  }
+                  {orders?.data?.counts?.pending}
                 </span>
               </Button>
               <Button
                 variant={selectedStatus === 'FINISHED' ? 'default' : 'outline'}
-                onClick={() => setSelectedStatus('FINISHED')}
+                onClick={() => handlerSelectTab('FINISHED')}
                 className="px-4 py-6 font-normal min-w-32 rounded-sm cursor-pointer text-[17px]"
               >
                 Finalizados
@@ -87,23 +95,71 @@ function Orders() {
               ? Array.from({ length: 3 }).map((_, index) => (
                   <OrderCardSkeleton key={index} />
                 ))
-              : orders?.data
-                  ?.filter(
-                    (order: OrderListResponseType) =>
-                      order.status === selectedStatus
-                  )
-                  .map((order: OrderListResponseType) => (
-                    <OrderCard
-                      key={`${order.id}-${refreshKey}`}
-                      data={order}
-                      handlerEvents={() => {
-                        setOpenDrawer(true);
-                        setSelectedOrderId(order.id);
-                      }}
-                    />
-                  ))}
+              : orders.data?.data.map((order: OrderListResponseType) => (
+                  <OrderCard
+                    key={`${order.id}-${refreshKey}`}
+                    data={order}
+                    handlerEvents={() => {
+                      setOpenDrawer(true);
+                      setSelectedOrderId(order.id);
+                    }}
+                  />
+                ))}
           </div>
         </div>
+        <Pagination className={`my-6`}>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                text="Anterior"
+                aria-disabled={page === 1}
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (page > 1) {
+                    setPage(page - 1);
+                  }
+                }}
+              />
+            </PaginationItem>
+
+            {Array.from(
+              {
+                length: orders?.data?.metadata?.pagination?.totalPages ?? 0,
+              },
+              (_, i) => (
+                <PaginationItem key={i + 1}>
+                  <PaginationLink
+                    isActive={page === i + 1}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setPage(i + 1);
+                    }}
+                  >
+                    {i + 1}
+                  </PaginationLink>
+                </PaginationItem>
+              )
+            )}
+
+            <PaginationItem>
+              <PaginationNext
+                text="Siguiente"
+                aria-disabled={
+                  page === orders?.data?.metadata?.pagination?.totalPages
+                }
+                onClick={(e) => {
+                  e.preventDefault();
+
+                  if (
+                    page < (orders?.data?.metadata?.pagination?.totalPages ?? 1)
+                  ) {
+                    setPage(page + 1);
+                  }
+                }}
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
       </div>
       <div className="fixed w-full mx-auto bottom-0">
         <BottomAppBar statusAdmin={true} />

@@ -26,10 +26,13 @@ class OrdersService {
     return result;
   }
 
-  async getAll() {
-    const response = await fetch(`${this.API}/orders`, {
-      credentials: 'include',
-    });
+  async getAll(page = 1, status: string = 'PENDING') {
+    const response = await fetch(
+      `${this.API}/orders?page=${page}&status=${status}`,
+      {
+        credentials: 'include',
+      }
+    );
 
     const result = await response.json();
     if (!response.ok) {
@@ -39,8 +42,7 @@ class OrdersService {
         message: result.message,
       };
     }
-
-    return result.data;
+    return result;
   }
 
   async getById(id: string) {

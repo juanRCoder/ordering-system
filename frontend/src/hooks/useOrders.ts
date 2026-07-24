@@ -33,10 +33,13 @@ export function useCreateOrder(slug: string) {
   });
 }
 
-export function useOrdersQuery() {
+export function useOrdersQuery(page = 1, status = 'PENDING') {
   return useQuery({
-    queryKey: OrdersKeys.all,
-    queryFn: () => ordersService.getAll(),
+    queryKey: [...OrdersKeys.all, page, status],
+    queryFn: () => ordersService.getAll(page, status),
+    staleTime: 1000 * 60 * 5,
+    refetchOnMount: true,
+    refetchOnWindowFocus: false,
   });
 }
 

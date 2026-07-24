@@ -9,6 +9,7 @@ import {
   Post,
   Sse,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
@@ -17,6 +18,7 @@ import { ConfirmOrderDto } from './dto/confirm-order.dto';
 import { AdminGuard } from '../auth/auth.guard';
 import { CurrentAdmin } from '../../common/decorators/current-admin.decorator';
 import { map, Observable } from 'rxjs';
+import { StatusOrder } from '../../generated/prisma/enums';
 
 @Controller('orders')
 export class OrdersController {
@@ -24,8 +26,12 @@ export class OrdersController {
 
   @UseGuards(AdminGuard)
   @Get()
-  async findAll(@CurrentAdmin() admin: { sub: string }) {
-    return this.ordersService.findAll(admin.sub);
+  async findAll(
+    @CurrentAdmin() admin: { sub: string },
+    @Query('page') page: number = 1,
+    @Query('status') status: StatusOrder
+  ) {
+    return this.ordersService.findAll(admin.sub, page, status);
   }
 
   @UseGuards(AdminGuard)

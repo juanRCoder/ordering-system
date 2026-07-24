@@ -32,8 +32,16 @@ export const SuppliesKeys = {
       'page',
       page,
     ] as const,
-  byAdmin: (categoryId: string) =>
-    [...baseKeys.supplies, 'category', categoryId] as const,
+  byAdmin: (categoryId: string, letters: string, page: number) =>
+    [
+      ...baseKeys.supplies,
+      'category',
+      categoryId,
+      'letters',
+      letters,
+      'page',
+      page,
+    ] as const,
   byId: (id: string) => [...baseKeys.supplies, 'id', id] as const,
 };
 
