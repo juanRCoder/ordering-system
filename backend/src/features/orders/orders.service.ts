@@ -1,10 +1,15 @@
-import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../../prisma.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { ConfirmOrderDto } from './dto/confirm-order.dto';
 import { Subject } from 'rxjs';
-import { Orders, StatusOrder } from '../../generated/prisma/client';
+import { Orders, Prisma, StatusOrder } from '../../generated/prisma/client';
 
 @Injectable()
 export class OrdersService {
@@ -37,6 +42,10 @@ export class OrdersService {
     const order = await this.prisma.$transaction(async (tx) => {
       let currentOrder;
 
+      const supplyIds = [...new Set(supplies.map((s) => s.id))];
+
+      await this.validateSupplies(tx, admin.id, supplies, supplyIds);
+
       if (order_id) {
         const findOrder = await tx.orders.findUnique({
           where: { id: order_id },
@@ -65,8 +74,6 @@ export class OrdersService {
           },
         });
       }
-
-      const supplyIds = supplies.map((s) => s.id);
 
       const existingSuppliesOrder = await tx.suppliesOrders.findMany({
         where: {
@@ -126,9 +133,54 @@ export class OrdersService {
       },
     };
   }
-
   getOrdersStream(slug: string) {
     return this.getChannel(slug).asObservable();
+  }
+
+  private async validateSupplies(
+    tx: Prisma.TransactionClient,
+    adminId: string,
+    supplies: CreateOrderDto['supplies'],
+    supplyIds: string[]
+  ) {
+    const suppliesInDb = await tx.adminSupplies.findMany({
+      where: {
+        id: { in: supplyIds },
+        admin_id: adminId,
+      },
+      select: {
+        id: true,
+        price: true,
+        status: true,
+      },
+    });
+
+    const currentMap = new Map(suppliesInDb.map((s) => [s.id, s]));
+
+    for (const supply of supplies) {
+      const current = currentMap.get(supply.id);
+
+      if (!current) {
+        throw new BadRequestException({
+          code: 'SUPPLY_NOT_FOUND',
+          message: `The supply with ID ${supply.id} does not exist`,
+        });
+      }
+
+      if (current.status !== 'AVAILABLE') {
+        throw new BadRequestException({
+          code: 'SUPPLY_NOT_AVAILABLE',
+          message: `The supply with ID ${supply.id} is not available`,
+        });
+      }
+
+      if (current.price.toNumber() !== supply.price) {
+        throw new BadRequestException({
+          code: 'SUPPLY_PRICE_MISMATCH',
+          message: `The price of supply with ID ${supply.id} does not match`,
+        });
+      }
+    }
   }
 
   async findOne(id: string) {
