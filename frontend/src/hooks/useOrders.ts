@@ -33,10 +33,10 @@ export function useCreateOrder(slug: string) {
   });
 }
 
-export function useOrdersQuery(page = 1, status = 'PENDING') {
+export function useOrdersQuery(page = 1, status = 'PENDING', dateFilter = '') {
   return useQuery({
-    queryKey: [...OrdersKeys.all, page, status],
-    queryFn: () => ordersService.getAll(page, status),
+    queryKey: [...OrdersKeys.all, page, status, dateFilter],
+    queryFn: () => ordersService.getAll(page, status, dateFilter),
     staleTime: 1000 * 60 * 5,
     refetchOnMount: true,
     refetchOnWindowFocus: false,

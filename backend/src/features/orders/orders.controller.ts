@@ -19,6 +19,7 @@ import { AdminGuard } from '../auth/auth.guard';
 import { CurrentAdmin } from '../../common/decorators/current-admin.decorator';
 import { map, Observable } from 'rxjs';
 import { StatusOrder } from '../../generated/prisma/enums';
+import { DateFilter } from '../../utils/date-range.util';
 
 @Controller('orders')
 export class OrdersController {
@@ -29,9 +30,10 @@ export class OrdersController {
   async findAll(
     @CurrentAdmin() admin: { sub: string },
     @Query('page') page: number = 1,
-    @Query('status') status: StatusOrder
+    @Query('status') status: StatusOrder,
+    @Query('dateFilter') dateFilter: DateFilter
   ) {
-    return this.ordersService.findAll(admin.sub, page, status);
+    return this.ordersService.findAll(admin.sub, page, status, dateFilter);
   }
 
   @UseGuards(AdminGuard)

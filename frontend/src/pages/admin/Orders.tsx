@@ -24,15 +24,18 @@ function Orders() {
   const [selectedStatus, setSelectedStatus] = useState<'PENDING' | 'FINISHED'>(
     'PENDING'
   );
+  const [dateFilter, setDateFilter] = useState<string>('today');
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
   const [refreshKey, setRefreshKey] = useState<number>(0); // para refrescar horario
   const [page, setPage] = useState(1);
-  const orders = useOrdersQuery(page, selectedStatus);
+  const orders = useOrdersQuery(page, selectedStatus, dateFilter);
   useOrdersStream(slug || '');
 
   const handlerSelectTab = (status: 'PENDING' | 'FINISHED') => {
     setSelectedStatus(status);
     setPage(1);
+    if (status === 'FINISHED') setDateFilter('today');
+    else setDateFilter('');
   };
 
   return (
@@ -65,7 +68,7 @@ function Orders() {
             </h2>
           </div>
           {/* <InputSearch /> */}
-          <div className="flex items-center justify-between gap-3">
+          <div className="flex flex-col items-start justify-between gap-3">
             <div className="flex flex-1 gap-3 flex-wrap">
               <Button
                 variant={selectedStatus === 'PENDING' ? 'default' : 'outline'}
@@ -87,6 +90,28 @@ function Orders() {
                 Finalizados
               </Button>
             </div>
+            {selectedStatus === 'FINISHED' && (
+              <div className="flex flex-1 gap-3 flex-wrap">
+                <Button
+                  variant={dateFilter === 'today' ? 'default' : 'outline'}
+                  onClick={() => setDateFilter('today')}
+                >
+                  Hoy
+                </Button>
+                <Button
+                  variant={dateFilter === 'yesterday' ? 'default' : 'outline'}
+                  onClick={() => setDateFilter('yesterday')}
+                >
+                  Ayer
+                </Button>
+                <Button
+                  variant={dateFilter === 'older' ? 'default' : 'outline'}
+                  onClick={() => setDateFilter('older')}
+                >
+                  Ultimos dias
+                </Button>
+              </div>
+            )}
           </div>
         </div>
         <div className="mt-4">
@@ -107,7 +132,9 @@ function Orders() {
                 ))}
           </div>
         </div>
-        <Pagination className={`my-6`}>
+        <Pagination
+          className={`my-6 ${orders.data?.data.length === 0 ? 'hidden' : ''}`}
+        >
           <PaginationContent>
             <PaginationItem>
               <PaginationPrevious

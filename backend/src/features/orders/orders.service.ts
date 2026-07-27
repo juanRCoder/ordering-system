@@ -10,6 +10,7 @@ import { UpdateOrderDto } from './dto/update-order.dto';
 import { ConfirmOrderDto } from './dto/confirm-order.dto';
 import { Subject } from 'rxjs';
 import { Orders, Prisma, StatusOrder } from '../../generated/prisma/client';
+import { DateFilter, getDateRange } from '../../utils/date-range.util';
 
 @Injectable()
 export class OrdersService {
@@ -229,14 +230,26 @@ export class OrdersService {
   async findAll(
     adminId: string,
     page: number = 1,
-    status: StatusOrder = 'PENDING'
+    status: StatusOrder = 'PENDING',
+    dateFilter?: DateFilter
   ) {
-    const limit = 2;
+    const limit = 10;
     const startCount = (page - 1) * limit;
+
+    const dateRange = getDateRange(dateFilter);
+
+    const where = {
+      admin_id: adminId,
+      status,
+      ...(status === 'FINISHED' &&
+        dateRange && {
+          created_at: dateRange,
+        }),
+    };
 
     const [orders, total] = await Promise.all([
       this.prisma.orders.findMany({
-        where: { admin_id: adminId, status },
+        where,
         orderBy: [{ created_at: 'desc' }],
         select: {
           id: true,
@@ -250,7 +263,7 @@ export class OrdersService {
         skip: startCount,
         take: limit,
       }),
-      this.prisma.orders.count({ where: { admin_id: adminId, status } }),
+      this.prisma.orders.count({ where }),
     ]);
 
     const totalPages = Math.ceil(total / limit);

@@ -26,9 +26,9 @@ class OrdersService {
     return result;
   }
 
-  async getAll(page = 1, status: string = 'PENDING') {
+  async getAll(page = 1, status: string = 'PENDING', dateFilter: string = '') {
     const response = await fetch(
-      `${this.API}/orders?page=${page}&status=${status}`,
+      `${this.API}/orders?page=${page}&status=${status}&dateFilter=${dateFilter}`,
       {
         credentials: 'include',
       }
