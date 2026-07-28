@@ -65,7 +65,7 @@ function Auth() {
         </div>
       </div>
       <p className="text-center text-xs pb-3 text-[#595F64]">
-        © 2026 CraveFlow. Todos los derechos reservados.
+        © 2026 CaveFlow. Todos los derechos reservados.
       </p>
     </section>
   );

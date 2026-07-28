@@ -6,6 +6,8 @@ export const defaultLoginFormValues = {
 export const defaultRegisterFormValues = {
   ...defaultLoginFormValues,
   name: '',
+  slug: '',
+  business_name: '',
 };
 
 export const defaultNewOrder = {

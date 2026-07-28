@@ -67,12 +67,6 @@ export class AuthController {
   }
 
   @UseGuards(AdminGuard)
-  @Post('create-admin')
-  createAdmin(@Body() registerDto: RegisterDto) {
-    return this.authService.createAdmin(registerDto);
-  }
-
-  @UseGuards(AdminGuard)
   @Patch('is-business-open')
   updateIsBusinessOpen(
     @CurrentAdmin() admin: { sub: string },

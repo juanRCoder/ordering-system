@@ -28,6 +28,7 @@ export function useLogin() {
           slug: data.slug,
           owner_name: data.name,
           is_business_open: data.is_business_open,
+          phone: data.phone,
         });
         navigate('/admin/orders');
       } else {
@@ -52,14 +53,12 @@ export function useLogin() {
 
 export function useRegister() {
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
 
   return useMutation({
     mutationFn: (data: RegisterFormType) => authService.register(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: UsersKeys.me });
       toast.success('Registro exitoso!', toastStyles.success);
-      navigate('/menu');
     },
     onError: (error: ErrorResponse) => {
       if (error?.status === 409) {

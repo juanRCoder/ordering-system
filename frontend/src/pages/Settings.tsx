@@ -15,7 +15,7 @@ type props = {
 
 export default function Settings({ isAdmin }: props) {
   const logout = useLogout();
-  const { slug, owner_name, business_name, is_business_open } =
+  const { slug, owner_name, business_name, is_business_open, phone } =
     useBusinessStore();
   const update = useUpdateBusinessStatus();
 
@@ -23,7 +23,7 @@ export default function Settings({ isAdmin }: props) {
   const [isClosed, setIsClosed] = useState<boolean>(is_business_open!);
 
   const handleCopy = async () => {
-    const url = `${window.location.origin}/${slug}/menu?wa=51956402456`;
+    const url = `${window.location.origin}/${slug}/menu?wa=${phone}`;
     try {
       await navigator.clipboard.writeText(url);
       // toast.success('Enlace copiado!', toastStyles.success);
@@ -59,7 +59,7 @@ export default function Settings({ isAdmin }: props) {
       <TopAppBar
         subtitle={
           isAdmin && (
-            <p className="text-sm text-muted-foreground truncate max-w-[180px]">
+            <p className="text-sm text-muted-foreground truncate max-w-45">
               Panel de Administrativo
             </p>
           )
@@ -75,7 +75,7 @@ export default function Settings({ isAdmin }: props) {
             <img
               src="/no_image.webp"
               alt="pizzeria-ramirez"
-              className="w-[100px] h-[100px] rounded-full object-cover shrink-0"
+              className="size-25 rounded-full object-cover shrink-0"
             />
             <div className="flex flex-col gap-3.5 pt-0.5">
               <div>

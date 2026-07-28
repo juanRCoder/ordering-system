@@ -29,10 +29,8 @@ export class AuthService {
   ) {}
 
   async register(registerDto: RegisterDto) {
-    const { email, name, password } = registerDto;
-
     const userExists = await this.prisma.users.findUnique({
-      where: { email },
+      where: { email: registerDto.email },
     });
 
     if (userExists) {
@@ -42,13 +40,16 @@ export class AuthService {
       });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(registerDto.password, 10);
 
     const user = await this.prisma.users.create({
       data: {
-        email,
-        name: name || 'Unknown',
+        email: registerDto.email,
+        name: registerDto.name || 'Unknown',
         password: hashedPassword,
+        role: 'ADMIN',
+        slug: registerDto.slug,
+        business_name: registerDto.business_name,
       },
     });
 
@@ -95,32 +96,7 @@ export class AuthService {
         business_name: user.business_name,
         slug: user.slug,
         is_business_open: user.is_business_open,
-      },
-    };
-  }
-
-  async createAdmin(registerDto: RegisterDto) {
-    const { email, name, password } = registerDto;
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const user = await this.prisma.users.create({
-      data: {
-        email,
-        name: name || 'Unknown',
-        password: hashedPassword,
-        role: 'ADMIN',
-      },
-    });
-
-    const payload = { sub: user.id, role: user.role };
-
-    return {
-      status: HttpStatus.CREATED,
-      data: {
-        sub: user.id,
-        name: user.name,
-        access_token: await this.jwtService.signAsync(payload),
+        phone: user.phone,
       },
     };
   }

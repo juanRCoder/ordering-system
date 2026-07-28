@@ -7,7 +7,7 @@ import type { RegisterFormType } from '@/interfaces/auth.interface';
 import { defaultRegisterFormValues } from '@/lib/default';
 import { HeaderForm } from '@/pages/Auth';
 import { Button } from '@/components/ui/button';
-import { LockKeyhole, Mail, User } from 'lucide-react';
+import { LockKeyhole, Mail, User, Store, Phone } from 'lucide-react';
 
 export const RegisterForm = ({ onToggle }: { onToggle: () => void }) => {
   const registerMutation = useRegister();
@@ -36,6 +36,30 @@ export const RegisterForm = ({ onToggle }: { onToggle: () => void }) => {
           placeholder="Ej: Juan Pérez"
           icon={User}
           error={errors.name?.message}
+        />
+        <InputField
+          {...register('slug')}
+          id="slug"
+          label="Nombre de tienda (slug)"
+          placeholder="Ej: mi-tienda"
+          icon={Store}
+          error={errors.slug?.message}
+        />
+        <InputField
+          {...register('business_name')}
+          id="business_name"
+          label="Nombre oficial de la tienda"
+          placeholder="Ej: Mi Tienda"
+          icon={Store}
+          error={errors.business_name?.message}
+        />
+        <InputField
+          {...register('phone')}
+          id="phone"
+          label="Número de teléfono"
+          placeholder="Ej: 1234567890"
+          icon={Phone}
+          error={errors.phone?.message}
         />
         <InputField
           {...register('email')}

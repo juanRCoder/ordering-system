@@ -18,4 +18,12 @@ export class RegisterDto {
   @IsString()
   @MinLength(6)
   password!: string;
+
+  @IsNotEmpty()
+  @IsString()
+  slug!: string;
+
+  @IsNotEmpty()
+  @IsString()
+  business_name!: string;
 }

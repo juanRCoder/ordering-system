@@ -6,11 +6,13 @@ interface BusinessState {
   slug: string | null;
   owner_name: string | null;
   is_business_open: boolean | null;
+  phone: string | null;
   setBusiness: (data: {
     business_name: string;
     slug: string;
     owner_name: string;
     is_business_open: boolean;
+    phone: string;
   }) => void;
   order_id: string | null;
   guest_name: string | null;
@@ -27,12 +29,14 @@ export const useBusinessStore = create<BusinessState>()(
       guest_name: null,
       owner_name: null,
       is_business_open: null,
+      phone: null,
       setBusiness: (data) =>
         set({
           business_name: data.business_name,
           slug: data.slug,
           owner_name: data.owner_name,
           is_business_open: data.is_business_open,
+          phone: data.phone,
         }),
       setOrder: (data) =>
         set({ order_id: data.order_id, guest_name: data.guest_name }),
@@ -44,6 +48,7 @@ export const useBusinessStore = create<BusinessState>()(
           guest_name: null,
           owner_name: null,
           is_business_open: null,
+          phone: null,
         }),
     }),
     {
