@@ -7,8 +7,7 @@ interface props {
 }
 
 export const CartItem = ({ item }: props) => {
-  const { incrementQuantity, decrementQuantity, removeItem, setObservations } =
-    useCartStore();
+  const { incrementQuantity, decrementQuantity, removeItem } = useCartStore();
 
   const handleRemoveItem = (item: CartItemType) => {
     if (item.quantity > 1) decrementQuantity(item.id);
@@ -57,13 +56,13 @@ export const CartItem = ({ item }: props) => {
             </div>
           </div>
         </div>
-        <div className="w-full border-t border-border pt-2">
+        {/* <div className="w-full border-t border-border pt-2">
           <textarea
             onChange={(e) => setObservations(item.id, e.target.value)}
             placeholder="Algun detalle..."
             className="w-full border-none outline-none text-xs text-[#737780]"
           />
-        </div>
+        </div> */}
       </CardContent>
     </Card>
   );

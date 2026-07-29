@@ -111,7 +111,7 @@ export const OrderDetailsDrawer = ({
                             S/ {(supply.price * supply.quantity).toFixed(2)}
                           </span>
                         </div>
-                        {supply.observations && (
+                        {/* {supply.observations && (
                           <p className="text-[#43474F] text-xs border-l border-border ml-3 px-3 mt-2">
                             {supply.observations
                               ?.split('\n')
@@ -120,7 +120,7 @@ export const OrderDetailsDrawer = ({
                                 <p key={i}>• {obs.trim()}</p>
                               ))}
                           </p>
-                        )}
+                        )} */}
                       </div>
                     )
                   )}

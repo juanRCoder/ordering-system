@@ -26,6 +26,8 @@ import {
   PaginationPrevious,
 } from '@/components/ui/pagination';
 import { InputSearch } from '@/components/InputSearch';
+// import { Button } from '@/components/ui/button';
+// import { Plus } from 'lucide-react';
 
 function Supplies() {
   const [supplyOrigin, setSupplyOrigin] = useState('PLATFORM');

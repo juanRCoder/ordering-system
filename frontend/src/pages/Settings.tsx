@@ -71,27 +71,20 @@ export default function Settings({ isAdmin }: props) {
         </h2>
         <hr />
         <div className="rounded-2xl bg-neutral-50 pt-5">
-          <div className="flex items-start gap-4 mb-5">
-            <img
-              src="/no_image.webp"
-              alt="pizzeria-ramirez"
-              className="size-25 rounded-full object-cover shrink-0"
-            />
-            <div className="flex flex-col gap-3.5 pt-0.5">
-              <div>
-                <p className="text-xs text-neutral-500 mb-0.5">Propietario</p>
-                <p className="text-base font-medium text-neutral-900">
-                  {owner_name || 'N/A'}
-                </p>
-              </div>
-              <div>
-                <p className="text-xs text-neutral-500 mb-0.5">
-                  Nombre del negocio
-                </p>
-                <p className="text-base font-medium text-neutral-900">
-                  {business_name || 'N/A'}
-                </p>
-              </div>
+          <div className="flex flex-col gap-3.5 pt-0.5 mb-5">
+            <div>
+              <p className="text-xs text-neutral-500 mb-0.5">Propietario</p>
+              <p className="text-base font-medium text-neutral-900">
+                {owner_name || 'N/A'}
+              </p>
+            </div>
+            <div>
+              <p className="text-xs text-neutral-500 mb-0.5">
+                Nombre del negocio
+              </p>
+              <p className="text-base font-medium text-neutral-900">
+                {business_name || 'N/A'}
+              </p>
             </div>
           </div>
           <div className="flex flex-col gap-3 bg-white border border-neutral-200 rounded-xl px-5 py-4 mb-2">

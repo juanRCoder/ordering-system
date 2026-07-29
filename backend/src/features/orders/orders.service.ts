@@ -97,11 +97,11 @@ export class OrdersService {
               where: { id: existing.id },
               data: {
                 quantity: { increment: supply.quantity },
-                observations: supply.observations
-                  ? [existing.observations, supply.observations]
-                      .filter(Boolean)
-                      .join('\n')
-                  : existing.observations,
+                // observations: supply.observations
+                //   ? [existing.observations, supply.observations]
+                //       .filter(Boolean)
+                //       .join('\n')
+                //   : existing.observations,
               },
             })
           );
