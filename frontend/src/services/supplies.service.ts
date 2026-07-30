@@ -1,14 +1,40 @@
 class SuppliesService {
   private API = import.meta.env.VITE_API_DEV;
 
-  async create(data: FormData) {
-    const response = await fetch(`${this.API}/supplies`, {
-      method: 'POST',
-      credentials: 'include',
-      body: data,
-    });
+  private isRefreshing = false;
+  private refreshPromise: Promise<Response> | null = null;
+
+  async apiFetch(url: string, options?: RequestInit) {
+    let response = await fetch(url, { ...options, credentials: 'include' });
+
+    if (response.status === 401) {
+      if (!this.isRefreshing) {
+        this.isRefreshing = true;
+        this.refreshPromise = fetch(`${this.API}/auth/refresh`, {
+          method: 'POST',
+          credentials: 'include',
+        }).finally(() => {
+          this.isRefreshing = false;
+        });
+      }
+
+      const refreshPromise = this.refreshPromise;
+      if (!refreshPromise) {
+        throw new Error('No se pudo iniciar el refresh');
+      }
+
+      const refreshRes = await refreshPromise;
+
+      if (!refreshRes.ok) {
+        window.location.href = '/auth';
+        throw new Error('Sesión expirada');
+      }
+
+      response = await fetch(url, { ...options, credentials: 'include' });
+    }
 
     const result = await response.json();
+
     if (!response.ok) {
       throw {
         status: response.status,
@@ -16,6 +42,15 @@ class SuppliesService {
         message: result.message,
       };
     }
+
+    return result;
+  }
+
+  async create(data: FormData) {
+    const result = this.apiFetch(`${this.API}/supplies`, {
+      method: 'POST',
+      body: data,
+    });
     return result;
   }
 
@@ -26,19 +61,9 @@ class SuppliesService {
       url += `&letters=${letters}`;
     }
 
-    const response = await fetch(url, {
+    const result = this.apiFetch(url, {
       method: 'GET',
-      credentials: 'include',
     });
-
-    const result = await response.json();
-    if (!response.ok) {
-      throw {
-        status: response.status,
-        code: result.code,
-        message: result.message,
-      };
-    }
     return result;
   }
 
@@ -82,37 +107,17 @@ class SuppliesService {
   }
 
   async updateStatus(id: string) {
-    const response = await fetch(`${this.API}/supplies/${id}/status`, {
+    const result = await this.apiFetch(`${this.API}/supplies/${id}/status`, {
       method: 'PATCH',
-      credentials: 'include',
     });
-
-    const result = await response.json();
-    if (!response.ok) {
-      throw {
-        status: response.status,
-        code: result.code,
-        message: result.message,
-      };
-    }
     return result.data;
   }
 
   async update(id: string, data: FormData) {
-    const response = await fetch(`${this.API}/supplies/${id}`, {
+    const result = await this.apiFetch(`${this.API}/supplies/${id}`, {
       method: 'PATCH',
-      credentials: 'include',
       body: data,
     });
-
-    const result = await response.json();
-    if (!response.ok) {
-      throw {
-        status: response.status,
-        code: result.code,
-        message: result.message,
-      };
-    }
     return result.data;
   }
 }

@@ -2,6 +2,7 @@ import type {
   CreateOrderPayload,
   updateOrder,
 } from '@/interfaces/orders.interface';
+import suppliesService from './supplies.service';
 
 class OrdersService {
   private API = import.meta.env.VITE_API_DEV;
@@ -27,103 +28,53 @@ class OrdersService {
   }
 
   async getAll(page = 1, status: string = 'PENDING', dateFilter: string = '') {
-    const response = await fetch(
-      `${this.API}/orders?page=${page}&status=${status}&dateFilter=${dateFilter}`,
-      {
-        credentials: 'include',
-      }
+    const result = await suppliesService.apiFetch(
+      `${this.API}/orders?page=${page}&status=${status}&dateFilter=${dateFilter}`
     );
-
-    const result = await response.json();
-    if (!response.ok) {
-      throw {
-        status: response.status,
-        code: result.code,
-        message: result.message,
-      };
-    }
     return result;
   }
 
   async getById(id: string) {
-    const response = await fetch(`${this.API}/orders/${id}`, {
-      credentials: 'include',
-    });
-
-    const result = await response.json();
-    if (!response.ok) {
-      throw {
-        status: response.status,
-        code: result.code,
-        message: result.message,
-      };
-    }
+    const result = await suppliesService.apiFetch(`${this.API}/orders/${id}`);
     return result.data;
   }
 
   async update(data: updateOrder) {
-    const response = await fetch(`${this.API}/orders/${data.id}`, {
-      method: 'PATCH',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        status: data.status,
-        payment_type: data.payment_type,
-        order_type: data.order_type,
-      }),
-    });
-
-    const result = await response.json();
-    if (!response.ok) {
-      throw {
-        status: response.status,
-        code: result.code,
-        message: result.message,
-      };
-    }
-
+    const result = await suppliesService.apiFetch(
+      `${this.API}/orders/${data.id}`,
+      {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          status: data.status,
+          payment_type: data.payment_type,
+          order_type: data.order_type,
+        }),
+      }
+    );
     return result;
   }
 
   async delete(id: string) {
-    const response = await fetch(`${this.API}/orders/${id}`, {
+    const result = await suppliesService.apiFetch(`${this.API}/orders/${id}`, {
       method: 'DELETE',
-      credentials: 'include',
     });
-
-    const result = await response.json();
-    if (!response.ok) {
-      throw {
-        status: response.status,
-        code: result.code,
-        message: result.message,
-      };
-    }
-
     return result;
   }
 
   async confirm(id: string, is_confirmed: boolean) {
-    const response = await fetch(`${this.API}/orders/${id}/confirm`, {
-      method: 'PATCH',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ is_confirmed }),
-    });
-
-    const result = await response.json();
-    if (!response.ok) {
-      throw {
-        status: response.status,
-        code: result.code,
-        message: result.message,
-      };
-    }
-
+    const result = await suppliesService.apiFetch(
+      `${this.API}/orders/${id}/confirm`,
+      {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ is_confirmed }),
+      }
+    );
     return result;
   }
 }

@@ -10,7 +10,8 @@ import { PrismaService } from '../../prisma.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { Subject } from 'rxjs';
-import { Users } from '../../generated/prisma/client';
+import { Sessions, Users } from '../../generated/prisma/client';
+import { randomBytes } from 'node:crypto';
 
 @Injectable()
 export class AuthService {
@@ -27,6 +28,17 @@ export class AuthService {
     private prisma: PrismaService,
     private jwtService: JwtService
   ) {}
+
+  async generateRefreshToken(userId: string) {
+    const token = randomBytes(40).toString('hex');
+    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+
+    await this.prisma.sessions.create({
+      data: { refresh_token: token, user_id: userId, expires_at: expiresAt },
+    });
+
+    return token;
+  }
 
   async register(registerDto: RegisterDto) {
     const userExists = await this.prisma.users.findUnique({
@@ -82,23 +94,58 @@ export class AuthService {
       });
     }
 
-    const payload = {
-      sub: user.id,
-      role: user.role,
-    };
+    const payload = { sub: user.id, role: user.role };
+    const access_token = await this.jwtService.signAsync(payload, {
+      expiresIn: '15m',
+    });
+    const refresh_token = await this.generateRefreshToken(user.id);
 
     return {
       status: HttpStatus.OK,
       data: {
         name: user.name,
-        access_token: await this.jwtService.signAsync(payload),
         role: user.role,
         business_name: user.business_name,
         slug: user.slug,
         is_business_open: user.is_business_open,
         phone: user.phone,
+        access_token,
+        refresh_token,
       },
     };
+  }
+
+  async refresh(session: Sessions) {
+    const user = await this.prisma.users.findUnique({
+      where: { id: session.user_id },
+    });
+    if (!user) {
+      throw new UnauthorizedException({
+        code: 'USER_NOT_FOUND',
+        message: 'Usuario no encontrado',
+      });
+    }
+
+    await this.prisma.sessions.delete({
+      where: { id: session.id },
+    });
+
+    const payload = { sub: user.id, role: user.role };
+    const access_token = await this.jwtService.signAsync(payload, {
+      expiresIn: '15m',
+    });
+    const refresh_token = await this.generateRefreshToken(user.id);
+
+    return {
+      status: HttpStatus.OK,
+      data: { access_token, refresh_token },
+    };
+  }
+
+  async logout(refreshToken: string) {
+    await this.prisma.sessions.delete({
+      where: { refresh_token: refreshToken },
+    });
   }
 
   async updateIsBusinessOpen(adminId: string, is_business_open: boolean) {

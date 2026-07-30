@@ -17,6 +17,9 @@ import { AdminGuard } from './auth.guard';
 import appConfig from '../../config/app.config';
 import { CurrentAdmin } from '../../common/decorators/current-admin.decorator';
 import { map, Observable } from 'rxjs';
+import { RefreshTokenGuard } from './refreshToken.guard';
+import { CurrentSession } from '../../common/decorators/current-sesion.decorator';
+import { Sessions } from '../../generated/prisma/client';
 
 @Controller('auth')
 export class AuthController {
@@ -41,18 +44,67 @@ export class AuthController {
       httpOnly: true,
       secure: isProduction,
       sameSite: 'lax',
+      maxAge: 1000 * 60 * 15,
+    });
+
+    res.cookie('refresh-token', result.data.refresh_token, {
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: 'lax',
       maxAge: 1000 * 60 * 60 * 24 * 7,
     });
 
     return result;
   }
 
+  @UseGuards(RefreshTokenGuard)
+  @Post('refresh')
+  async refresh(
+    @CurrentSession() session: Sessions,
+    @Res({ passthrough: true }) res: Response
+  ) {
+    const result = await this.authService.refresh(session);
+
+    const configService = appConfig();
+    const isProduction = configService.nodeEnv === 'production';
+
+    res.cookie('auth-token', result.data.access_token, {
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: 'lax',
+      maxAge: 1000 * 60 * 15,
+    });
+
+    res.cookie('refresh-token', result.data.refresh_token, {
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: 'lax',
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+    });
+
+    return result;
+  }
+
+  @UseGuards(RefreshTokenGuard)
   @Post('logout')
-  async logout(@Res({ passthrough: true }) res: Response) {
+  async logout(
+    @CurrentSession() session: Sessions,
+    @Res({ passthrough: true }) res: Response
+  ) {
+    if (session.refresh_token) {
+      await this.authService.logout(session.refresh_token);
+    }
+
     const configService = appConfig();
     const isProduction = configService.nodeEnv === 'production';
 
     res.clearCookie('auth-token', {
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: 'lax',
+    });
+
+    res.clearCookie('refresh-token', {
       httpOnly: true,
       secure: isProduction,
       sameSite: 'lax',

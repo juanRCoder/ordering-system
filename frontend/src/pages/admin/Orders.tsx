@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { useOrdersQuery, useOrdersStream } from '@/hooks/useOrders';
 import type { OrderListResponseType } from '@/interfaces/orders.interface';
 import { OrderCardSkeleton } from '@/skeletons/OrderCardSkeleton';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useBusinessStore } from '@/stores/business.store';
 import {
   Pagination,
@@ -17,9 +17,11 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination';
+import { useNavigationType } from 'react-router-dom';
 
 function Orders() {
-  const { slug } = useBusinessStore();
+  const navigationType = useNavigationType();
+  const { slug, setOrder } = useBusinessStore();
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
   const [selectedStatus, setSelectedStatus] = useState<'PENDING' | 'FINISHED'>(
     'PENDING'
@@ -37,6 +39,12 @@ function Orders() {
     if (status === 'FINISHED') setDateFilter('today');
     else setDateFilter('');
   };
+
+  useEffect(() => {
+    if (navigationType === 'POP') {
+      setOrder({ order_id: '', guest_name: '' });
+    }
+  }, [navigationType]);
 
   return (
     <section className="bg-[#F8F9FF] min-h-screen flex flex-col">

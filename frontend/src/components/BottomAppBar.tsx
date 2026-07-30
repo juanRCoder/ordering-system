@@ -1,4 +1,5 @@
-import { type LucideIcon, ScrollText, Box, User } from 'lucide-react';
+import { useBusinessStore } from '@/stores/business.store';
+import { type LucideIcon, ScrollText, Box, User, Utensils } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
 type props = {
@@ -7,10 +8,17 @@ type props = {
 
 export const BottomAppBar = ({ statusAdmin }: props) => {
   const location = useLocation();
+  const { slug } = useBusinessStore();
 
   const items = [];
 
   if (statusAdmin) {
+    items.push({
+      id: 'menu',
+      label: 'Menu',
+      icon: Utensils,
+      to: `${window.location.origin}/${slug}/menu`,
+    });
     items.push({
       id: 'pedidos',
       label: 'Pedidos',
