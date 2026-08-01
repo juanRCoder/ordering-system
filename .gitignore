@@ -27,4 +27,4 @@ dist-ssr
 # customized
 backend/prisma/generated
 .env
-.gemini/
+.opencode/
