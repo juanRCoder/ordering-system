@@ -3,6 +3,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
+import { PrismaExceptionFilter } from './common/filters/prisma-exception.filter';
 import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
@@ -24,7 +25,7 @@ async function bootstrap() {
       transform: true,
     })
   );
-  app.useGlobalFilters(new HttpExceptionFilter());
+  app.useGlobalFilters(new PrismaExceptionFilter(), new HttpExceptionFilter());
 
   const port = configService.get<number>('app.port') ?? 3003;
   await app.listen(port, '0.0.0.0');
