@@ -1,7 +1,10 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   Patch,
   Post,
@@ -39,5 +42,12 @@ export class CategoriesController {
     @Body() updateCategoryDto: UpdateCategoryDto
   ) {
     return this.categoriesService.update(id, updateCategoryDto);
+  }
+
+  @UseGuards(AdminGuard)
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Delete(':id')
+  async delete(@Param('id') id: string) {
+    return this.categoriesService.delete(id);
   }
 }

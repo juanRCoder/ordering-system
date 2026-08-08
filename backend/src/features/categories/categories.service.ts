@@ -1,4 +1,9 @@
-import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../../prisma.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
@@ -85,5 +90,34 @@ export class CategoriesService {
         ok: true,
       },
     };
+  }
+
+  async delete(id: string) {
+    const category = await this.prisma.categories.findUnique({
+      where: { id },
+      include: {
+        _count: {
+          select: { supplies: true },
+        },
+      },
+    });
+
+    if (!category) {
+      throw new NotFoundException({
+        code: 'CATEGORY_NOT_FOUND',
+        message: 'The specified category does not exist',
+      });
+    }
+
+    if (category._count.supplies > 0) {
+      throw new ConflictException({
+        code: 'CATEGORY_HAS_SUPPLIES',
+        message: 'Cannot delete category with associated supplies',
+      });
+    }
+
+    await this.prisma.categories.delete({
+      where: { id },
+    });
   }
 }
