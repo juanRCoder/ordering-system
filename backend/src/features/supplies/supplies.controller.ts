@@ -75,7 +75,6 @@ export class SuppliesController {
     return this.suppliesService.updateStatus(id, admin.sub);
   }
 
-  @UseGuards(AdminGuard)
   @Sse('stream/:slug/status')
   getStream(@Param('slug') slug: string): Observable<MessageEvent> {
     return this.suppliesService.getAdminSupplyUpdateStream(slug).pipe(
@@ -97,7 +96,6 @@ export class SuppliesController {
     return this.suppliesService.update(id, updateSupplyDto, file, admin.sub);
   }
 
-  @UseGuards(AdminGuard)
   @Sse('stream/:slug/price')
   getStreamPrice(@Param('slug') slug: string): Observable<MessageEvent> {
     return this.suppliesService.getAdminSupplyUpdatePriceStream(slug).pipe(
