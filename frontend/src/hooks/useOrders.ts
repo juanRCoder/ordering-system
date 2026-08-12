@@ -21,8 +21,8 @@ export function useCreateOrder(slug: string) {
     mutationFn: (data: CreateOrderPayload) => ordersService.create(data, slug),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: OrdersKeys.all });
-      useCartStore.getState().clear();
       if (order_id) {
+        useCartStore.getState().clear();
         toast.success('Pedido actualizado', toastStyles.success);
         navigate('/admin/orders');
       }

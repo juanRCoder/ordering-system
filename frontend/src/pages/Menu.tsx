@@ -264,29 +264,6 @@ function Menu() {
           </Pagination>
         )}
       </div>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
-        
-        .scrollbar-hide::-webkit-scrollbar {
-          display: none;
-        }
-        
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-            transform: translateY(10px) scale(0.98);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-          }
-        }
-        
-        .animate-fadeIn {
-          animation: fadeIn 0.35s ease-out forwards;
-          opacity: 0;
-        }
-      `}</style>
     </section>
   );
 }

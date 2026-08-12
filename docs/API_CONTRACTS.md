@@ -6,34 +6,34 @@ Este documento detalla los endpoints disponibles.
 
 Prefijo base: `/api`
 
-| Método | Ruta                             | Descripción                                                       | Auth      |
-| :----- | :------------------------------- | :---------------------------------------------------------------- | :-------- |
-| POST   | `/auth/register`                 | Registra un nuevo negocio (usuario ADMIN).                        | Público   |
-| POST   | `/auth/login`                    | Inicia sesión y establece cookies de sesión.                      | Público   |
-| POST   | `/auth/refresh`                  | Renueva el token de acceso usando el refresh token.               | Refresh   |
-| POST   | `/auth/logout`                   | Cierra sesión y limpia las cookies.                               | Refresh   |
-| PATCH  | `/auth/is-business-open`         | Cambia el estado abierto/cerrado del negocio.                     | ADMIN     |
-| GET    | `/auth/stream/:slug`             | SSE: estado abierto/cerrado del negocio en tiempo real.           | Público   |
-| GET    | `/orders`                        | Lista los pedidos del negocio (paginado, con filtros).            | ADMIN     |
-| GET    | `/orders/:id`                    | Obtiene un pedido por ID.                                         | ADMIN     |
-| POST   | `/orders/:slug`                  | Crea un pedido para un negocio por su slug.                       | Público   |
-| GET    | `/orders/stream/:slug`           | SSE: aviso de nuevos pedidos en tiempo real.                      | Público   |
-| PATCH  | `/orders/:id`                    | Actualiza estado, tipo de pago y tipo de pedido.                  | ADMIN     |
-| PATCH  | `/orders/:id/confirm`            | Marca un pedido como confirmado o no.                             | ADMIN     |
-| DELETE | `/orders/:id`                    | Elimina un pedido y sus insumos relacionados.                     | ADMIN     |
-| GET    | `/supplies/by-slug/:slug`        | Lista los insumos de un negocio por su slug (público).            | Público   |
-| GET    | `/supplies/:id`                  | Obtiene un insumo por ID.                                         | Público   |
-| GET    | `/supplies`                      | Lista los insumos del admin (paginado, con filtros).              | ADMIN     |
-| POST   | `/supplies`                      | Crea un nuevo insumo (multipart con imagen opcional).             | ADMIN     |
-| PATCH  | `/supplies/:id/status`           | Alterna el estado AVAILABLE/UNAVAILABLE de un insumo.             | ADMIN     |
-| GET    | `/supplies/stream/:slug/status`  | SSE: aviso de cambios de estado de insumos.                       | ADMIN     |
-| PATCH  | `/supplies/:id`                  | Actualiza el precio de un insumo (multipart con imagen opcional). | ADMIN     |
-| GET    | `/supplies/stream/:slug/price`   | SSE: aviso de cambios de precio de insumos.                       | ADMIN     |
-| GET    | `/categories`                    | Obtiene todas las categorías de insumos.                          | Público   |
-| GET    | `/categories/:id`                | Obtiene una categoría por ID.                                     | Público   |
-| POST   | `/categories`                    | Crea una nueva categoría.                                         | ADMIN     |
-| PATCH  | `/categories/:id`                | Renombra una categoría.                                           | ADMIN     |
-| DELETE | `/categories/:id`                | Elimina una categoría (solo si no tiene insumos asociados).       | ADMIN     |
+| Método | Ruta                            | Descripción                                                       | Auth    |
+| :----- | :------------------------------ | :---------------------------------------------------------------- | :------ |
+| POST   | `/auth/register`                | Registra un nuevo negocio (usuario ADMIN).                        | Público |
+| POST   | `/auth/login`                   | Inicia sesión y establece cookies de sesión.                      | Público |
+| POST   | `/auth/refresh`                 | Renueva el token de acceso usando el refresh token.               | Refresh |
+| POST   | `/auth/logout`                  | Cierra sesión y limpia las cookies.                               | Refresh |
+| PATCH  | `/auth/is-business-open`        | Cambia el estado abierto/cerrado del negocio.                     | ADMIN   |
+| GET    | `/auth/stream/:slug`            | SSE: estado abierto/cerrado del negocio en tiempo real.           | Público |
+| GET    | `/orders`                       | Lista los pedidos del negocio (paginado, con filtros).            | ADMIN   |
+| GET    | `/orders/:id`                   | Obtiene un pedido por ID.                                         | ADMIN   |
+| POST   | `/orders/:slug`                 | Crea un pedido para un negocio por su slug.                       | Público |
+| GET    | `/orders/stream/:slug`          | SSE: aviso de nuevos pedidos en tiempo real.                      | Público |
+| PATCH  | `/orders/:id`                   | Actualiza estado, tipo de pago y tipo de pedido.                  | ADMIN   |
+| PATCH  | `/orders/:id/confirm`           | Marca un pedido como confirmado o no.                             | ADMIN   |
+| DELETE | `/orders/:id`                   | Elimina un pedido y sus insumos relacionados.                     | ADMIN   |
+| GET    | `/supplies/by-slug/:slug`       | Lista los insumos de un negocio por su slug (público).            | Público |
+| GET    | `/supplies/:id`                 | Obtiene un insumo por ID.                                         | Público |
+| GET    | `/supplies`                     | Lista los insumos del admin (paginado, con filtros).              | ADMIN   |
+| POST   | `/supplies`                     | Crea un nuevo insumo (multipart con imagen opcional).             | ADMIN   |
+| PATCH  | `/supplies/:id/status`          | Alterna el estado AVAILABLE/UNAVAILABLE de un insumo.             | ADMIN   |
+| GET    | `/supplies/stream/:slug/status` | SSE: aviso de cambios de estado de insumos.                       | ADMIN   |
+| PATCH  | `/supplies/:id`                 | Actualiza el precio de un insumo (multipart con imagen opcional). | ADMIN   |
+| GET    | `/supplies/stream/:slug/price`  | SSE: aviso de cambios de precio de insumos.                       | ADMIN   |
+| GET    | `/categories`                   | Obtiene todas las categorías de insumos.                          | Público |
+| GET    | `/categories/:id`               | Obtiene una categoría por ID.                                     | Público |
+| POST   | `/categories`                   | Crea una nueva categoría.                                         | ADMIN   |
+| PATCH  | `/categories/:id`               | Renombra una categoría.                                           | ADMIN   |
+| DELETE | `/categories/:id`               | Elimina una categoría (solo si no tiene insumos asociados).       | ADMIN   |
 
 > **Autenticación:** los endpoints protegidos con `ADMIN` requieren la cookie `auth-token` (JWT con rol `ADMIN` o `SUPER_ADMIN`, expira en 15 min). Los endpoints protegidos con `Refresh` requieren la cookie `refresh-token` (expira en 7 días). Ambas cookies se establecen en `POST /auth/login` y `POST /auth/refresh`.
 
@@ -238,11 +238,11 @@ Prefijo base: `/api`
 
 **Query Params:**
 
-| Parámetro    | Tipo    | Descripción                                        |
-| :----------- | :------ | :------------------------------------------------- |
-| `page`       | number  | Página a consultar (por defecto `1`).              |
-| `status`     | string  | Estado: `PENDING` o `FINISHED` (por defecto `PENDING`). |
-| `dateFilter` | string  | `today`, `yesterday` u `older` (solo aplica con `status=FINISHED`). |
+| Parámetro    | Tipo   | Descripción                                                         |
+| :----------- | :----- | :------------------------------------------------------------------ |
+| `page`       | number | Página a consultar (por defecto `1`).                               |
+| `status`     | string | Estado: `PENDING` o `FINISHED` (por defecto `PENDING`).             |
+| `dateFilter` | string | `today`, `yesterday` u `older` (solo aplica con `status=FINISHED`). |
 
 **Response:**
 
@@ -519,11 +519,11 @@ Prefijo base: `/api`
 
 **Query Params:**
 
-| Parámetro    | Tipo   | Descripción                                             |
-| :----------- | :----- | :------------------------------------------------------ |
+| Parámetro    | Tipo   | Descripción                                                               |
+| :----------- | :----- | :------------------------------------------------------------------------ |
 | `categoryId` | string | Opcional. Filtra por categoría (se ignora si hay búsqueda por `letters`). |
-| `letters`    | string | Opcional. Busca por nombre (insensible a mayúsculas).   |
-| `page`       | number | Página a consultar (por defecto `1`).                   |
+| `letters`    | string | Opcional. Busca por nombre (insensible a mayúsculas).                     |
+| `page`       | number | Página a consultar (por defecto `1`).                                     |
 
 **Response:**
 
@@ -572,11 +572,11 @@ Prefijo base: `/api`
 
 **Query Params:**
 
-| Parámetro    | Tipo   | Descripción                                             |
-| :----------- | :----- | :------------------------------------------------------ |
+| Parámetro    | Tipo   | Descripción                                                     |
+| :----------- | :----- | :-------------------------------------------------------------- |
 | `categoryId` | string | Filtra por categoría (se ignora si hay búsqueda por `letters`). |
-| `letters`    | string | Opcional. Busca por nombre (insensible a mayúsculas).   |
-| `page`       | number | Página a consultar (por defecto `1`).                   |
+| `letters`    | string | Opcional. Busca por nombre (insensible a mayúsculas).           |
+| `page`       | number | Página a consultar (por defecto `1`).                           |
 
 **Response:**
 
@@ -652,13 +652,13 @@ Prefijo base: `/api`
 
 **Campos:**
 
-| Campo         | Tipo   | Descripción                              |
-| :------------ | :----- | :--------------------------------------- |
-| `name`        | string | Nombre del insumo.                       |
-| `description` | string | Opcional. Descripción del insumo.        |
-| `price`       | number | Precio del insumo.                       |
-| `category_id` | string | UUID de la categoría.                    |
-| `status`      | string | Opcional. `AVAILABLE` o `UNAVAILABLE`.   |
+| Campo         | Tipo   | Descripción                                        |
+| :------------ | :----- | :------------------------------------------------- |
+| `name`        | string | Nombre del insumo.                                 |
+| `description` | string | Opcional. Descripción del insumo.                  |
+| `price`       | number | Precio del insumo.                                 |
+| `category_id` | string | UUID de la categoría.                              |
+| `status`      | string | Opcional. `AVAILABLE` o `UNAVAILABLE`.             |
 | `image_url`   | file   | Opcional. Imagen (jpg, jpeg, png, webp; máx 5 MB). |
 
 **Response:**
@@ -740,15 +740,15 @@ Prefijo base: `/api`
 
 **Campos (todos opcionales):**
 
-| Campo            | Tipo   | Descripción                            |
-| :--------------- | :----- | :------------------------------------- |
-| `name`           | string | Nombre del insumo.                     |
-| `description`    | string | Descripción del insumo.                |
-| `price`          | number | Precio del insumo.                     |
-| `image_url`      | string | URL de la imagen.                      |
-| `image_public_id`| string | ID público de la imagen en Cloudinary. |
-| `category_id`    | string | UUID de la categoría.                  |
-| `image_url`      | file   | Opcional. Imagen (jpg, jpeg, png, webp; máx 5 MB). |
+| Campo             | Tipo   | Descripción                                        |
+| :---------------- | :----- | :------------------------------------------------- |
+| `name`            | string | Nombre del insumo.                                 |
+| `description`     | string | Descripción del insumo.                            |
+| `price`           | number | Precio del insumo.                                 |
+| `image_url`       | string | URL de la imagen.                                  |
+| `image_public_id` | string | ID público de la imagen en Cloudinary.             |
+| `category_id`     | string | UUID de la categoría.                              |
+| `image_url`       | file   | Opcional. Imagen (jpg, jpeg, png, webp; máx 5 MB). |
 
 **Response:**
 

@@ -19,7 +19,7 @@ export const SupplyCard = ({ data }: props) => {
 
   return (
     <div
-      className="rounded-lg relative w-full overflow-hidden cursor-pointer active:scale-[0.97] transition-transform duration-150 shadow-[0_4px_16px_rgba(15,42,74,0.18)]"
+      className="rounded-lg relative w-full overflow-hidden cursor-pointer active:scale-[0.97] transition-transform duration-150 "
       onClick={handleAdd}
     >
       {/* Immersive Image */}
@@ -31,7 +31,7 @@ export const SupplyCard = ({ data }: props) => {
         />
 
         {/* Bottom Gradient Scrim */}
-        <div className="h-[70%] absolute inset-x-0 bottom-0 bg-linear-to-t from-[rgba(15,42,74,0.92)] via-[rgba(15,42,74,0.35)] to-transparent" />
+        <div className="h-[70%] absolute inset-x-0 bottom-0 bg-linear-to-t from-[rgba(15,42,74,0.42)] via-[rgba(15,42,74,0.44)] to-transparent" />
 
         {/* Circular Add Button */}
         <button

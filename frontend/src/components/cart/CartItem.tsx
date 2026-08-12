@@ -15,9 +15,9 @@ export const CartItem = ({ item }: props) => {
   };
 
   return (
-    <Card className="p-2 w-full rounded-sm">
-      <CardContent className="flex flex-wrap items-start gap-4 p-0">
-        <div className="shrink-0 w-20 h-20 rounded-sm overflow-hidden border">
+    <Card className="p-3 w-full rounded-lg border border-[#E2E8F0] bg-white shadow-sm">
+      <CardContent className="flex flex-wrap items-start gap-3 p-0">
+        <div className="shrink-0 w-20 h-20 rounded-lg overflow-hidden bg-[#F1F5F9]">
           <img
             src={item.image_url || '/no_image.webp'}
             alt={item.name}
@@ -26,43 +26,36 @@ export const CartItem = ({ item }: props) => {
         </div>
         <div className="flex flex-col justify-between gap-2 flex-1 self-stretch">
           <div className="flex flex-col">
-            <p className="text-[15px] font-semibold text-card-foreground leading-tight">
+            <p className="text-[15px] font-semibold text-[#0F2A4A] leading-tight">
               {item.name}
             </p>
-            <p className="text-xs text-muted-foreground leading-tight line-clamp-2">
+            <p className="text-xs text-[#64748B] leading-tight line-clamp-2">
               {item.description || ''}
             </p>
           </div>
           <div className="flex justify-between items-center flex-wrap gap-2">
-            <span className="whitespace-nowrap font-bold text-primary text-[15px]">
+            <span className="whitespace-nowrap font-bold text-[#0F2A4A] text-[15px]">
               S/ {(item.price * item.quantity).toFixed(2)}
             </span>
             <div className="flex items-center gap-2">
               <button
                 onClick={() => handleRemoveItem(item)}
-                className="w-8 h-8 rounded-full cursor-pointer border border-border font-semibold flex items-center justify-center"
+                className="w-8 h-8 rounded-full cursor-pointer border border-[#CBD5E1] font-semibold flex items-center justify-center hover:bg-[#F1F5F9] transition-colors"
               >
-                <Minus className="text-[#151C23] w-5 h-5" />
+                <Minus className="text-[#475569] w-4 h-4" />
               </button>
-              <span className="text-sm font-medium text-gray-800 w-4 text-center">
+              <span className="text-sm font-semibold text-[#0F2A4A] w-5 text-center">
                 {item.quantity}
               </span>
               <button
                 onClick={() => incrementQuantity(item.id)}
-                className="w-8 h-8 rounded-full cursor-pointer border border-border bg-[#254875] font-semibold flex items-center justify-center"
+                className="w-8 h-8 rounded-full cursor-pointer border-none bg-[#0F2A4A] font-semibold flex items-center justify-center hover:bg-[#1E3A5F] transition-colors"
               >
-                <Plus className="text-card w-5 h-5" />
+                <Plus className="text-white w-4 h-4" />
               </button>
             </div>
           </div>
         </div>
-        {/* <div className="w-full border-t border-border pt-2">
-          <textarea
-            onChange={(e) => setObservations(item.id, e.target.value)}
-            placeholder="Algun detalle..."
-            className="w-full border-none outline-none text-xs text-[#737780]"
-          />
-        </div> */}
       </CardContent>
     </Card>
   );
