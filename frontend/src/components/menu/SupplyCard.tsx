@@ -1,8 +1,7 @@
-import { Card } from '@/components/ui/card';
 import type { SupplyResponse } from '@/interfaces/supplies.interface';
 import { useCartStore } from '@/stores/cart.store';
-import { Plus } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Plus, Check } from 'lucide-react';
+import { useState } from 'react';
 
 type props = {
   data: SupplyResponse;
@@ -10,45 +9,63 @@ type props = {
 
 export const SupplyCard = ({ data }: props) => {
   const { addItem } = useCartStore();
+  const [isAdded, setIsAdded] = useState(false);
+
+  const handleAdd = () => {
+    addItem(data);
+    setIsAdded(true);
+    setTimeout(() => setIsAdded(false), 1000);
+  };
 
   return (
-    <Card className="relative w-full rounded-sm overflow-hidden p-0 gap-0 shadow-sm border border-border">
-      <div className="relative w-full aspect-video overflow-hidden rounded-t-sm">
-        <img
-          src={data.image_url || '/no_image.webp'}
-          alt=""
-          aria-hidden="true"
-          className="absolute inset-0 w-full h-full object-cover scale-110 blur-xl opacity-60"
-        />
+    <div
+      className="rounded-lg relative w-full overflow-hidden cursor-pointer active:scale-[0.97] transition-transform duration-150 shadow-[0_4px_16px_rgba(15,42,74,0.18)]"
+      onClick={handleAdd}
+    >
+      {/* Immersive Image */}
+      <div className="relative w-full overflow-hidden aspect-3/4 bg-linear-to-br from-[#E0E7FF] to-[#F1F5F9]">
         <img
           src={data.image_url || '/no_image.webp'}
           alt={data.name || 'img'}
-          className="absolute inset-0 w-full h-full object-contain"
+          className="absolute inset-0 w-full h-full object-cover"
         />
-        <Button
-          onClick={() => addItem(data)}
-          className="absolute bottom-2 right-2 w-11 h-11 rounded-sm cursor-pointer border border-border"
+
+        {/* Bottom Gradient Scrim */}
+        <div className="h-[70%] absolute inset-x-0 bottom-0 bg-linear-to-t from-[rgba(15,42,74,0.92)] via-[rgba(15,42,74,0.35)] to-transparent" />
+
+        {/* Circular Add Button */}
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            handleAdd();
+          }}
+          className="absolute top-2.5 right-2.5 w-8 h-8 flex items-center justify-center active:scale-90 transition-transform duration-150 cursor-pointer border-none outline-none"
+          style={{
+            backgroundColor: isAdded
+              ? 'rgba(16, 185, 129, 0.95)'
+              : 'rgba(255, 255, 255, 0.95)',
+            borderRadius: '50%',
+            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.25)',
+          }}
           aria-label={`Agregar ${data.name} al carrito`}
         >
-          <Plus className="text-white w-7! h-7!" strokeWidth={2} />
-        </Button>
-      </div>
-      <div className="p-2">
-        <div className="flex items-start justify-between gap-1">
-          <h3 className="font-semibold text-[18px] text-foreground leading-snug">
+          {isAdded ? (
+            <Check className="w-4 h-4 text-white" strokeWidth={3} />
+          ) : (
+            <Plus className="w-4 h-4 text-[#0F2A4A]" strokeWidth={3} />
+          )}
+        </button>
+
+        {/* Overlaid Name + Price */}
+        <div className="absolute inset-x-0 bottom-0 p-2.5">
+          <h3 className="font-semibold text-sm leading-snug line-clamp-2 text-white drop-shadow-sm">
             {data.name}
           </h3>
-          <span className="font-normal text-[18px] text-foreground whitespace-nowrap">
+          <span className="font-bold text-base text-white mt-0.5 block drop-shadow-sm">
             S/ {data.price.toFixed(2)}
           </span>
         </div>
-
-        {data.description && (
-          <p className="mt-1 text-xs text-muted-foreground leading-snug">
-            {data.description}
-          </p>
-        )}
       </div>
-    </Card>
+    </div>
   );
 };

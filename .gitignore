@@ -28,3 +28,5 @@ dist-ssr
 backend/prisma/generated
 .env
 .opencode/
+.agents/
+skills-lock.json
