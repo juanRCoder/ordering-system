@@ -1,0 +1,2 @@
+-- AlterEnum
+ALTER TYPE "OrderType" RENAME VALUE 'WHATSAPP' TO 'TAKEAWAY';

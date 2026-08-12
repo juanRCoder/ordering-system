@@ -35,7 +35,7 @@ enum PaymentType {
 
 enum OrderType {
   LOCAL
-  WHATSAPP
+  TAKEAWAY
 }
 
 enum SupplyOrigin {

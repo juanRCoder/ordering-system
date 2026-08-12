@@ -259,6 +259,20 @@ export class OrdersService {
           created_at: true,
           total: true,
           is_confirmed: true,
+          supplies_orders: {
+            select: {
+              quantity: true,
+              admin_supply: {
+                select: {
+                  supply: {
+                    select: {
+                      name: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
         },
         skip: startCount,
         take: limit,
@@ -278,6 +292,10 @@ export class OrdersService {
         created_at: order.created_at,
         is_confirmed: order.is_confirmed,
         total: order.total.toNumber(),
+        supplies: order.supplies_orders.map((so) => ({
+          quantity: so.quantity,
+          name: so.admin_supply.supply.name,
+        })),
       })),
       counts: {
         pending: await this.prisma.orders.count({

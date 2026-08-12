@@ -46,5 +46,5 @@ export class CreateOrderDto {
 
   @IsOptional()
   @IsString()
-  order_type?: 'LOCAL' | 'WHATSAPP';
+  order_type?: 'LOCAL' | 'TAKEAWAY';
 }
