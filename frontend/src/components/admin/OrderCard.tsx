@@ -1,4 +1,4 @@
-import { ListPlus, Trash2 } from 'lucide-react';
+import { ListPlus, Trash2, Check, Clock } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
 import type { OrderListResponseType } from '@/interfaces/orders.interface';
@@ -19,89 +19,140 @@ export const OrderCard = ({ data, handlerEvents }: props) => {
   const confirmOrder = useConfirmOrder();
 
   const isOrderCompleted = data.status === 'FINISHED';
-  const isWhatsappOrder = data.order_type === 'WHATSAPP';
-  const showWhatsappActions =
-    isWhatsappOrder && !data.is_confirmed && !isOrderCompleted;
+  const isTakeawayOrder = data.order_type === 'TAKEAWAY';
+  const showTakeawayActions =
+    isTakeawayOrder && !data.is_confirmed && !isOrderCompleted;
 
   const handlerConfirm = () => {
     confirmOrder.mutate({ id: data.id!, is_confirmed: true });
   };
 
-  const handlerAddNewSupply = () => {
+  const handlerAddNewSupply = (e: React.MouseEvent) => {
+    e.stopPropagation();
     setOrder({ order_id: data.id, guest_name: data.guest_name });
     navigate(`/${slug}/menu`);
   };
 
   return (
-    <Card className="rounded-sm p-3 gap-2">
-      <div className="flex justify-between items-center flex-wrap-reverse gap-0.5 uppercase text-[#42474F] text-xs font-medium">
-        <p>ORDEN #{data.id?.slice(0, 6)}</p>
-        <span
-          className={`
-          text-xs px-2 py-1 rounded-sm font-medium
-          ${isOrderCompleted ? 'bg-primary text-white' : 'bg-[#DAE0E6] text-[#5D6369]'}
-        `}
-        >
-          {isOrderCompleted ? 'FINALIZADO' : 'PENDIENTE'}
+    <Card
+      className="rounded-lg p-0! gap-0! transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg cursor-pointer active:scale-[0.97]"
+      onClick={handlerEvents}
+    >
+      <div
+        className={`flex items-center justify-between px-3 py-1.5 ${
+          isOrderCompleted ? 'bg-[#16A34A]' : 'bg-[#0F2A4A]'
+        }`}
+      >
+        <span className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-white">
+          {isOrderCompleted ? (
+            <Check className="h-3.5 w-3.5" strokeWidth={2.5} />
+          ) : (
+            <span className="relative flex h-1.5 w-1.5">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-75" />
+              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-white" />
+            </span>
+          )}
+          {isOrderCompleted ? 'Finalizado' : 'Pendiente'}
+        </span>
+        <span className="text-[11px] font-semibold uppercase tracking-wider text-white/80">
+          #{data.id?.slice(0, 6)}
         </span>
       </div>
-      <div className="flex justify-between items-center flex-wrap gap-0.5">
-        <p className="text-[#151C23] text-xl font-semibold">
-          {data.guest_name}
-        </p>
-        <p
-          className={`font-semibold text-sm
-            ${isWhatsappOrder ? 'text-[#4FC238]' : 'text-[#5D6369]'}
-          `}
-        >
-          {data.order_type}
-        </p>
-      </div>
-      <div className="flex flex-col justify-between bg-[#EFF4FF] p-2 rounded-sm gap-0.5">
-        <div className="flex items-center flex-wrap justify-between gap-0.5">
-          <p className="font-mediun text-sm">MONTO TOTAL</p>
-          <p className="font-semibold text-xl">S/ {data.total.toFixed(2)}</p>
-        </div>
-        <p className="text-xs">
-          {dayTime(data.created_at)} - Hace {relativeTime(data.created_at)}
-        </p>
-      </div>
-      <div className="flex gap-2 flex-wrap">
-        {showWhatsappActions ? (
-          <>
-            <Button
-              variant="outline"
-              onClick={handlerConfirm}
-              className="text-[#151C23] flex-1 rounded-sm cursor-pointer"
-            >
-              Confirmar pedido
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => deleteOrder.mutate(data.id!)}
-              className="px-3 rounded-sm cursor-pointer text-red-500 border-red-300 hover:bg-red-50"
-            >
-              <Trash2 className="h-6! w-6!" strokeWidth={1.5} />
-            </Button>
-          </>
-        ) : (
-          <>
-            <Button
-              variant="outline"
-              onClick={handlerEvents}
-              className="text-[#151C23] flex-1 rounded-sm cursor-pointer"
-            >
-              Detalles del pedido
-            </Button>
+
+      <div className="flex flex-col gap-2 p-3">
+        <div className="flex items-center justify-between gap-2">
+          <h3
+            className="truncate text-base font-bold leading-snug text-[#0F2A4A]"
+            style={{ fontFamily: "'DM Sans', sans-serif" }}
+          >
+            {data.guest_name}
+          </h3>
+          {!showTakeawayActions && (
             <Button
               onClick={handlerAddNewSupply}
-              className="px-3 rounded-sm cursor-pointer"
+              size="icon-sm"
+              className="shrink-0 cursor-pointer rounded-md bg-[#0F2A4A] hover:bg-[#164069]"
             >
-              <ListPlus className="h-6! w-6!" strokeWidth={1.5} />
+              <ListPlus strokeWidth={2} />
             </Button>
-          </>
+          )}
+        </div>
+
+        <div className="flex items-center gap-1.5 text-[11px] text-[#64748B]">
+          <span
+            className={`rounded px-1.5 py-0.5 text-[10px] font-semibold ${
+              isTakeawayOrder
+                ? 'bg-[#DCFCE7] text-[#15803D]'
+                : 'bg-[#E2E8F0] text-[#475569]'
+            }`}
+          >
+            {data.order_type === 'TAKEAWAY' ? 'PARA LLEVAR' : 'EN LOCAL'}
+          </span>
+          <Clock className="h-3 w-3" strokeWidth={2} />
+          <span>
+            {dayTime(data.created_at)} · hace {relativeTime(data.created_at)}
+          </span>
+        </div>
+
+        <div className="h-0 border-t border-dashed border-[#CBD5E1]" />
+
+        {data.supplies?.length > 0 && (
+          <div className="flex flex-col gap-1">
+            {data.supplies?.slice(0, 3).map((supply) => (
+              <div
+                key={`${supply.name}-${supply.quantity}`}
+                className="flex items-center justify-between text-xs"
+              >
+                <span className="flex items-center gap-1.5 text-[#475569]">
+                  <span className="grid h-4.5 w-4.5 shrink-0 place-items-center rounded bg-[#E0E7FF] text-[10px] font-bold text-[#3B5BDB]">
+                    {supply.quantity}
+                  </span>
+                  <span className="truncate">{supply.name}</span>
+                </span>
+              </div>
+            ))}
+            {data.supplies.length > 3 && (
+              <span className="text-[11px] font-semibold text-[#3B5BDB]">
+                +{data.supplies.length - 3} más
+              </span>
+            )}
+          </div>
         )}
+
+        <div className="flex items-center justify-between rounded-md bg-[#E0E7FF]/40 px-2.5 py-1.5">
+          <span className="text-[10px] font-semibold uppercase tracking-wider text-[#475569]">
+            Monto total
+          </span>
+          <span className="text-base font-bold text-[#0F2A4A]">
+            S/ {data.total.toFixed(2)}
+          </span>
+        </div>
       </div>
+
+      {showTakeawayActions && (
+        <div className="flex gap-2 px-3 pb-3">
+          <Button
+            variant="outline"
+            onClick={(e) => {
+              e.stopPropagation();
+              handlerConfirm();
+            }}
+            className="flex-1 cursor-pointer rounded-md border-[#0F2A4A]/20 text-[#0F2A4A] hover:bg-[#0F2A4A] hover:text-white"
+          >
+            Confirmar pedido
+          </Button>
+          <Button
+            variant="outline"
+            onClick={(e) => {
+              e.stopPropagation();
+              deleteOrder.mutate(data.id!);
+            }}
+            className="cursor-pointer rounded-md px-3 text-red-500 hover:bg-red-50"
+          >
+            <Trash2 className="h-4.5 w-4.5" strokeWidth={1.5} />
+          </Button>
+        </div>
+      )}
     </Card>
   );
 };

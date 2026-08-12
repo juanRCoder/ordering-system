@@ -1,7 +1,7 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
 
-const App = lazy(() => import('./App.tsx'));
+//const App = lazy(() => import('./App.tsx'));
 const Auth = lazy(() => import('./pages/Auth.tsx'));
 const Menu = lazy(() => import('./pages/Menu.tsx'));
 const Cart = lazy(() => import('./pages/Cart.tsx'));
@@ -15,7 +15,7 @@ export const router = createBrowserRouter([
     path: '/',
     element: (
       <Suspense fallback={<div>Loading...</div>}>
-        <App />
+        <Auth />
       </Suspense>
     ),
   },
@@ -27,16 +27,9 @@ export const router = createBrowserRouter([
       { path: 'menu', element: <Menu /> },
       { path: 'cart', element: <Cart /> },
       { path: 'order-received/:orderId', element: <OrderReceived /> },
-      { path: 'settings', element: <Setting /> },
-    ],
-  },
-  {
-    path: '/admin',
-    children: [
-      { index: true, element: <Navigate to="orders" replace /> },
       { path: 'orders', element: <Orders /> },
       { path: 'supplies', element: <Supplies /> },
-      { path: 'settings', element: <Setting isAdmin /> },
+      { path: 'settings', element: <Setting /> },
     ],
   },
   { path: '*', element: <Navigate to="/" replace /> },

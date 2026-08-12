@@ -339,7 +339,7 @@ Prefijo base: `/api`
   "guest_name": "string",
   "total": "number",
   "order_id": "string", // Opcional. ID de un pedido existente para agregar items
-  "order_type": "LOCAL" // Opcional. "LOCAL" o "WHATSAPP" (por defecto "LOCAL")
+  "order_type": "LOCAL" // Opcional. "LOCAL" o "TAKEAWAY" (por defecto "LOCAL")
 }
 ```
 
@@ -418,7 +418,7 @@ Prefijo base: `/api`
 {
   "status": "FINISHED", // "PENDING" o "FINISHED"
   "payment_type": "CASH", // "CASH" o "YAPE" (por defecto "CASH")
-  "order_type": "LOCAL" // "LOCAL" o "WHATSAPP" (por defecto "LOCAL")
+  "order_type": "LOCAL" // "LOCAL" o "TAKEAWAY" (por defecto "LOCAL")
 }
 ```
 

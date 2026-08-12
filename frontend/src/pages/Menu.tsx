@@ -23,6 +23,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination';
+import { BottomAppBar } from '@/components/BottomAppBar';
 
 function Menu() {
   const { slug } = useParams<{ slug: string }>();
@@ -64,6 +65,7 @@ function Menu() {
   return (
     <section className="min-h-screen flex flex-col bg-[#F1F5F9]">
       <TopAppBar
+        subtitle={<p className="text-xs truncate max-w-45">Panel de Menu</p>}
         itemHeader={
           suppliesByType.data?.is_business_open ? null : <CartBadget />
         }
@@ -108,7 +110,7 @@ function Menu() {
       <div
         className={`${
           suppliesByType.data?.is_business_open ? 'hidden' : 'flex'
-        } flex-1 flex-col`}
+        } flex-1 flex-col mb-20`}
       >
         {/* Search Section */}
         <div className="py-2 px-4">
@@ -263,6 +265,9 @@ function Menu() {
             </PaginationContent>
           </Pagination>
         )}
+      </div>
+      <div className="fixed w-full mx-auto bottom-0">
+        <BottomAppBar />
       </div>
     </section>
   );

@@ -55,7 +55,7 @@ function Cart() {
         observations: item.observations,
       })),
       order_id: data.order_id ?? null,
-      order_type: isTakeaway ? 'WHATSAPP' : 'LOCAL',
+      order_type: isTakeaway ? 'TAKEAWAY' : 'LOCAL',
     };
 
     createOrder.mutate(payload, {

@@ -4,7 +4,7 @@ import type { newOrderSchema } from '@/schemas/orders.schema';
 export type NewOrderType = z.infer<typeof newOrderSchema>;
 
 export type CreateOrderPayload = NewOrderType & {
-  order_type?: 'LOCAL' | 'WHATSAPP';
+  order_type?: 'LOCAL' | 'TAKEAWAY';
 };
 
 export type OrderListResponseType = {
@@ -12,9 +12,10 @@ export type OrderListResponseType = {
   guest_name: string;
   created_at: string;
   status: 'PENDING' | 'FINISHED';
-  order_type: 'LOCAL' | 'WHATSAPP';
+  order_type: 'LOCAL' | 'TAKEAWAY';
   is_confirmed: boolean;
   total: number;
+  supplies: { quantity: number; name: string }[];
 };
 
 export type OrderDetailSupply = {
@@ -27,12 +28,12 @@ export type OrderDetailSupply = {
 export type OrderDetailResponseType = OrderListResponseType & {
   supplies: OrderDetailSupply[];
   payment_type: 'CASH' | 'YAPE';
-  order_type: 'LOCAL' | 'WHATSAPP';
+  order_type: 'LOCAL' | 'TAKEAWAY';
 };
 
 export type updateOrder = {
   id: string;
   status: string;
   payment_type: 'CASH' | 'YAPE';
-  order_type: 'LOCAL' | 'WHATSAPP';
+  order_type: 'LOCAL' | 'TAKEAWAY';
 };

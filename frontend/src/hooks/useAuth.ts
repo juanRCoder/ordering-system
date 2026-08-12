@@ -21,19 +21,14 @@ export function useLogin() {
     mutationFn: (data: LoginFormType) => authService.login(data),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: UsersKeys.me });
-      toast.success('Inicio de sesión exitoso', toastStyles.success);
-      if (data.role === 'ADMIN') {
-        setBusiness({
-          business_name: data.business_name,
-          slug: data.slug,
-          owner_name: data.name,
-          is_business_open: data.is_business_open,
-          phone: data.phone,
-        });
-        navigate('/admin/orders');
-      } else {
-        navigate('/menu');
-      }
+      setBusiness({
+        business_name: data.business_name,
+        slug: data.slug,
+        owner_name: data.name,
+        is_business_open: data.is_business_open,
+        phone: data.phone,
+      });
+      navigate(`/${data.slug}/menu`);
     },
     onError: (error: ErrorResponse) => {
       if (

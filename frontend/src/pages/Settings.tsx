@@ -140,7 +140,7 @@ export default function Settings({ isAdmin }: props) {
         </div>
       </div>
       <div className="fixed w-full mx-auto bottom-0">
-        <BottomAppBar statusAdmin={isAdmin} />
+        <BottomAppBar />
       </div>
       <CategoriesDrawer
         externalTrigger={openDrawer}

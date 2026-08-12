@@ -32,7 +32,7 @@ export const OrderDetailsDrawer = ({
     'CASH' | 'YAPE'
   >('CASH');
   const [selectedOrderType, setSelectedOrderType] = useState<
-    'LOCAL' | 'WHATSAPP'
+    'LOCAL' | 'TAKEAWAY'
   >('LOCAL');
   const [selectedOrderStatus, setSelectedOrderStatus] = useState<string[]>([
     'PENDING',
@@ -111,16 +111,6 @@ export const OrderDetailsDrawer = ({
                             S/ {(supply.price * supply.quantity).toFixed(2)}
                           </span>
                         </div>
-                        {/* {supply.observations && (
-                          <p className="text-[#43474F] text-xs border-l border-border ml-3 px-3 mt-2">
-                            {supply.observations
-                              ?.split('\n')
-                              .filter(Boolean)
-                              .map((obs, i) => (
-                                <p key={i}>• {obs.trim()}</p>
-                              ))}
-                          </p>
-                        )} */}
                       </div>
                     )
                   )}
@@ -134,7 +124,7 @@ export const OrderDetailsDrawer = ({
             </p>
             <span
               className={`bg-white border border-border p-2 w-fit rounded-sm 
-              ${orderDetail?.data?.order_type === 'WHATSAPP' ? 'text-[#4FC238]' : 'text-[#5D6369]'}`}
+              ${orderDetail?.data?.order_type === 'TAKEAWAY' ? 'text-[#4FC238]' : 'text-[#5D6369]'}`}
             >
               {orderDetail?.data?.order_type}
             </span>

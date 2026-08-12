@@ -2,42 +2,35 @@ import { useBusinessStore } from '@/stores/business.store';
 import { type LucideIcon, ScrollText, Box, User, Utensils } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
-type props = {
-  statusAdmin?: boolean;
-};
-
-export const BottomAppBar = ({ statusAdmin }: props) => {
+export const BottomAppBar = () => {
   const location = useLocation();
   const { slug } = useBusinessStore();
 
   const items = [];
-
-  if (statusAdmin) {
-    items.push({
-      id: 'menu',
-      label: 'Menu',
-      icon: Utensils,
-      to: `${window.location.origin}/${slug}/menu`,
-    });
-    items.push({
-      id: 'pedidos',
-      label: 'Pedidos',
-      icon: ScrollText,
-      to: '/admin/orders',
-    });
-    items.push({
-      id: 'insumos',
-      label: 'Insumos',
-      icon: Box,
-      to: '/admin/supplies',
-    });
-    items.push({
-      id: 'perfil',
-      label: 'Perfil',
-      icon: User,
-      to: '/admin/settings',
-    });
-  }
+  items.push({
+    id: 'menu',
+    label: 'Menu',
+    icon: Utensils,
+    to: `/${slug}/menu`,
+  });
+  items.push({
+    id: 'pedidos',
+    label: 'Pedidos',
+    icon: ScrollText,
+    to: `/${slug}/orders`,
+  });
+  items.push({
+    id: 'insumos',
+    label: 'Insumos',
+    icon: Box,
+    to: `/${slug}/supplies`,
+  });
+  items.push({
+    id: 'perfil',
+    label: 'Perfil',
+    icon: User,
+    to: `/${slug}/settings`,
+  });
 
   const renderItem = (item: {
     id: string;

@@ -66,11 +66,7 @@ function Supplies() {
   return (
     <section className="bg-[#F8F9FF] min-h-screen flex flex-col">
       <TopAppBar
-        subtitle={
-          <p className="text-sm text-muted-foreground truncate max-w-45">
-            Panel de Administrativo
-          </p>
-        }
+        subtitle={<p className="text-xs truncate max-w-45">Panel de Insumos</p>}
       />
       <div className="flex flex-col p-3 pb-24">
         <div className="flex flex-col gap-3.5">
@@ -193,7 +189,7 @@ function Supplies() {
         </Pagination>
       </div>
       <div className="fixed w-full mx-auto bottom-0">
-        <BottomAppBar statusAdmin={true} />
+        <BottomAppBar />
       </div>
       <SupplyDialog
         externalTrigger={openDialog}
