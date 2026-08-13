@@ -17,9 +17,8 @@ import {
   PaginationPrevious,
 } from '@/components/ui/pagination';
 import { InputSearch } from '@/components/InputSearch';
-import { Package } from 'lucide-react';
-// import { Button } from '@/components/ui/button';
-// import { Plus } from 'lucide-react';
+import { Package, Plus } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 function Supplies() {
   const [supplyOrigin, setSupplyOrigin] = useState('PLATFORM');
@@ -107,17 +106,25 @@ function Supplies() {
               </button>
             ))}
           </div>
-          {/* <Button
-            variant="outline"
-            className="cursor-pointer rounded-lg"
+          <Button
+            className="group/cta relative h-11 cursor-pointer overflow-hidden rounded-lg border-t border-white/15 bg-[#0F2A4A] px-5 font-semibold text-white shadow-[0_6px_18px_-6px_rgba(15,42,74,0.55)] transition-all duration-300 hover:bg-[#14335C] hover:shadow-[0_10px_26px_-8px_rgba(15,42,74,0.65)] active:translate-y-px active:scale-[0.99] focus-visible:ring-2 focus-visible:ring-[#3B5BDB] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F1F5F9]"
             onClick={() => {
               setSelectedMode('create');
               setOpenDialog(true);
             }}
           >
-            <Plus className="h-5 w-5" strokeWidth={1.5} />
-            Agregar Insumo
-          </Button> */}
+            <span
+              aria-hidden
+              className="absolute inset-0 -translate-x-full bg-[linear-gradient(105deg,transparent_35%,rgba(255,255,255,0.22)_50%,transparent_65%)] transition-transform duration-700 ease-out group-hover/cta:translate-x-full"
+            />
+            <span className="relative flex items-center gap-2">
+              <Plus
+                className="h-5 w-5 transition-transform duration-300 group-hover/cta:rotate-180"
+                strokeWidth={2.5}
+              />
+              Agregar Insumo
+            </span>
+          </Button>
 
           <p className="text-sm font-semibold text-[#475569]">
             {resultCount} {resultCount === 1 ? 'insumo' : 'insumos'}
