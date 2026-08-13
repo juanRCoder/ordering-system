@@ -54,7 +54,7 @@ jobs:
         run: pnpm --filter backend exec prisma generate
         env:
           DATABASE_URL: postgresql://ci:ci@localhost:5432/dummy
-      
+
       - name: Lint
         run: pnpm --filter backend lint
 
