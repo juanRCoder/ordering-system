@@ -32,19 +32,16 @@ async function main() {
     data: [
       {
         id: 'fc54b998-49da-46bf-9800-7f6807be999a',
-        name: 'Combinado de Pescado',
         category_id: 'f48a2179-ae44-4b00-88ad-9ffc1e9f8508',
         origin: 'PLATFORM',
       },
       {
         id: '420fc1f6-1a94-490f-aa2d-b641903a03a1',
-        name: 'Lomo Saltado',
         category_id: 'f48a2179-ae44-4b00-88ad-9ffc1e9f8508',
         origin: 'PLATFORM',
       },
       {
         id: '3672f504-7348-4014-9747-8c42b4d42d3d',
-        name: 'Chicha Morada 1L',
         category_id: 'a767c232-0fd3-44df-b6a6-da25988698d1',
         origin: 'PLATFORM',
       },

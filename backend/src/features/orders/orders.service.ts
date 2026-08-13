@@ -216,7 +216,7 @@ export class OrdersService {
         status: order.status,
         supplies: order.supplies_orders.map((so) => ({
           quantity: so.quantity,
-          name: so.admin_supply.supply.name,
+          name: so.admin_supply.name,
           price: so.price.toNumber(),
           observations: so.observations,
         })),
@@ -264,11 +264,7 @@ export class OrdersService {
               quantity: true,
               admin_supply: {
                 select: {
-                  supply: {
-                    select: {
-                      name: true,
-                    },
-                  },
+                  name: true,
                 },
               },
             },
@@ -294,7 +290,7 @@ export class OrdersService {
         total: order.total.toNumber(),
         supplies: order.supplies_orders.map((so) => ({
           quantity: so.quantity,
-          name: so.admin_supply.supply.name,
+          name: so.admin_supply.name,
         })),
       })),
       counts: {

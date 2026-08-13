@@ -91,7 +91,7 @@ export const SupplyCard = ({ data, handlerEvents }: props) => {
             className="cursor-pointer rounded-md border-[#0F2A4A]/20 text-[#0F2A4A] hover:bg-[#0F2A4A] hover:text-white"
           >
             <Pencil className="h-3.5 w-3.5" strokeWidth={2} />
-            {isPlatform ? 'Editar Precio' : 'Editar'}
+            Editar
           </Button>
         </div>
       </div>

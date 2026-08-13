@@ -76,7 +76,6 @@ export class SuppliesService {
 
     const newSupply = await this.prisma.supplies.create({
       data: {
-        name,
         image_url: imageUrl,
         image_public_id: imagePublicId,
         category_id,
@@ -90,6 +89,7 @@ export class SuppliesService {
         admin_id: adminId,
         supply_id: newSupply.id,
         price,
+        name,
       },
     });
 
@@ -155,19 +155,18 @@ export class SuppliesService {
       this.prisma.adminSupplies.findMany({
         where: {
           admin_id: admin.id,
-          supply: {
-            ...(search
-              ? { name: { contains: search, mode: 'insensitive' } }
-              : { category_id: categoryId }),
-          },
+          ...(search
+            ? { name: { contains: search, mode: 'insensitive' } }
+            : { supply: { category_id: categoryId } }),
         },
         orderBy: [{ created_at: 'desc' }, { id: 'desc' }],
         select: {
           id: true,
+          name: true,
           price: true,
           description: true,
           status: true,
-          supply: { select: { name: true, image_url: true, origin: true } },
+          supply: { select: { image_url: true, origin: true } },
         },
         skip: startCount,
         take: limit,
@@ -187,7 +186,7 @@ export class SuppliesService {
       is_business_open: admin.is_business_open,
       data: adminSupplies.map((as) => ({
         id: as.id,
-        name: as.supply.name,
+        name: as.name,
         image_url: as.supply.image_url,
         description: as.description,
         price: as.price.toNumber(),
@@ -209,11 +208,11 @@ export class SuppliesService {
       where: { id },
       select: {
         id: true,
+        name: true,
         price: true,
         description: true,
         supply: {
           select: {
-            name: true,
             image_url: true,
             category_id: true,
             image_public_id: true,
@@ -233,7 +232,7 @@ export class SuppliesService {
       status: HttpStatus.OK,
       data: {
         id: adminSupply.id,
-        name: adminSupply.supply.name,
+        name: adminSupply.name,
         image_url: adminSupply.supply.image_url,
         description: adminSupply.description,
         price: adminSupply.price.toNumber(),
@@ -275,11 +274,6 @@ export class SuppliesService {
       data: { status: newStatus },
       select: {
         status: true,
-        supply: {
-          select: {
-            name: true,
-          },
-        },
       },
     });
 
@@ -290,7 +284,6 @@ export class SuppliesService {
     return {
       status: HttpStatus.OK,
       data: {
-        name: updatedSupply.supply.name,
         status: updatedSupply.status,
       },
     };
@@ -327,7 +320,7 @@ export class SuppliesService {
       });
     }
 
-    const { price } = updateSupplyDto;
+    const { name, price } = updateSupplyDto;
 
     // let image_url: string | undefined | null = imageUrl;
     // let image_public_id: string | undefined | null = imagePublicId;
@@ -359,6 +352,7 @@ export class SuppliesService {
       where: { id },
       data: {
         price,
+        name,
       },
     });
 

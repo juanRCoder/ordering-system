@@ -112,7 +112,6 @@ model Categories {
 
 model Supplies {
   id               String       @id @default(uuid())
-  name             String
   image_url        String?
   image_public_id  String?
   category_id      String
@@ -131,6 +130,7 @@ model AdminSupplies {
   id          String       @id @default(uuid())
   admin_id    String
   supply_id   String
+  name        String?
   price       Decimal      @default(0) @db.Decimal(10, 2)
   description String?
   status      StatusSupply @default(AVAILABLE)
