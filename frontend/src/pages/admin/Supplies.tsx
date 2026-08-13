@@ -1,15 +1,6 @@
 import { SupplyDialog } from '@/components/admin/SupplyDialog';
 import { BottomAppBar } from '@/components/BottomAppBar';
-// import { InputSearch } from '@/components/InputSearch';
 import { TopAppBar } from '@/components/TopAppBar';
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { useCategories } from '@/hooks/useCategories';
 import { useEffect, useState } from 'react';
 import { useSuppliesByAdmin } from '@/hooks/useSupplies';
@@ -26,6 +17,7 @@ import {
   PaginationPrevious,
 } from '@/components/ui/pagination';
 import { InputSearch } from '@/components/InputSearch';
+import { Package } from 'lucide-react';
 // import { Button } from '@/components/ui/button';
 // import { Plus } from 'lucide-react';
 
@@ -63,74 +55,129 @@ function Supplies() {
     (category: CategoryResponse) => category.id === activeCategoryId
   );
 
+  const firstLetterUpper = (name: string) => {
+    return name.charAt(0).toUpperCase() + name.slice(1);
+  };
+
+  const resultCount = suppliesByType.data?.data?.length ?? 0;
   return (
-    <section className="bg-[#F8F9FF] min-h-screen flex flex-col">
+    <section className="bg-[#F1F5F9] min-h-screen flex flex-col">
       <TopAppBar
         subtitle={<p className="text-xs truncate max-w-45">Panel de Insumos</p>}
       />
-      <div className="flex flex-col p-3 pb-24">
-        <div className="flex flex-col gap-3.5">
+      <div className="flex-1 flex flex-col p-3 pb-24">
+        <div className="flex flex-col gap-3">
+          <div>
+            <h2
+              className="text-2xl font-bold tracking-tight text-[#0F2A4A]"
+              style={{ fontFamily: "'DM Sans', sans-serif" }}
+            >
+              Insumos
+            </h2>
+            <p className="text-xs text-[#64748B]">
+              Administra tus insumos y precios
+            </p>
+          </div>
+
           <InputSearch
             value={letters}
             onChange={setLetters}
             placeholder="Buscar por nombre de insumo"
           />
-          <div className="max-w-md flex gap-3.5">
-            <Select
-              value={selectedCategoryId}
-              onValueChange={(value) => setSelectedCategoryId(value ?? '')}
-            >
-              <SelectTrigger className="w-full bg-[#F8F9FA] border border-gray-300 rounded-sm px-3 h-11.5!">
-                <SelectValue>{selectedCategory?.name}</SelectValue>
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  {categories.data?.map((category: CategoryResponse) => (
-                    <SelectItem key={category.id} value={category.id}>
-                      {category.name}
-                    </SelectItem>
-                  ))}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-            {/* <Button
-              variant="outline"
-              className="cursor-pointer rounded-sm py-5.5"
-              onClick={() => {
-                setSelectedMode('create');
-                setOpenDialog(true);
-              }}
-            >
-              <Plus className="h-6! w-6!" strokeWidth={1.5} />
-              Agregar Insumo
-            </Button> */}
+
+          <div
+            className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide"
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+          >
+            {categories.data?.map((type: CategoryResponse) => (
+              <button
+                key={type.id}
+                className="shrink-0 px-5 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 cursor-pointer border-none outline-none"
+                style={{
+                  backgroundColor:
+                    activeCategoryId === type.id ? '#0F2A4A' : '#FFFFFF',
+                  color: activeCategoryId === type.id ? '#FFFFFF' : '#475569',
+                }}
+                onClick={() => {
+                  setSelectedCategoryId(type.id);
+                  setPage(1);
+                }}
+              >
+                {firstLetterUpper(type.name)}
+              </button>
+            ))}
           </div>
-          <h2 className="text-xl font-semibold text-[#161D17]">
-            {suppliesByType.data?.data?.length} resultados{' '}
-            {selectedCategory?.name === 'Todos'
-              ? ''
-              : 'en ' + selectedCategory?.name}
-          </h2>
+          {/* <Button
+            variant="outline"
+            className="cursor-pointer rounded-lg"
+            onClick={() => {
+              setSelectedMode('create');
+              setOpenDialog(true);
+            }}
+          >
+            <Plus className="h-5 w-5" strokeWidth={1.5} />
+            Agregar Insumo
+          </Button> */}
+
+          <p className="text-sm font-semibold text-[#475569]">
+            {resultCount} {resultCount === 1 ? 'insumo' : 'insumos'}
+            {selectedCategory?.name
+              ? ` · ${firstLetterUpper(selectedCategory.name)}`
+              : ''}
+          </p>
+        </div>
+
+        <div className="mt-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-4">
             {categories.isLoading || suppliesByType.isLoading
               ? Array.from({ length: 3 }).map((_, i) => (
                   <SupplyCardAdminSkeleton key={i} />
                 ))
-              : suppliesByType.data.data?.map((supply: SupplyResponse) => (
-                  <SupplyCard
-                    key={supply.id}
-                    data={supply}
-                    handlerEvents={() => {
-                      setOpenDialog(true);
-                      setSelectedMode('edit');
-                      setSelectedSupplyId(supply.id);
-                      setSupplyOrigin(supply.origin || '');
-                    }}
-                  />
-                ))}
+              : suppliesByType.data.data?.map(
+                  (supply: SupplyResponse, index: number) => (
+                    <div
+                      key={supply.id}
+                      className="animate-fadeIn"
+                      style={{ animationDelay: `${index * 40}ms` }}
+                    >
+                      <SupplyCard
+                        data={supply}
+                        handlerEvents={() => {
+                          setOpenDialog(true);
+                          setSelectedMode('edit');
+                          setSelectedSupplyId(supply.id);
+                          setSupplyOrigin(supply.origin || '');
+                        }}
+                      />
+                    </div>
+                  )
+                )}
           </div>
+
+          {!categories.isLoading &&
+            !suppliesByType.isLoading &&
+            resultCount === 0 && (
+              <div className="text-center py-16">
+                <div className="mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-[20px] bg-[#E0E7FF]">
+                  <Package
+                    className="h-10 w-10 text-[#3B5BDB]"
+                    strokeWidth={1.5}
+                  />
+                </div>
+                <p
+                  className="text-lg font-semibold text-[#0F2A4A]"
+                  style={{ fontFamily: "'DM Sans', sans-serif" }}
+                >
+                  No hay insumos aquí
+                </p>
+                <p className="mt-2 text-sm text-[#94A3B8]">
+                  Cambia de categoría o intenta otra búsqueda
+                </p>
+              </div>
+            )}
         </div>
-        <Pagination className={`my-6`}>
+
+        <Pagination className={`my-6 ${resultCount === 0 ? 'hidden' : ''}`}>
           <PaginationContent>
             <PaginationItem>
               <PaginationPrevious
@@ -142,6 +189,7 @@ function Supplies() {
                     setPage(page - 1);
                   }
                 }}
+                className="text-[#475569]"
               />
             </PaginationItem>
 
@@ -158,6 +206,11 @@ function Supplies() {
                       e.preventDefault();
                       setPage(i + 1);
                     }}
+                    className={`${
+                      page === i + 1
+                        ? 'bg-[#0F2A4A]! text-white! border-[#0F2A4A]!'
+                        : 'text-[#475569]'
+                    }`}
                   >
                     {i + 1}
                   </PaginationLink>
@@ -183,6 +236,7 @@ function Supplies() {
                     setPage(page + 1);
                   }
                 }}
+                className="text-[#475569]"
               />
             </PaginationItem>
           </PaginationContent>

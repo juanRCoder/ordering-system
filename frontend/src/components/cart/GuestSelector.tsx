@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { InputField } from '@/components/InputField';
+import { useBusinessStore } from '@/stores/business.store';
 import { User } from 'lucide-react';
 
 type props = {
@@ -9,8 +10,6 @@ type props = {
   error?: string;
 };
 
-const TABLE_NUMBERS = Array.from({ length: 10 }, (_, i) => i + 1);
-
 export const GuestSelector = ({
   value,
   onChange,
@@ -19,6 +18,12 @@ export const GuestSelector = ({
 }: props) => {
   const [showCustom, setShowCustom] = useState(false);
   const [isTakeaway, setIsTakeaway] = useState(false);
+
+  const tableCount = useBusinessStore((s) => s.table_count);
+  const tableNumbers = Array.from(
+    { length: tableCount ?? 10 },
+    (_, i) => i + 1
+  );
 
   const selectTable = (table: number) => {
     setShowCustom(false);
@@ -45,7 +50,7 @@ export const GuestSelector = ({
 
       {/* Table Grid */}
       <div className="grid grid-cols-5 gap-2">
-        {TABLE_NUMBERS.map((table) => {
+        {tableNumbers.map((table) => {
           const isSelected = value === `Mesa ${table}`;
           return (
             <button

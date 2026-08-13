@@ -7,6 +7,7 @@ interface BusinessState {
   owner_name: string | null;
   is_business_open: boolean | null;
   phone: string | null;
+  table_count: number | null;
   setBusiness: (data: {
     business_name: string;
     slug: string;
@@ -14,6 +15,7 @@ interface BusinessState {
     is_business_open: boolean;
     phone: string;
   }) => void;
+  setTableCount: (count: number) => void;
   order_id: string | null;
   guest_name: string | null;
   setOrder: (data: { order_id: string; guest_name: string }) => void;
@@ -30,6 +32,7 @@ export const useBusinessStore = create<BusinessState>()(
       owner_name: null,
       is_business_open: null,
       phone: null,
+      table_count: null,
       setBusiness: (data) =>
         set({
           business_name: data.business_name,
@@ -40,6 +43,7 @@ export const useBusinessStore = create<BusinessState>()(
         }),
       setOrder: (data) =>
         set({ order_id: data.order_id, guest_name: data.guest_name }),
+      setTableCount: (count) => set({ table_count: count }),
       clearBusiness: () =>
         set({
           slug: null,
@@ -49,6 +53,7 @@ export const useBusinessStore = create<BusinessState>()(
           owner_name: null,
           is_business_open: null,
           phone: null,
+          table_count: null,
         }),
     }),
     {
