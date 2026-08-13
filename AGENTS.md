@@ -39,7 +39,7 @@ Models: `Users`, `Sessions`, `Subscriptions`, `Categories`, `Supplies`, `AdminSu
 
 Auth uses JWT access token + refresh token in httpOnly cookies (sessions persisted in `Sessions`). Supplies images are uploaded to Cloudinary (env `CLOUDINARY_URL`). SSE streams broadcast business open/closed state, price updates, new orders and supply availability (SSE endpoints are public, without AdminGuard).
 
-DB is PostgreSQL 16 via Docker (`pnpm --filter backend docker:up`). Seed: `pnpm --filter backend db:seed`.
+DB: target principal es **Supabase** (session pooler). Fallback local: PostgreSQL 16 via Docker (`pnpm --filter backend docker:up`). La conexión activa la define `DATABASE_URL` en `backend/.env` (Supabase activa, local comentada como fallback). Aplicar migraciones sobre Supabase con `prisma migrate deploy`; `migrate dev` queda para el Postgres local. Seed: `pnpm --filter backend db:seed`.
 
 Config uses `@nestjs/config` with the `app.config.ts` pattern (reads `PORT`, `NODE_ENV`, `CORS_ORIGINS`).
 

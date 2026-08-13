@@ -62,7 +62,7 @@ ordering-system/
 
 - **Node.js** >= 20
 - **pnpm** >= 9
-- **Docker** (para PostgreSQL 16)
+- **Docker** (solo para el Postgres local de respaldo) o una base **Supabase**
 
 ### Puesta en marcha
 
@@ -90,7 +90,17 @@ cp frontend/.env.example frontend/.env
 
 Completa los valores según la sección [Variables de entorno](#variables-de-entorno).
 
-### 3. Levantar la base de datos
+### 3. Base de datos
+
+La conexión se define en `backend/.env` mediante `DATABASE_URL`.
+
+**Opción A — Supabase (principal):** pega tu connection string (session pooler) en `DATABASE_URL`:
+
+```
+postgres://postgres.<project-ref>:<db-password>@aws-<region>.pooler.supabase.com:5432/postgres
+```
+
+**Opción B — PostgreSQL local con Docker (fallback):** levanta el contenedor y descomenta la `DATABASE_URL` local en `backend/.env`.
 
 ```bash
 pnpm --filter backend docker:up
@@ -100,9 +110,11 @@ pnpm --filter backend docker:up
 
 ```bash
 pnpm --filter backend exec prisma generate
-pnpm --filter backend exec prisma migrate dev
+pnpm --filter backend exec prisma migrate deploy
 pnpm --filter backend db:seed
 ```
+
+> Con Supabase usa `prisma migrate deploy` (aplica las migraciones versionadas). Con Docker local también funciona `prisma migrate dev` para crear una migración nueva durante el desarrollo.
 
 ### 5. Iniciar en modo desarrollo
 
