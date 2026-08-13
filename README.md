@@ -2,14 +2,6 @@
 
 Sistema de pedidos para restaurantes o negocios de comida: Los meseros son asistidos por una carta y anotan(para consumir en el local o llevar), mientras que en cocina se registran en tiempo real todos esos pedidos a preparar.
 
-### Características
-- [x] **Menú del cliente**: catálogo de insumos por categoría, búsqueda por nombre y paginación.
-- [x] **Carrito y listado de pedidos**: pedidos de tipo local (`LOCAL`) o para llevar (`TAKEAWAY`) y listado de ordenes pendientes y finalizadas.
-- [x] **Panel de insumos**: gestión de insumos (con subida de imágenes a Cloudinary), categorías y pedidos, con filtros por estado y rango de fechas.
-- [x] **Tiempo real**: streams SSE para el estado del negocio (abierto/cerrado), actualizaciones de precios, nuevos pedidos e insumos disponibles.
-- [x] **Autenticación**: login/registro con JWT + refresh token en cookies httpOnly y sesiones persistidas.
-- [x] **Roles y suscripciones**: `USER`, `ADMIN` y planes de suscripción (`FREE_TRIAL`, `MONTHLY`, `SEMI_ANNUAL`, `ANNUAL`).
-
 ### Flujo Principal:
 
 1. El mesero accede al menú.
@@ -19,13 +11,22 @@ Sistema de pedidos para restaurantes o negocios de comida: Los meseros son asist
 5. Cocina recibe y prepara el pedido.
 6. El estado del pedido se actualiza en tiempo real desde cocina o caja.
 
+### Características
+
+- [x] **Menú del cliente**: catálogo de insumos por categoría, búsqueda por nombre y paginación.
+- [x] **Carrito y listado de pedidos**: pedidos de tipo local (`LOCAL`) o para llevar (`TAKEAWAY`) y listado de ordenes pendientes y finalizadas.
+- [x] **Panel de insumos**: gestión de insumos (con subida de imágenes a Cloudinary), categorías y pedidos, con filtros por estado y rango de fechas.
+- [x] **Tiempo real**: streams SSE para el estado del negocio (abierto/cerrado), actualizaciones de precios, nuevos pedidos e insumos disponibles.
+- [x] **Autenticación**: login/registro con JWT + refresh token en cookies httpOnly y sesiones persistidas.
+- [x] **Roles y suscripciones**: `USER`, `ADMIN` y planes de suscripción (`FREE_TRIAL`, `MONTHLY`, `SEMI_ANNUAL`, `ANNUAL`).
+
 ### Stack tecnológico
 
-| Capa | Tecnologías |
-| --- | --- |
+| Capa     | Tecnologías                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Frontend | ![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white) ![Vite](https://img.shields.io/badge/Vite-8-646CFF?logo=vite&logoColor=white) ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?logo=tailwindcss&logoColor=white) ![shadcn/ui](https://img.shields.io/badge/shadcn/ui-000000?logo=shadcnui&logoColor=white) ![Zustand](https://img.shields.io/badge/Zustand-602C3C) ![TanStack Query](https://img.shields.io/badge/TanStack_Query-FF4154?logo=reactquery&logoColor=white) ![React Hook Form](https://img.shields.io/badge/React_Hook_Form-EC5990?logo=reacthookform&logoColor=white) ![Zod](https://img.shields.io/badge/Zod-3E67B1) |
-| Backend | ![NestJS](https://img.shields.io/badge/NestJS-11-E0234E?logo=nestjs&logoColor=white) ![Prisma](https://img.shields.io/badge/Prisma-7-2D3748?logo=prisma&logoColor=white) ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white) ![JWT](https://img.shields.io/badge/JWT-000000?logo=jsonwebtokens&logoColor=white) ![Passport](https://img.shields.io/badge/Passport-34E27A?logo=passport&logoColor=white) ![Cloudinary](https://img.shields.io/badge/Cloudinary-3448C5?logo=cloudinary&logoColor=white) ![Multer](https://img.shields.io/badge/Multer-000000) ![SSE](https://img.shields.io/badge/SSE-Server--Sent_Events-555555) |
-| Infra | ![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white) ![pnpm](https://img.shields.io/badge/pnpm-9-F69220?logo=pnpm&logoColor=white) |
+| Backend  | ![NestJS](https://img.shields.io/badge/NestJS-11-E0234E?logo=nestjs&logoColor=white) ![Prisma](https://img.shields.io/badge/Prisma-7-2D3748?logo=prisma&logoColor=white) ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white) ![JWT](https://img.shields.io/badge/JWT-000000?logo=jsonwebtokens&logoColor=white) ![Passport](https://img.shields.io/badge/Passport-34E27A?logo=passport&logoColor=white) ![Cloudinary](https://img.shields.io/badge/Cloudinary-3448C5?logo=cloudinary&logoColor=white) ![Multer](https://img.shields.io/badge/Multer-000000) ![SSE](https://img.shields.io/badge/SSE-Server--Sent_Events-555555)            |
+| Infra    | ![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white) ![pnpm](https://img.shields.io/badge/pnpm-9-F69220?logo=pnpm&logoColor=white)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
 
 ### Estructura del proyecto
 
@@ -70,16 +71,19 @@ ordering-system/
 ```bash
 pnpm install
 ```
+
 > Si ya existía un lockfile desactualizado, usa `pnpm install --force`.
 
 ### 2. Configurar variables de entorno
 
 Backend:
+
 ```bash
 cp backend/.env.example backend/.env
 ```
 
 Frontend:
+
 ```bash
 cp frontend/.env.example frontend/.env
 ```
@@ -108,7 +112,9 @@ pnpm --filter frontend dev          # Frontend en http://localhost:5173
 ```
 
 ### Scripts
+
 #### Raíz
+
 | Comando             | Descripción                    |
 | ------------------- | ------------------------------ |
 | `pnpm back:lint`    | Lint del backend.              |
@@ -124,4 +130,5 @@ pnpm --filter frontend dev          # Frontend en http://localhost:5173
 - **Tests**: Jest unitarios en `backend/src` y end-to-end en `backend/test`.
 
 ## Autor
+
 Juan Ramirez
