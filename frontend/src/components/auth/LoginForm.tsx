@@ -9,7 +9,7 @@ import { InputField } from '../InputField';
 import { Button } from '../ui/button';
 import { HeaderForm } from '@/pages/Auth';
 
-export const LoginForm = ({ onToggle }: { onToggle: () => void }) => {
+export const LoginForm = () => {
   const login = useLogin();
   const {
     register,
@@ -25,8 +25,8 @@ export const LoginForm = ({ onToggle }: { onToggle: () => void }) => {
   return (
     <div className="flex flex-col gap-8">
       <HeaderForm
-        title="Bienvenido de nuevo"
-        subtitle="Inicia sesión para continuar tu experiencia"
+        title="Bienvenido"
+        subtitle="Inicia sesión para empezar con el sistema"
       />
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
         <InputField
@@ -55,15 +55,6 @@ export const LoginForm = ({ onToggle }: { onToggle: () => void }) => {
           {login.isPending ? 'Iniciando Sesión...' : 'Inicia Sesión'}
         </Button>
       </form>
-      <p className="text-sm text-center font-semibold">
-        ¿Aun no tienes una cuenta?{' '}
-        <span
-          onClick={onToggle}
-          className="text-primary cursor-pointer underline"
-        >
-          Crear Cuenta
-        </span>
-      </p>
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { TopAppBar } from '../components/TopAppBar';
 import { Button } from '@/components/ui/button';
 import { LoginForm } from '@/components/auth/LoginForm';
@@ -52,13 +52,24 @@ export const HeaderForm = ({
 function Auth() {
   const [isLogin, setIsLogin] = useState(true);
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'u') {
+        e.preventDefault();
+        setIsLogin((prev) => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   return (
     <section className="bg-[#F8F9FF] min-h-screen flex flex-col">
       <TopAppBar />
       <div className="flex-1 flex flex-col items-center justify-center pt-3 px-3">
         <div className="max-w-md w-full px-4 sm:px-8 py-12 bg-white rounded-xl">
           {isLogin ? (
-            <LoginForm onToggle={() => setIsLogin(false)} />
+            <LoginForm />
           ) : (
             <RegisterForm onToggle={() => setIsLogin(true)} />
           )}
