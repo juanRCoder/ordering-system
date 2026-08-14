@@ -18,8 +18,6 @@ export const TypesSuppliesKeys = {
 
 export const SuppliesKeys = {
   all: baseKeys.supplies,
-  byTypeId: (type_id: string) =>
-    [...baseKeys.supplies, 'type_id', type_id] as const,
   bySlug: (slug: string, categoryId: string, letters: string, page: number) =>
     [
       ...baseKeys.supplies,

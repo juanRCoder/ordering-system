@@ -205,7 +205,12 @@ function Menu() {
         {/* Pagination */}
         {!categories.isLoading && !suppliesByType.isLoading && (
           <Pagination
-            className={`${suppliesByType.data?.is_business_open ? 'hidden' : ''} mb-6`}
+            className={`mb-6 ${
+              suppliesByType.data?.is_business_open ||
+              (suppliesByType?.data?.metadata?.pagination?.totalPages ?? 1) <= 1
+                ? 'hidden'
+                : ''
+            }`}
           >
             <PaginationContent>
               <PaginationItem>

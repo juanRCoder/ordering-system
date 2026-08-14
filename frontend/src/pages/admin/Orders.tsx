@@ -206,7 +206,11 @@ function Orders() {
         </div>
 
         <Pagination
-          className={`my-6 ${orders.data?.data.length === 0 ? 'hidden' : ''}`}
+          className={`my-6 ${
+            (orders?.data?.metadata?.pagination?.totalPages ?? 1) <= 1
+              ? 'hidden'
+              : ''
+          }`}
         >
           <PaginationContent>
             <PaginationItem>

@@ -184,7 +184,13 @@ function Supplies() {
             )}
         </div>
 
-        <Pagination className={`my-6 ${resultCount === 0 ? 'hidden' : ''}`}>
+        <Pagination
+          className={`my-6 ${
+            (suppliesByType?.data?.metadata?.pagination?.totalPages ?? 1) <= 1
+              ? 'hidden'
+              : ''
+          }`}
+        >
           <PaginationContent>
             <PaginationItem>
               <PaginationPrevious

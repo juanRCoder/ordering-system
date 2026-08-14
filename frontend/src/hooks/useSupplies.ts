@@ -10,11 +10,8 @@ export function useCreateSupply() {
 
   return useMutation({
     mutationFn: (data: FormData) => suppliesService.create(data),
-    onSuccess: (_, variables) => {
-      const categoryId = String(variables.get('category_id') ?? '');
-      queryClient.invalidateQueries({
-        queryKey: SuppliesKeys.byTypeId(categoryId),
-      });
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: SuppliesKeys.all });
       toast.success('Insumo agregado con éxito', toastStyles.success);
     },
     onError: () => {
