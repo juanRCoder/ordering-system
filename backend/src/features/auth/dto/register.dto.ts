@@ -25,5 +25,9 @@ export class RegisterDto {
 
   @IsNotEmpty()
   @IsString()
+  phone!: string;
+
+  @IsNotEmpty()
+  @IsString()
   business_name!: string;
 }

@@ -62,6 +62,7 @@ export class AuthService {
         role: 'ADMIN',
         slug: registerDto.slug,
         business_name: registerDto.business_name,
+        phone: registerDto.phone,
       },
     });
 

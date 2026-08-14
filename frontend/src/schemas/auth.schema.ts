@@ -23,6 +23,6 @@ export const registerSchema = loginSchema.extend({
     .max(30, 'Nombre de negocio demasiado largo (max 30 caracteres)'),
   phone: z
     .string()
-    .min(10, 'Número de teléfono demasiado corto (min 10 caracteres)')
+    .min(9, 'Número de teléfono demasiado corto (min 9 caracteres)')
     .max(15, 'Número de teléfono demasiado largo (max 15 caracteres)'),
 });
