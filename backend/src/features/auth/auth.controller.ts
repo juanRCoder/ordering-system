@@ -43,14 +43,14 @@ export class AuthController {
     res.cookie('auth-token', result.data.access_token, {
       httpOnly: true,
       secure: isProduction,
-      sameSite: 'lax',
+      sameSite: isProduction ? 'none' : 'lax',
       maxAge: 1000 * 60 * 15,
     });
 
     res.cookie('refresh-token', result.data.refresh_token, {
       httpOnly: true,
       secure: isProduction,
-      sameSite: 'lax',
+      sameSite: isProduction ? 'none' : 'lax',
       maxAge: 1000 * 60 * 60 * 24 * 7,
     });
 
@@ -71,14 +71,14 @@ export class AuthController {
     res.cookie('auth-token', result.data.access_token, {
       httpOnly: true,
       secure: isProduction,
-      sameSite: 'lax',
+      sameSite: isProduction ? 'none' : 'lax',
       maxAge: 1000 * 60 * 15,
     });
 
     res.cookie('refresh-token', result.data.refresh_token, {
       httpOnly: true,
       secure: isProduction,
-      sameSite: 'lax',
+      sameSite: isProduction ? 'none' : 'lax',
       maxAge: 1000 * 60 * 60 * 24 * 7,
     });
 
@@ -101,13 +101,13 @@ export class AuthController {
     res.clearCookie('auth-token', {
       httpOnly: true,
       secure: isProduction,
-      sameSite: 'lax',
+      sameSite: isProduction ? 'none' : 'lax',
     });
 
     res.clearCookie('refresh-token', {
       httpOnly: true,
       secure: isProduction,
-      sameSite: 'lax',
+      sameSite: isProduction ? 'none' : 'lax',
     });
 
     return {
