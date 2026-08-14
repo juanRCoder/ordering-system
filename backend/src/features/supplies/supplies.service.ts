@@ -320,33 +320,42 @@ export class SuppliesService {
       });
     }
 
-    const { name, price } = updateSupplyDto;
+    const { name, price, image_url, image_public_id, category_id } =
+      updateSupplyDto;
 
-    // let image_url: string | undefined | null = imageUrl;
-    // let image_public_id: string | undefined | null = imagePublicId;
+    let imageUrl: string | null | undefined = image_url;
+    let imagePublicId: string | null | undefined = image_public_id;
 
-    // if (file) {
-    //   const uploadResult = await this.cloudinary.uploadFile(
-    //     file,
-    //     `${this.rootFolder}/supplies`,
-    //     imagePublicId
-    //   );
-    //   image_url = uploadResult.secure_url;
-    //   image_public_id = uploadResult.public_id;
-    // }
+    if (file) {
+      const uploadResult = await this.cloudinary.uploadFile(
+        file,
+        `${this.rootFolder}/supplies`,
+        image_public_id
+      );
+      imageUrl = uploadResult.secure_url;
+      imagePublicId = uploadResult.public_id;
+    }
 
-    // if (category_id) {
-    //   const category = await this.prisma.categories.findUnique({
-    //     where: { id: category_id },
-    //   });
+    if (category_id) {
+      const category = await this.prisma.categories.findUnique({
+        where: { id: category_id },
+      });
 
-    //   if (!category) {
-    //     throw new BadRequestException({
-    //       code: 'CATEGORY_NOT_FOUND',
-    //       message: 'The specified category does not exist',
-    //     });
-    //   }
-    // }
+      if (!category) {
+        throw new BadRequestException({
+          code: 'CATEGORY_NOT_FOUND',
+          message: 'The specified category does not exist',
+        });
+      }
+    }
+
+    await this.prisma.supplies.update({
+      where: { id: supply.supply_id },
+      data: {
+        image_url: imageUrl,
+        image_public_id: imagePublicId,
+      },
+    });
 
     const updateAdminSupply = await this.prisma.adminSupplies.update({
       where: { id },
