@@ -1,5 +1,7 @@
 # Ordering System
 
+<img width="1349" height="643" alt="image" src="https://github.com/user-attachments/assets/380d6bf3-6d5d-4f72-b2ca-139212dbafca" />
+
 Sistema de pedidos para restaurantes o negocios de comida: Los meseros son asistidos por una carta y anotan(para consumir en el local o llevar), mientras que en cocina se registran en tiempo real todos esos pedidos a preparar.
 
 ### Flujo Principal:
