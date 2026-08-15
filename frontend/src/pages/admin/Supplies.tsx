@@ -19,8 +19,11 @@ import {
 import { InputSearch } from '@/components/InputSearch';
 import { Package, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useParams } from 'react-router-dom';
 
 function Supplies() {
+  const { slug } = useParams<{ slug: string }>();
+  const isDemo = slug === 'user-restaurant';
   const [supplyOrigin, setSupplyOrigin] = useState('PLATFORM');
   const [selectedMode, setSelectedMode] = useState<'create' | 'edit'>('create');
   const [selectedSupplyId, setSelectedSupplyId] = useState<string>('');
@@ -108,7 +111,10 @@ function Supplies() {
           </div>
           <Button
             className="group/cta relative h-11 cursor-pointer overflow-hidden rounded-lg border-t border-white/15 bg-[#0F2A4A] px-5 font-semibold text-white shadow-[0_6px_18px_-6px_rgba(15,42,74,0.55)] transition-all duration-300 hover:bg-[#14335C] hover:shadow-[0_10px_26px_-8px_rgba(15,42,74,0.65)] active:translate-y-px active:scale-[0.99] focus-visible:ring-2 focus-visible:ring-[#3B5BDB] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F1F5F9]"
+            disabled={isDemo}
+            title={isDemo ? 'El demo no permite crear insumos' : undefined}
             onClick={() => {
+              if (isDemo) return;
               setSelectedMode('create');
               setOpenDialog(true);
             }}
