@@ -184,7 +184,7 @@ export class OrdersService {
     }
   }
 
-  async findOne(id: string) {
+  async findById(id: string) {
     const order = await this.prisma.orders.findUnique({
       where: { id },
       include: {

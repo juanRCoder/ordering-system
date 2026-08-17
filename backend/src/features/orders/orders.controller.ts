@@ -38,8 +38,8 @@ export class OrdersController {
 
   @UseGuards(AdminGuard)
   @Get(':id')
-  async findOne(@Param('id') id: string) {
-    return this.ordersService.findOne(id);
+  async findById(@Param('id') id: string) {
+    return this.ordersService.findById(id);
   }
 
   @Post(':slug')
