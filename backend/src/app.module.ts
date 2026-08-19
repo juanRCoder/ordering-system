@@ -4,7 +4,6 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { PrismaModule } from './prisma.module';
 import { CsrfGuard } from './common/guards/csrf.guard';
 import { AuthModule } from './features/auth/auth.module';
@@ -35,7 +34,6 @@ import appConfig from './config/app.config';
   ],
   controllers: [AppController],
   providers: [
-    AppService,
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,

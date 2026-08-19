@@ -19,7 +19,7 @@ import { AdminGuard } from './auth.guard';
 import { CurrentAdmin } from '../../common/decorators/current-admin.decorator';
 import { map, Observable } from 'rxjs';
 import { RefreshTokenGuard } from './refreshToken.guard';
-import { CurrentSession } from '../../common/decorators/current-sesion.decorator';
+import { CurrentSession } from '../../common/decorators/current-session.decorator';
 import { Sessions } from '../../generated/prisma/client';
 import { cookieOptions } from './auth.constants';
 

@@ -4,13 +4,14 @@ import {
   IsNumber,
   IsOptional,
   IsString,
+  IsUUID,
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class SupplyItemDto {
   @IsNotEmpty()
-  @IsString()
+  @IsUUID()
   id!: string;
 
   @IsNotEmpty()

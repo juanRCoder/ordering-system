@@ -16,17 +16,20 @@ export const cookieOptions = (
     httpOnly: true,
     secure: isProduction,
     sameSite: isProduction ? 'none' : 'lax',
+    path: '/api',
     maxAge: ACCESS_TOKEN_TTL_MS,
   },
   refresh: {
     httpOnly: true,
     secure: isProduction,
     sameSite: isProduction ? 'none' : 'lax',
+    path: '/api',
     maxAge: REFRESH_TOKEN_TTL_MS,
   },
   clear: {
     httpOnly: true,
     secure: isProduction,
     sameSite: isProduction ? 'none' : 'lax',
+    path: '/api',
   },
 });
