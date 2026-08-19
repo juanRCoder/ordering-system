@@ -4,37 +4,26 @@ import { PrismaService } from '../../../prisma.service';
 
 describe('CategoriesService', () => {
   let categoriesService: CategoriesService;
-  let prisma: {
+  const prisma = {
     categories: {
-      findMany: jest.Mock;
-      findUnique: jest.Mock;
-      create: jest.Mock;
-      update: jest.Mock;
-      delete: jest.Mock;
-    };
+      findMany: jest.fn(),
+      findUnique: jest.fn(),
+      create: jest.fn(),
+      update: jest.fn(),
+      delete: jest.fn(),
+    },
   };
 
   beforeEach(() => {
-    prisma = {
-      categories: {
-        findMany: jest.fn(),
-        findUnique: jest.fn(),
-        create: jest.fn(),
-        update: jest.fn(),
-        delete: jest.fn(),
-      },
-    };
+    jest.resetAllMocks();
+
     categoriesService = new CategoriesService(
       prisma as unknown as PrismaService
     );
   });
 
-  afterEach(() => {
-    jest.resetAllMocks();
-  });
-
   describe('GET/ findAll', () => {
-    it('should return list of categories with supply count', async () => {
+    it('debería devolver una lista de categorías con el recuento de supplies', async () => {
       prisma.categories.findMany.mockResolvedValue([
         { id: '1', name: 'Food', _count: { supplies: 3 } },
         { id: '2', name: 'Drinks', _count: { supplies: 0 } },
@@ -51,7 +40,7 @@ describe('CategoriesService', () => {
       });
     });
 
-    it('should return empty data when no categories exist', async () => {
+    it('debería devolver datos vacíos cuando no existan categorías', async () => {
       prisma.categories.findMany.mockResolvedValue([]);
 
       const result = await categoriesService.findAll();
@@ -61,7 +50,7 @@ describe('CategoriesService', () => {
   });
 
   describe('POST/ findById', () => {
-    it('should return category if exists', async () => {
+    it('debería devolver la categoría si existe', async () => {
       prisma.categories.findUnique.mockResolvedValue({ id: '1', name: 'Food' });
 
       const result = await categoriesService.findById('1');
@@ -69,7 +58,7 @@ describe('CategoriesService', () => {
       expect(result).toEqual({ status: 200, data: { id: '1', name: 'Food' } });
     });
 
-    it('should throw NotFoundException if category does not exist', async () => {
+    it('debería lanzar NotFoundException si la categoría no existe', async () => {
       prisma.categories.findUnique.mockResolvedValue(null);
 
       await expect(categoriesService.findById('999')).rejects.toThrow(
@@ -79,7 +68,7 @@ describe('CategoriesService', () => {
   });
 
   describe('PATCH/ update', () => {
-    it('should throw NotFoundException if category does not exist', async () => {
+    it('debería lanzar NotFoundException si la categoría no existe', async () => {
       prisma.categories.findUnique.mockResolvedValue(null);
 
       await expect(
@@ -87,7 +76,7 @@ describe('CategoriesService', () => {
       ).rejects.toThrow(NotFoundException);
     });
 
-    it('should update category successfully', async () => {
+    it('debería actualizar la categoría exitosamente', async () => {
       prisma.categories.findUnique.mockResolvedValue({ id: '1', name: 'Old' });
       prisma.categories.update.mockResolvedValue({});
 
@@ -102,7 +91,7 @@ describe('CategoriesService', () => {
   });
 
   describe('DELETE/ delete', () => {
-    it('should throw NotFoundException if category does not exist', async () => {
+    it('debería lanzar NotFoundException si la categoría no existe', async () => {
       prisma.categories.findUnique.mockResolvedValue(null);
 
       await expect(categoriesService.delete('999')).rejects.toThrow(
@@ -110,7 +99,7 @@ describe('CategoriesService', () => {
       );
     });
 
-    it('should throw ConflictException if category has supplies', async () => {
+    it('debería lanzar ConflictException si la categoría tiene supplies', async () => {
       prisma.categories.findUnique.mockResolvedValue({
         id: '1',
         name: 'Food',
@@ -122,7 +111,7 @@ describe('CategoriesService', () => {
       );
     });
 
-    it('should delete category successfully', async () => {
+    it('debería eliminar la categoría exitosamente', async () => {
       prisma.categories.findUnique.mockResolvedValue({
         id: '1',
         name: 'Food',

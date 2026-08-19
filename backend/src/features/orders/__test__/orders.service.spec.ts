@@ -7,24 +7,24 @@ type TransactionCallback = (tx: Prisma.TransactionClient) => Promise<unknown>;
 
 describe('OrdersService', () => {
   let ordersService: OrdersService;
-  let prisma: {
-    $transaction: jest.Mock;
-    users: { findUnique: jest.Mock };
+  const prisma = {
+    $transaction: jest.fn(),
+    users: { findUnique: jest.fn() },
     orders: {
-      findUnique: jest.Mock;
-      findMany: jest.Mock;
-      count: jest.Mock;
-      create: jest.Mock;
-      update: jest.Mock;
-      delete: jest.Mock;
-    };
+      findUnique: jest.fn(),
+      findMany: jest.fn(),
+      count: jest.fn(),
+      create: jest.fn(),
+      update: jest.fn(),
+      delete: jest.fn(),
+    },
     suppliesOrders: {
-      findMany: jest.Mock;
-      createMany: jest.Mock;
-      update: jest.Mock;
-      deleteMany: jest.Mock;
-    };
-    adminSupplies: { findMany: jest.Mock };
+      findMany: jest.fn(),
+      createMany: jest.fn(),
+      update: jest.fn(),
+      deleteMany: jest.fn(),
+    },
+    adminSupplies: { findMany: jest.fn() },
   };
 
   const adminMock = {
@@ -35,30 +35,9 @@ describe('OrdersService', () => {
   };
 
   beforeEach(() => {
-    prisma = {
-      $transaction: jest.fn(),
-      users: { findUnique: jest.fn() },
-      orders: {
-        findUnique: jest.fn(),
-        findMany: jest.fn(),
-        count: jest.fn(),
-        create: jest.fn(),
-        update: jest.fn(),
-        delete: jest.fn(),
-      },
-      suppliesOrders: {
-        findMany: jest.fn(),
-        createMany: jest.fn(),
-        update: jest.fn(),
-        deleteMany: jest.fn(),
-      },
-      adminSupplies: { findMany: jest.fn() },
-    };
-    ordersService = new OrdersService(prisma as unknown as PrismaService);
-  });
-
-  afterEach(() => {
     jest.resetAllMocks();
+
+    ordersService = new OrdersService(prisma as unknown as PrismaService);
   });
 
   const makeDecimal = (value: number) => ({
@@ -75,7 +54,7 @@ describe('OrdersService', () => {
       ],
     };
 
-    it('should throw NotFoundException when admin slug does not exist', async () => {
+    it('debería lanzar NotFoundException cuando el slug de administrador no exista', async () => {
       prisma.users.findUnique.mockResolvedValue(null);
 
       await expect(
@@ -83,7 +62,7 @@ describe('OrdersService', () => {
       ).rejects.toThrow(NotFoundException);
     });
 
-    it('should update total when order_id is provided (existing order)', async () => {
+    it('debería actualizar el total cuando se proporcione order_id (orden existente)', async () => {
       prisma.users.findUnique.mockResolvedValue(adminMock);
 
       const existingOrder = {
@@ -135,7 +114,7 @@ describe('OrdersService', () => {
       });
     });
 
-    it('should create a new order successfully', async () => {
+    it('debería crear una nueva orden exitosamente', async () => {
       prisma.users.findUnique.mockResolvedValue(adminMock);
 
       const createdOrder = {
@@ -184,7 +163,7 @@ describe('OrdersService', () => {
       });
     });
 
-    it('should create SuppliesOrders correctly via createMany', async () => {
+    it('debería crear SuppliesOrders correctamente a través de createMany', async () => {
       prisma.users.findUnique.mockResolvedValue(adminMock);
 
       const createdOrder = {
@@ -239,7 +218,7 @@ describe('OrdersService', () => {
       });
     });
 
-    it('should increment quantity for existing supplies in the order', async () => {
+    it('debería incrementar la cantidad para supplies existentes en la orden', async () => {
       prisma.users.findUnique.mockResolvedValue(adminMock);
 
       const createdOrder = {
@@ -291,7 +270,7 @@ describe('OrdersService', () => {
       expect(mockTx.suppliesOrders.createMany).not.toHaveBeenCalled();
     });
 
-    it('should throw NotFoundException when order_id does not exist', async () => {
+    it('debería lanzar NotFoundException cuando order_id no exista', async () => {
       prisma.users.findUnique.mockResolvedValue(adminMock);
 
       const mockTx = {
@@ -323,7 +302,7 @@ describe('OrdersService', () => {
   });
 
   describe('GET/ findById', () => {
-    it('should throw NotFoundException when order does not exist', async () => {
+    it('debería lanzar NotFoundException cuando la orden no exista', async () => {
       prisma.orders.findUnique.mockResolvedValue(null);
 
       await expect(ordersService.findById('non-existent')).rejects.toThrow(
@@ -331,7 +310,7 @@ describe('OrdersService', () => {
       );
     });
 
-    it('should return order with supplies', async () => {
+    it('debería devolver la orden con sus supplies', async () => {
       prisma.orders.findUnique.mockResolvedValue({
         id: 'order-1',
         guest_name: 'Juan',
@@ -394,7 +373,7 @@ describe('OrdersService', () => {
   });
 
   describe('GET/ findAll', () => {
-    it('should return paginated orders list', async () => {
+    it('debería devolver una lista de órdenes paginadas', async () => {
       prisma.orders.findMany.mockResolvedValue([
         {
           id: 'order-1',
@@ -466,7 +445,7 @@ describe('OrdersService', () => {
       });
     });
 
-    it('should return empty data when no orders exist', async () => {
+    it('debería devolver datos vacíos cuando no existan órdenes', async () => {
       prisma.orders.findMany.mockResolvedValue([]);
       prisma.orders.count.mockResolvedValueOnce(0).mockResolvedValueOnce(0);
 
@@ -488,7 +467,7 @@ describe('OrdersService', () => {
   });
 
   describe('PATCH/ update', () => {
-    it('should throw NotFoundException when order does not exist', async () => {
+    it('debería lanzar NotFoundException cuando la orden no exista', async () => {
       prisma.orders.findUnique.mockResolvedValue(null);
 
       await expect(
@@ -500,7 +479,7 @@ describe('OrdersService', () => {
       ).rejects.toThrow(NotFoundException);
     });
 
-    it('should update order successfully', async () => {
+    it('debería actualizar la orden exitosamente', async () => {
       prisma.orders.findUnique.mockResolvedValue({
         id: 'order-1',
         admin_id: 'admin-1',
@@ -530,7 +509,7 @@ describe('OrdersService', () => {
   });
 
   describe('DELETE/ delete', () => {
-    it('should throw NotFoundException when order does not exist', async () => {
+    it('debería lanzar NotFoundException cuando la orden no exista', async () => {
       prisma.orders.findUnique.mockResolvedValue(null);
 
       await expect(ordersService.delete('non-existent')).rejects.toThrow(
@@ -538,7 +517,7 @@ describe('OrdersService', () => {
       );
     });
 
-    it('should delete order with supplies in transaction', async () => {
+    it('debería eliminar la orden con sus supplies en una transacción', async () => {
       prisma.orders.findUnique.mockResolvedValue({
         id: 'order-1',
         guest_name: 'Juan',

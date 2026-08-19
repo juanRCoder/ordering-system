@@ -1,18 +1,21 @@
-import { UnauthorizedException } from '@nestjs/common';
+import { ConflictException, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from '../auth.service';
 import { PrismaService } from '../../../prisma.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { Sessions } from '../../../generated/prisma/client';
+import { TestingModule } from '@nestjs/testing/testing-module';
+import { Test } from '@nestjs/testing/test';
 
 jest.mock('bcrypt');
 
 describe('AuthService', () => {
   let authService: AuthService;
-  let jwtService: { signAsync: jest.Mock };
-  let prisma: {
-    users: { findUnique: jest.Mock; create: jest.Mock; update: jest.Mock };
-    sessions: { create: jest.Mock; delete: jest.Mock };
+  const jwtService = { signAsync: jest.fn() };
+  const prisma = {
+    $transaction: jest.fn(),
+    users: { findUnique: jest.fn(), create: jest.fn(), update: jest.fn() },
+    sessions: { create: jest.fn(), delete: jest.fn() },
   };
 
   const userMock = {
@@ -28,33 +31,24 @@ describe('AuthService', () => {
   };
 
   beforeEach(async () => {
-    prisma = {
-      users: {
-        findUnique: jest.fn(),
-        create: jest.fn(),
-        update: jest.fn(),
-      },
-      sessions: {
-        create: jest.fn(),
-        delete: jest.fn(),
-      },
-    };
-    jwtService = {
-      signAsync: jest.fn(),
-    };
-    authService = new AuthService(
-      prisma as unknown as PrismaService,
-      jwtService as unknown as JwtService
-    );
-  });
-
-  afterEach(() => {
     jest.resetAllMocks();
+
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        AuthService,
+        { provide: PrismaService, useValue: prisma },
+        { provide: JwtService, useValue: jwtService },
+      ],
+    }).compile();
+
+    authService = module.get<AuthService>(AuthService);
   });
 
   describe('POST/ register', () => {
-    it('should hash password with bcrypt and new user', async () => {
-      prisma.users.findUnique.mockResolvedValue(null);
+    it('debe encriptar la contraseña con bcrypt y crear unnuevo usuario', async () => {
+      prisma.users.findUnique
+        .mockResolvedValueOnce(null)
+        .mockResolvedValueOnce(null);
 
       (bcrypt.hash as jest.Mock).mockResolvedValue('$2b$10$fake');
       prisma.users.create.mockResolvedValue({
@@ -70,10 +64,20 @@ describe('AuthService', () => {
         data: { sub: 'id-user', name: 'Test User' },
       });
     });
+
+    it('debe lanzar ConflictException si el slug ya está en uso', async () => {
+      prisma.users.findUnique
+        .mockResolvedValueOnce(null)
+        .mockResolvedValueOnce({ id: 'existing', slug: 'test-user' });
+
+      await expect(authService.register(userMock)).rejects.toThrow(
+        ConflictException
+      );
+    });
   });
 
   describe('POST/ login', () => {
-    it('should return tokens on valid credentials', async () => {
+    it('debería devolver tokens con credenciales válidas', async () => {
       prisma.users.findUnique.mockResolvedValue(userMock);
       (bcrypt.compare as jest.Mock).mockResolvedValue(true);
       jwtService.signAsync.mockResolvedValue('fake-access-token');
@@ -91,7 +95,7 @@ describe('AuthService', () => {
       expect(result).toHaveProperty('data.access_token', 'fake-access-token');
     });
 
-    it('should throw UnauthorizedException if user not found', async () => {
+    it('Debe lanzar una UnauthorizedException si no se encuentra el usuario', async () => {
       prisma.users.findUnique.mockResolvedValue(null);
 
       await expect(
@@ -99,7 +103,7 @@ describe('AuthService', () => {
       ).rejects.toThrow(UnauthorizedException);
     });
 
-    it('should throw UnauthorizedException if password is wrong', async () => {
+    it('Debe lanzar una UnauthorizedException si la contraseña es incorrecta', async () => {
       prisma.users.findUnique.mockResolvedValue(userMock);
       (bcrypt.compare as jest.Mock).mockResolvedValue(false);
 
@@ -110,7 +114,7 @@ describe('AuthService', () => {
   });
 
   describe('POST/ refresh', () => {
-    it('should throw UnauthorizedException if user not found', async () => {
+    it('Debe lanzar una UnauthorizedException si no se encuentra el usuario', async () => {
       prisma.users.findUnique.mockResolvedValue(null);
 
       await expect(
@@ -125,11 +129,19 @@ describe('AuthService', () => {
       ).rejects.toThrow(UnauthorizedException);
     });
 
-    it('should return new tokens on valid session', async () => {
+    it('debería devolver nuevos tokens en una sesión válida', async () => {
       prisma.users.findUnique.mockResolvedValue(userMock);
-      prisma.sessions.delete.mockResolvedValue({});
       jwtService.signAsync.mockResolvedValue('new-access');
-      prisma.sessions.create.mockResolvedValue({});
+
+      prisma.$transaction.mockImplementation(
+        async (cb: (tx: typeof prisma) => Promise<unknown>) =>
+          cb({
+            sessions: {
+              delete: prisma.sessions.delete.mockResolvedValue({}),
+              create: prisma.sessions.create.mockResolvedValue({}),
+            },
+          } as typeof prisma)
+      );
 
       const result = await authService.refresh({
         id: 's1',
@@ -148,7 +160,7 @@ describe('AuthService', () => {
   });
 
   describe('PATCH/ updateIsBusinessOpen', () => {
-    it('should update DB and emit SSE event', async () => {
+    it('debería actualizar la base de datos y emitir un evento SSE', async () => {
       const updatedUser = { ...userMock, is_business_open: false };
       prisma.users.update.mockResolvedValue(updatedUser);
 
