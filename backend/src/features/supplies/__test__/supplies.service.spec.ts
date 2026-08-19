@@ -11,6 +11,7 @@ import { CreateSupplyDto } from '../dto/create-supply.dto';
 describe('SuppliesService', () => {
   let service: SuppliesService;
   const prisma = {
+    $transaction: jest.fn(),
     users: { findUnique: jest.fn() },
     categories: { findUnique: jest.fn() },
     supplies: { create: jest.fn(), update: jest.fn() },
@@ -32,6 +33,10 @@ describe('SuppliesService', () => {
 
   beforeEach(() => {
     jest.resetAllMocks();
+
+    prisma.$transaction.mockImplementation(
+      (cb: (tx: typeof prisma) => Promise<unknown>) => cb(prisma)
+    );
 
     service = new SuppliesService(
       prisma as unknown as PrismaService,

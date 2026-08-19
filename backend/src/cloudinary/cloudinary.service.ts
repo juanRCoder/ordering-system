@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import {
   v2 as cloudinary,
   UploadApiOptions,
@@ -28,10 +28,20 @@ export class CloudinaryService {
         options,
         (error, result) => {
           if (error) {
-            return rej(new Error(`Error uploading image: ${error.message}`));
+            return rej(
+              new BadRequestException({
+                code: 'CLOUDINARY_UPLOAD_ERROR',
+                message: `Error uploading image: ${error.message}`,
+              })
+            );
           }
           if (!result) {
-            return rej(new Error('No response was received from Cloudinary'));
+            return rej(
+              new BadRequestException({
+                code: 'CLOUDINARY_UPLOAD_ERROR',
+                message: 'No response was received from Cloudinary',
+              })
+            );
           }
           res(result);
         }
@@ -44,10 +54,20 @@ export class CloudinaryService {
     return new Promise((res, rej) => {
       cloudinary.uploader.destroy(public_id, (error, result) => {
         if (error) {
-          return rej(new Error(`Error deleting image: ${error.message}`));
+          return rej(
+            new BadRequestException({
+              code: 'CLOUDINARY_DELETE_ERROR',
+              message: `Error deleting image: ${error.message}`,
+            })
+          );
         }
         if (!result) {
-          return rej(new Error('No response was received from Cloudinary'));
+          return rej(
+            new BadRequestException({
+              code: 'CLOUDINARY_DELETE_ERROR',
+              message: 'No response was received from Cloudinary',
+            })
+          );
         }
         res();
       });

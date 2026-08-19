@@ -61,23 +61,25 @@ export class SuppliesService {
       });
     }
 
-    const newSupply = await this.prisma.supplies.create({
-      data: {
-        image_url: imageUrl,
-        image_public_id: imagePublicId,
-        category_id,
-        origin: 'ADMIN',
-        creator_admin_id: adminId,
-      },
-    });
+    await this.prisma.$transaction(async (tx) => {
+      const newSupply = await tx.supplies.create({
+        data: {
+          image_url: imageUrl,
+          image_public_id: imagePublicId,
+          category_id,
+          origin: 'ADMIN',
+          creator_admin_id: adminId,
+        },
+      });
 
-    await this.prisma.adminSupplies.create({
-      data: {
-        admin_id: adminId,
-        supply_id: newSupply.id,
-        price,
-        name,
-      },
+      await tx.adminSupplies.create({
+        data: {
+          admin_id: adminId,
+          supply_id: newSupply.id,
+          price,
+          name,
+        },
+      });
     });
 
     return {
@@ -333,20 +335,22 @@ export class SuppliesService {
       }
     }
 
-    await this.prisma.supplies.update({
-      where: { id: supply.supply_id },
-      data: {
-        image_url: imageUrl,
-        image_public_id: imagePublicId,
-      },
-    });
+    const updateAdminSupply = await this.prisma.$transaction(async (tx) => {
+      await tx.supplies.update({
+        where: { id: supply.supply_id },
+        data: {
+          image_url: imageUrl,
+          image_public_id: imagePublicId,
+        },
+      });
 
-    const updateAdminSupply = await this.prisma.adminSupplies.update({
-      where: { id },
-      data: {
-        price,
-        name,
-      },
+      return tx.adminSupplies.update({
+        where: { id },
+        data: {
+          price,
+          name,
+        },
+      });
     });
 
     this.price$.next(admin.slug!, { price: updateAdminSupply.price });

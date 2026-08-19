@@ -34,6 +34,7 @@ export class SuppliesController {
     return this.suppliesService.findBySlug(slug, categoryId, letters, page);
   }
 
+  @UseGuards(AdminGuard)
   @Get(':id')
   async findById(
     @CurrentAdmin() admin: { sub: string },
