@@ -23,9 +23,7 @@ export class AdminGuard implements CanActivate {
     }
 
     try {
-      const payload = this.jwtService.verify(token, {
-        secret: process.env.JWT_SECRET,
-      });
+      const payload = this.jwtService.verify(token);
 
       if (payload.role !== 'ADMIN' && payload.role !== 'SUPER_ADMIN') {
         throw new ForbiddenException({

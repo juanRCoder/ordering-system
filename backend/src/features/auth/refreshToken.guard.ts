@@ -26,6 +26,11 @@ export class RefreshTokenGuard implements CanActivate {
     });
 
     if (!session || session.expires_at < new Date()) {
+      if (session) {
+        await this.prisma.sessions.delete({
+          where: { id: session.id },
+        });
+      }
       throw new UnauthorizedException({
         code: 'INVALID_REFRESH_TOKEN',
         message: 'Refresh token inválido o expirado',

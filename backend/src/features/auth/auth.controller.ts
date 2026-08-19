@@ -9,21 +9,25 @@ import {
   Sse,
   UseGuards,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { Response } from 'express';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { AdminGuard } from './auth.guard';
-import appConfig from '../../config/app.config';
 import { CurrentAdmin } from '../../common/decorators/current-admin.decorator';
 import { map, Observable } from 'rxjs';
 import { RefreshTokenGuard } from './refreshToken.guard';
 import { CurrentSession } from '../../common/decorators/current-sesion.decorator';
 import { Sessions } from '../../generated/prisma/client';
+import { cookieOptions } from './auth.constants';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private config: ConfigService
+  ) {}
 
   @Post('register')
   async register(@Body() registerDto: RegisterDto) {
@@ -35,24 +39,12 @@ export class AuthController {
     @Body() loginDto: LoginDto,
     @Res({ passthrough: true }) res: Response
   ) {
-    const configService = appConfig();
-
     const result = await this.authService.login(loginDto);
-    const isProduction = configService.nodeEnv === 'production';
+    const isProduction = this.config.get('app.nodeEnv') === 'production';
+    const cookies = cookieOptions(isProduction);
 
-    res.cookie('auth-token', result.data.access_token, {
-      httpOnly: true,
-      secure: isProduction,
-      sameSite: isProduction ? 'none' : 'lax',
-      maxAge: 1000 * 60 * 15,
-    });
-
-    res.cookie('refresh-token', result.data.refresh_token, {
-      httpOnly: true,
-      secure: isProduction,
-      sameSite: isProduction ? 'none' : 'lax',
-      maxAge: 1000 * 60 * 60 * 24 * 7,
-    });
+    res.cookie('auth-token', result.data.access_token, cookies.access);
+    res.cookie('refresh-token', result.data.refresh_token, cookies.refresh);
 
     return result;
   }
@@ -64,23 +56,11 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response
   ) {
     const result = await this.authService.refresh(session);
+    const isProduction = this.config.get('app.nodeEnv') === 'production';
+    const cookies = cookieOptions(isProduction);
 
-    const configService = appConfig();
-    const isProduction = configService.nodeEnv === 'production';
-
-    res.cookie('auth-token', result.data.access_token, {
-      httpOnly: true,
-      secure: isProduction,
-      sameSite: isProduction ? 'none' : 'lax',
-      maxAge: 1000 * 60 * 15,
-    });
-
-    res.cookie('refresh-token', result.data.refresh_token, {
-      httpOnly: true,
-      secure: isProduction,
-      sameSite: isProduction ? 'none' : 'lax',
-      maxAge: 1000 * 60 * 60 * 24 * 7,
-    });
+    res.cookie('auth-token', result.data.access_token, cookies.access);
+    res.cookie('refresh-token', result.data.refresh_token, cookies.refresh);
 
     return result;
   }
@@ -95,20 +75,11 @@ export class AuthController {
       await this.authService.logout(session.refresh_token);
     }
 
-    const configService = appConfig();
-    const isProduction = configService.nodeEnv === 'production';
+    const isProduction = this.config.get('app.nodeEnv') === 'production';
+    const cookies = cookieOptions(isProduction);
 
-    res.clearCookie('auth-token', {
-      httpOnly: true,
-      secure: isProduction,
-      sameSite: isProduction ? 'none' : 'lax',
-    });
-
-    res.clearCookie('refresh-token', {
-      httpOnly: true,
-      secure: isProduction,
-      sameSite: isProduction ? 'none' : 'lax',
-    });
+    res.clearCookie('auth-token', cookies.clear);
+    res.clearCookie('refresh-token', cookies.clear);
 
     return {
       status: 200,

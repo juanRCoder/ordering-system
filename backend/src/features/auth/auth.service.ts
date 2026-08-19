@@ -9,20 +9,17 @@ import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../../prisma.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
-import { Subject } from 'rxjs';
 import { Sessions, Users } from '../../generated/prisma/client';
 import { randomBytes } from 'node:crypto';
+import {
+  ACCESS_TOKEN_EXPIRES_IN,
+  REFRESH_TOKEN_EXPIRES_IN_MS,
+} from './auth.constants';
+import { SseBroadcaster } from '../../common/sse-broadcaster';
 
 @Injectable()
 export class AuthService {
-  private channels = new Map<string, Subject<Users>>();
-
-  private getChannel(slug: string): Subject<Users> {
-    if (!this.channels.has(slug)) {
-      this.channels.set(slug, new Subject<Users>());
-    }
-    return this.channels.get(slug)!;
-  }
+  private storeStatusChannel = new SseBroadcaster<Users>();
 
   constructor(
     private prisma: PrismaService,
@@ -31,7 +28,7 @@ export class AuthService {
 
   async generateRefreshToken(userId: string) {
     const token = randomBytes(40).toString('hex');
-    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+    const expiresAt = new Date(Date.now() + REFRESH_TOKEN_EXPIRES_IN_MS);
 
     await this.prisma.sessions.create({
       data: { refresh_token: token, user_id: userId, expires_at: expiresAt },
@@ -41,14 +38,25 @@ export class AuthService {
   }
 
   async register(registerDto: RegisterDto) {
-    const userExists = await this.prisma.users.findUnique({
+    const existingUser = await this.prisma.users.findUnique({
       where: { email: registerDto.email },
     });
 
-    if (userExists) {
+    if (existingUser) {
       throw new ConflictException({
         code: 'EMAIL_ALREADY_IN_USE',
         message: 'Email already in use',
+      });
+    }
+
+    const existingSlug = await this.prisma.users.findUnique({
+      where: { slug: registerDto.slug },
+    });
+
+    if (existingSlug) {
+      throw new ConflictException({
+        code: 'SLUG_ALREADY_IN_USE',
+        message: 'Slug already in use',
       });
     }
 
@@ -97,7 +105,7 @@ export class AuthService {
 
     const payload = { sub: user.id, role: user.role };
     const access_token = await this.jwtService.signAsync(payload, {
-      expiresIn: '15m',
+      expiresIn: ACCESS_TOKEN_EXPIRES_IN,
     });
     const refresh_token = await this.generateRefreshToken(user.id);
 
@@ -127,15 +135,20 @@ export class AuthService {
       });
     }
 
-    await this.prisma.sessions.delete({
-      where: { id: session.id },
-    });
-
     const payload = { sub: user.id, role: user.role };
     const access_token = await this.jwtService.signAsync(payload, {
-      expiresIn: '15m',
+      expiresIn: ACCESS_TOKEN_EXPIRES_IN,
     });
-    const refresh_token = await this.generateRefreshToken(user.id);
+
+    const refresh_token = await this.prisma.$transaction(async (tx) => {
+      await tx.sessions.delete({ where: { id: session.id } });
+      const token = randomBytes(40).toString('hex');
+      const expiresAt = new Date(Date.now() + REFRESH_TOKEN_EXPIRES_IN_MS);
+      await tx.sessions.create({
+        data: { refresh_token: token, user_id: user.id, expires_at: expiresAt },
+      });
+      return token;
+    });
 
     return {
       status: HttpStatus.OK,
@@ -144,7 +157,7 @@ export class AuthService {
   }
 
   async logout(refreshToken: string) {
-    await this.prisma.sessions.delete({
+    await this.prisma.sessions.deleteMany({
       where: { refresh_token: refreshToken },
     });
   }
@@ -157,7 +170,7 @@ export class AuthService {
       },
     });
 
-    this.getChannel(user.slug!).next(user); // seleccionar tenant para actualizar estado
+    this.storeStatusChannel.next(user.slug!, user);
 
     return {
       status: HttpStatus.OK,
@@ -168,6 +181,6 @@ export class AuthService {
   }
 
   getBusinessStatusStream(slug: string) {
-    return this.getChannel(slug).asObservable();
+    return this.storeStatusChannel.stream(slug);
   }
 }

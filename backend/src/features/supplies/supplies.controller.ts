@@ -35,8 +35,11 @@ export class SuppliesController {
   }
 
   @Get(':id')
-  async findById(@Param('id') id: string) {
-    return this.suppliesService.findById(id);
+  async findById(
+    @CurrentAdmin() admin: { sub: string },
+    @Param('id') id: string
+  ) {
+    return this.suppliesService.findById(id, admin.sub);
   }
 
   @UseGuards(AdminGuard)
@@ -93,7 +96,7 @@ export class SuppliesController {
     @Body() updateSupplyDto: UpdateSupplyDto,
     @UploadedFile() file: Express.Multer.File
   ) {
-    return this.suppliesService.update(id, updateSupplyDto, file, admin.sub);
+    return this.suppliesService.update(id, updateSupplyDto, admin.sub, file);
   }
 
   @Sse('stream/:slug/price')

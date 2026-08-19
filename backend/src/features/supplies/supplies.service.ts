@@ -9,8 +9,9 @@ import { CreateSupplyDto } from './dto/create-supply.dto';
 import { UpdateSupplyDto } from './dto/update-supply.dto';
 import { CloudinaryService } from '../../cloudinary/cloudinary.service';
 import { StatusSupply } from '../../generated/prisma/enums';
-import { Subject } from 'rxjs';
 import { EventSupplyDto, EventUpdatePriceDto } from './dto/event-supply.dto';
+import { AdminSuppliesWhereInput } from '../../generated/prisma/models';
+import { SseBroadcaster } from '../../common/sse-broadcaster';
 
 @Injectable()
 export class SuppliesService {
@@ -20,22 +21,8 @@ export class SuppliesService {
   ) {}
 
   private rootFolder = 'ordering-system';
-  private channels = new Map<string, Subject<EventSupplyDto>>();
-  private channelUpdatePrice = new Map<string, Subject<EventUpdatePriceDto>>();
-
-  private getChannel(slug: string): Subject<EventSupplyDto> {
-    if (!this.channels.has(slug)) {
-      this.channels.set(slug, new Subject<EventSupplyDto>());
-    }
-    return this.channels.get(slug)!;
-  }
-
-  private getChannelUpdatePrice(slug: string): Subject<EventUpdatePriceDto> {
-    if (!this.channelUpdatePrice.has(slug)) {
-      this.channelUpdatePrice.set(slug, new Subject<EventUpdatePriceDto>());
-    }
-    return this.channelUpdatePrice.get(slug)!;
-  }
+  private status$ = new SseBroadcaster<EventSupplyDto>();
+  private price$ = new SseBroadcaster<EventUpdatePriceDto>();
 
   async create(
     createSupplyDto: CreateSupplyDto,
@@ -151,14 +138,16 @@ export class SuppliesService {
 
     const search = letters?.trim();
 
+    const whereClause: AdminSuppliesWhereInput = {
+      admin_id: admin.id,
+      ...(search
+        ? { name: { contains: search, mode: 'insensitive' } }
+        : { supply: { category_id: categoryId } }),
+    };
+
     const [adminSupplies, total] = await Promise.all([
       this.prisma.adminSupplies.findMany({
-        where: {
-          admin_id: admin.id,
-          ...(search
-            ? { name: { contains: search, mode: 'insensitive' } }
-            : { supply: { category_id: categoryId } }),
-        },
+        where: whereClause,
         orderBy: [{ created_at: 'desc' }, { id: 'desc' }],
         select: {
           id: true,
@@ -172,10 +161,7 @@ export class SuppliesService {
         take: limit,
       }),
       this.prisma.adminSupplies.count({
-        where: {
-          admin_id: admin.id,
-          supply: { category_id: categoryId },
-        },
+        where: whereClause,
       }),
     ]);
 
@@ -203,9 +189,9 @@ export class SuppliesService {
     };
   }
 
-  async findById(id: string) {
+  async findById(id: string, adminId: string) {
     const adminSupply = await this.prisma.adminSupplies.findUnique({
-      where: { id },
+      where: { id, admin_id: adminId },
       select: {
         id: true,
         name: true,
@@ -277,9 +263,7 @@ export class SuppliesService {
       },
     });
 
-    this.getChannel(admin.slug!).next({
-      status: updatedSupply.status,
-    });
+    this.status$.next(admin.slug!, { status: updatedSupply.status });
 
     return {
       status: HttpStatus.OK,
@@ -290,14 +274,14 @@ export class SuppliesService {
   }
 
   getAdminSupplyUpdateStream(slug: string) {
-    return this.getChannel(slug).asObservable();
+    return this.status$.stream(slug);
   }
 
   async update(
     id: string,
     updateSupplyDto: UpdateSupplyDto,
-    file?: Express.Multer.File,
-    adminId?: string
+    adminId: string,
+    file?: Express.Multer.File
   ) {
     const admin = await this.prisma.users.findUnique({
       where: { id: adminId },
@@ -365,9 +349,7 @@ export class SuppliesService {
       },
     });
 
-    this.getChannelUpdatePrice(admin.slug!).next({
-      price: updateAdminSupply.price,
-    });
+    this.price$.next(admin.slug!, { price: updateAdminSupply.price });
 
     return {
       status: HttpStatus.OK,
@@ -378,6 +360,6 @@ export class SuppliesService {
   }
 
   getAdminSupplyUpdatePriceStream(slug: string) {
-    return this.getChannelUpdatePrice(slug).asObservable();
+    return this.price$.stream(slug);
   }
 }

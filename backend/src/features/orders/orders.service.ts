@@ -8,22 +8,15 @@ import { PrismaService } from '../../prisma.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { ConfirmOrderDto } from './dto/confirm-order.dto';
-import { Subject } from 'rxjs';
 import { Orders, Prisma, StatusOrder } from '../../generated/prisma/client';
 import { DateFilter, getDateRange } from '../../utils/date-range.util';
+import { SseBroadcaster } from '../../common/sse-broadcaster';
 
 @Injectable()
 export class OrdersService {
-  private channels = new Map<string, Subject<Orders>>();
+  private orderChannel = new SseBroadcaster<Orders>();
 
   constructor(private prisma: PrismaService) {}
-
-  private getChannel(slug: string): Subject<Orders> {
-    if (!this.channels.has(slug)) {
-      this.channels.set(slug, new Subject<Orders>());
-    }
-    return this.channels.get(slug)!;
-  }
 
   async create(slug: string, createOrderDto: CreateOrderDto) {
     const { guest_name, total, supplies, order_id, order_type } =
@@ -125,7 +118,7 @@ export class OrdersService {
 
       return currentOrder;
     });
-    this.getChannel(admin.slug!).next(order);
+    this.orderChannel.next(admin.slug!, order);
 
     return {
       status: HttpStatus.CREATED,
@@ -135,7 +128,7 @@ export class OrdersService {
     };
   }
   getOrdersStream(slug: string) {
-    return this.getChannel(slug).asObservable();
+    return this.orderChannel.stream(slug);
   }
 
   private async validateSupplies(
