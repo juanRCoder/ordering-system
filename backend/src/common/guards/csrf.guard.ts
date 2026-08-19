@@ -9,10 +9,9 @@ export class CsrfGuard implements CanActivate {
   private readonly allowedOrigins: string[];
 
   constructor(private config: ConfigService) {
-    this.allowedOrigins = config
-      .get<string>('app.corsOrigins')!
-      .split(',')
-      .map((o) => o.trim());
+    this.allowedOrigins = config.get<string[]>('app.corsOrigins') ?? [
+      'http://localhost:5173',
+    ];
   }
 
   canActivate(context: ExecutionContext): boolean {
