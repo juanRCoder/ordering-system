@@ -47,7 +47,7 @@ class SuppliesService {
   }
 
   async create(data: FormData) {
-    const result = this.apiFetch(`${this.API}/supplies`, {
+    const result = await this.apiFetch(`${this.API}/supplies`, {
       method: 'POST',
       body: data,
     });
@@ -61,7 +61,7 @@ class SuppliesService {
       url += `&letters=${letters}`;
     }
 
-    const result = this.apiFetch(url, {
+    const result = await this.apiFetch(url, {
       method: 'GET',
     });
     return result;
@@ -93,16 +93,9 @@ class SuppliesService {
   }
 
   async getById(id: string) {
-    const response = await fetch(`${this.API}/supplies/${id}`);
-
-    const result = await response.json();
-    if (!response.ok) {
-      throw {
-        status: response.status,
-        code: result.code,
-        message: result.message,
-      };
-    }
+    const result = await this.apiFetch(`${this.API}/supplies/${id}`, {
+      method: 'GET',
+    });
     return result.data;
   }
 
