@@ -14,10 +14,7 @@ import { Button } from '@/components/ui/button';
 import { useParams } from 'react-router-dom';
 import { DM_SANS_STYLE } from '@/lib/constants';
 import { PaginationBar } from '@/components/PaginationBar';
-
-function firstLetterUpper(name: string) {
-  return name.charAt(0).toUpperCase() + name.slice(1);
-}
+import { firstLetterUpper } from '@/lib/string';
 
 function Supplies() {
   const { slug } = useParams<{ slug: string }>();

@@ -54,7 +54,7 @@ function Cart() {
         id: item.id,
         price: item.price,
         quantity: item.quantity,
-        observations: item.observations,
+        observations: '',
       })),
       order_id: data.order_id ?? null,
       order_type: isTakeaway ? 'TAKEAWAY' : 'LOCAL',

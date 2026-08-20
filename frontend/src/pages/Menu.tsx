@@ -18,10 +18,7 @@ import { useBusinessStatusStream } from '@/hooks/useAuth';
 import { BottomAppBar } from '@/components/BottomAppBar';
 import { PaginationBar } from '@/components/PaginationBar';
 import { DM_SANS_STYLE } from '@/lib/constants';
-
-function firstLetterUpper(name: string) {
-  return name.charAt(0).toUpperCase() + name.slice(1);
-}
+import { firstLetterUpper } from '@/lib/string';
 
 const BusinessClosedSVG = () => (
   <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-3xl bg-[#E0E7FF]">

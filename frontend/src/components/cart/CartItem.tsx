@@ -29,9 +29,6 @@ export const CartItem = ({ item }: props) => {
             <p className="text-[15px] font-semibold text-[#0F2A4A] leading-tight">
               {item.name}
             </p>
-            <p className="text-xs text-[#64748B] leading-tight line-clamp-2">
-              {item.description || ''}
-            </p>
           </div>
           <div className="flex justify-between items-center flex-wrap gap-2">
             <span className="whitespace-nowrap font-bold text-[#0F2A4A] text-[15px]">
