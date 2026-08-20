@@ -297,8 +297,7 @@ Prefijo base: `/api`
       {
         "quantity": "number",
         "name": "string",
-        "price": "number",
-        "observations": "string"
+        "price": "number"
       }
     ],
     "total": "number",
@@ -332,8 +331,7 @@ Prefijo base: `/api`
     {
       "id": "string",
       "price": "number",
-      "quantity": "number",
-      "observations": "string" // Opcional
+      "quantity": "number"
     }
   ],
   "guest_name": "string",

@@ -389,7 +389,7 @@ describe('OrdersService', () => {
           guest_name: 'Maria',
           status: 'PENDING',
           order_type: 'TAKEAWAY',
-          created_at: new Date('2025-01-02'),
+          created_at: new Date('2025-01-03'),
           total: makeDecimal(15),
           is_confirmed: true,
           supplies_orders: [

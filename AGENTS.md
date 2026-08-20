@@ -19,6 +19,8 @@ pnpm --filter backend db:seed          # Seed the database
 pnpm --filter frontend lint
 pnpm --filter frontend build
 pnpm --filter frontend dev
+pnpm --filter frontend test
+pnpm --filter frontend test:watch
 
 # Formatting (root)
 pnpm format:check
@@ -67,7 +69,7 @@ Supporting folders:
 - `schemas/` (Zod v4 — import as `import z from 'zod'`, API uses `z.email()`)
 - `interfaces/`: `auth`, `categories`, `errors`, `orders`, `supplies`
 - `hooks/`: `useAuth`, `useCategories`, `useOrders`, `useSupplies`
-- `lib/`: `default.ts` (form defaults), `querykeys.ts` (React Query key factories), `time.ts` (relativeTime, dayTime), `toast.ts` (toast style configs), `token.ts` (JWT decode), `utils.ts` (cn utility)
+- `lib/`: `default.ts` (form defaults), `querykeys.ts` (React Query key factories), `string.ts` (firstLetterUpper), `time.ts` (relativeTime, dayTime), `toast.ts` (toast style configs), `token.ts` (JWT decode), `utils.ts` (cn utility)
 - `skeletons/`: `CategorySkeleton`, `OrderCardSkeleton`, `OrderDetailSkeleton`, `SupplyCardSkeleton`
 - `components/`: subcarpetas `admin/`, `auth/`, `cart/`, `menu/`, `ui/` (17 Base UI components: button, card, collapsible, dialog, drawer, field, input, label, pagination, radio-group, scroll-area, select, separator, sonner, switch, toggle-group, toggle)
 
@@ -141,3 +143,4 @@ CI (`.github/workflows/ci-workflow.yml`) and CD (`.github/workflows/cd-workflow.
 - Prisma CLI (`^7.9.1`) is slightly newer than `@prisma/client` and `@prisma/adapter-pg` (`^7.8.0`)
 - PrismaService is globally shared via `PrismaModule` (with `@Global()` decorator) — no need to import PrismaService in feature modules
 - Registration always assigns role `ADMIN` — no USER or SUPER_ADMIN registration via API
+- Frontend uses Vitest for unit testing (`pnpm --filter frontend test`); test files live in `__tests__/` co-located with source files
