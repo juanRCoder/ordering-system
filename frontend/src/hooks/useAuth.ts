@@ -10,7 +10,7 @@ import { SuppliesKeys, UsersKeys } from '@/lib/querykeys';
 import { toast } from 'sonner';
 import { toastStyles } from '@/lib/toast';
 import { useBusinessStore } from '@/stores/business.store';
-import { useEffect } from 'react';
+import { useSSEStream } from './useSSEStream';
 
 export function useLogin() {
   const queryClient = useQueryClient();
@@ -102,26 +102,11 @@ export function useUpdateBusinessStatus() {
 }
 
 export function useBusinessStatusStream(slug: string) {
-  const queryClient = useQueryClient();
   const API = import.meta.env.VITE_API_DEV;
 
-  useEffect(() => {
-    if (!slug) return;
-
-    const eventSource = new EventSource(`${API}/auth/stream/${slug}`);
-
-    eventSource.onmessage = () => {
-      queryClient.invalidateQueries({
-        queryKey: [...SuppliesKeys.all, 'slug', slug],
-      });
-    };
-
-    eventSource.onerror = () => {
-      eventSource.close();
-    };
-
-    return () => {
-      eventSource.close();
-    };
-  }, [slug, queryClient]);
+  useSSEStream(slug, `${API}/auth/stream/${slug}`, [
+    ...SuppliesKeys.all,
+    'slug',
+    slug,
+  ]);
 }

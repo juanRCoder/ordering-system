@@ -58,6 +58,7 @@ export const useBusinessStore = create<BusinessState>()(
     }),
     {
       name: 'business-storage',
+      version: 1,
     }
   )
 );
