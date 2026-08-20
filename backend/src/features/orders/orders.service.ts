@@ -90,11 +90,6 @@ export class OrdersService {
               where: { id: existing.id },
               data: {
                 quantity: { increment: supply.quantity },
-                // observations: supply.observations
-                //   ? [existing.observations, supply.observations]
-                //       .filter(Boolean)
-                //       .join('\n')
-                //   : existing.observations,
               },
             })
           );
@@ -104,7 +99,6 @@ export class OrdersService {
             admin_supply_id: supply.id,
             price: supply.price,
             quantity: supply.quantity,
-            observations: supply.observations,
           });
         }
       }
@@ -211,7 +205,6 @@ export class OrdersService {
           quantity: so.quantity,
           name: so.admin_supply.name,
           price: so.price.toNumber(),
-          observations: so.observations,
         })),
         total: order.total.toNumber(),
         payment_type: order.payment_type,

@@ -4,7 +4,6 @@ export const supplyOrderSchema = z.object({
   id: z.string().uuid(),
   price: z.number(),
   quantity: z.number().int().positive(),
-  observations: z.string().optional(),
 });
 
 export const newOrderSchema = z

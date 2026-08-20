@@ -13,14 +13,6 @@ describe('supplyOrderSchema', () => {
     expect(result.success).toBe(true);
   });
 
-  it('acepta observations opcional', () => {
-    const result = supplyOrderSchema.safeParse({
-      ...validSupply,
-      observations: 'Sin cebolla',
-    });
-    expect(result.success).toBe(true);
-  });
-
   it('rechaza id que no es UUID', () => {
     const result = supplyOrderSchema.safeParse({
       ...validSupply,

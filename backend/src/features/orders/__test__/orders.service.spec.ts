@@ -49,7 +49,7 @@ describe('OrdersService', () => {
       guest_name: 'Juan',
       total: 25.5,
       supplies: [
-        { id: 'supply-1', price: 10, quantity: 2, observations: 'sin hielo' },
+        { id: 'supply-1', price: 10, quantity: 2 },
         { id: 'supply-2', price: 5.5, quantity: 1 },
       ],
     };
@@ -205,14 +205,12 @@ describe('OrdersService', () => {
             admin_supply_id: 'supply-1',
             price: 10,
             quantity: 2,
-            observations: 'sin hielo',
           },
           {
             order_id: 'order-new',
             admin_supply_id: 'supply-2',
             price: 5.5,
             quantity: 1,
-            observations: undefined,
           },
         ],
       });
@@ -323,7 +321,6 @@ describe('OrdersService', () => {
           {
             quantity: 2,
             price: makeDecimal(15),
-            observations: 'sin hielo',
             admin_supply: {
               name: 'Hamburguesa',
               supply: { id: 's1', name: 'Hamburguesa' },
@@ -332,7 +329,6 @@ describe('OrdersService', () => {
           {
             quantity: 1,
             price: makeDecimal(20),
-            observations: null,
             admin_supply: {
               name: 'Papas Fritas',
               supply: { id: 's2', name: 'Papas' },
@@ -355,13 +351,11 @@ describe('OrdersService', () => {
               quantity: 2,
               name: 'Hamburguesa',
               price: 15,
-              observations: 'sin hielo',
             },
             {
               quantity: 1,
               name: 'Papas Fritas',
               price: 20,
-              observations: null,
             },
           ],
           total: 50,

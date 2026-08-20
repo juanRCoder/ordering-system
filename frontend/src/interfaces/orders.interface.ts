@@ -22,7 +22,6 @@ export type OrderDetailSupply = {
   quantity: number;
   name: string;
   price: number;
-  observations: string | null;
 };
 
 export type OrderDetailResponseType = OrderListResponseType & {

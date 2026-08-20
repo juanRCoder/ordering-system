@@ -6,13 +6,7 @@ import {
   DrawerTitle,
 } from '@/components/ui/drawer';
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
-import {
-  Check,
-  Clock,
-  Coins,
-  CreditCard,
-  MessageSquareText,
-} from 'lucide-react';
+import { Check, Clock, Coins, CreditCard } from 'lucide-react';
 import { Button } from '../ui/button';
 import { ScrollArea } from '../ui/scroll-area';
 import { useState, useEffect } from 'react';
@@ -179,17 +173,6 @@ export const OrderDetailsDrawer = ({
                               <p className="truncate text-sm font-medium text-[#1E293B]">
                                 {supply.name}
                               </p>
-                              {supply.observations && (
-                                <p className="flex items-center gap-1 truncate text-[11px] text-[#64748B]">
-                                  <MessageSquareText
-                                    className="h-3 w-3 shrink-0"
-                                    strokeWidth={2}
-                                  />
-                                  <span className="truncate">
-                                    {supply.observations}
-                                  </span>
-                                </p>
-                              )}
                             </div>
                           </div>
                           <div className="flex shrink-0 flex-col items-end">
