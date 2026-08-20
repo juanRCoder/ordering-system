@@ -4,6 +4,7 @@ import { TopAppBar } from '@/components/TopAppBar';
 import { Button } from '@/components/ui/button';
 import { useLogout, useUpdateBusinessStatus } from '@/hooks/useAuth';
 import { useBusinessStore } from '@/stores/business.store';
+import { DM_SANS_STYLE } from '@/lib/constants';
 import { LogOut, Minus, Phone, Plus, Store, User } from 'lucide-react';
 import { useState } from 'react';
 
@@ -13,8 +14,10 @@ type props = {
 
 export default function Settings({ isAdmin }: props) {
   const logout = useLogout();
-  const { owner_name, business_name, phone, is_business_open } =
-    useBusinessStore();
+  const owner_name = useBusinessStore((s) => s.owner_name);
+  const business_name = useBusinessStore((s) => s.business_name);
+  const phone = useBusinessStore((s) => s.phone);
+  const is_business_open = useBusinessStore((s) => s.is_business_open);
   const update = useUpdateBusinessStatus();
 
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
@@ -67,7 +70,7 @@ export default function Settings({ isAdmin }: props) {
         <div>
           <h2
             className="text-2xl font-bold tracking-tight text-[#0F2A4A]"
-            style={{ fontFamily: "'DM Sans', sans-serif" }}
+            style={DM_SANS_STYLE}
           >
             Perfil de Negocio
           </h2>

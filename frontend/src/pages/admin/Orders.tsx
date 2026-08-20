@@ -8,19 +8,32 @@ import type { OrderListResponseType } from '@/interfaces/orders.interface';
 import { OrderCardSkeleton } from '@/skeletons/OrderCardSkeleton';
 import { useState, useEffect } from 'react';
 import { useBusinessStore } from '@/stores/business.store';
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from '@/components/ui/pagination';
+import { DM_SANS_STYLE } from '@/lib/constants';
+import { PaginationBar } from '@/components/PaginationBar';
 import { useNavigationType } from 'react-router-dom';
+
+const EmptyOrdersSVG = () => (
+  <div className="mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-[20px] bg-[#E0E7FF]">
+    <svg
+      className="h-10 w-10 text-[#3B5BDB]"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={1.5}
+        d="M19 14c.5 0 .9.4.9.9v2.2c0 .5-.4.9-.9.9H5c-.5 0-.9-.4-.9-.9v-2.2c0-.5.4-.9.9-.9m3.5-3.5L12 15l3.5-4.5M12 15V5"
+      />
+    </svg>
+  </div>
+);
 
 function Orders() {
   const navigationType = useNavigationType();
-  const { slug, setOrder } = useBusinessStore();
+  const slug = useBusinessStore((s) => s.slug);
+  const setOrder = useBusinessStore((s) => s.setOrder);
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
   const [selectedStatus, setSelectedStatus] = useState<'PENDING' | 'FINISHED'>(
     'PENDING'
@@ -43,7 +56,7 @@ function Orders() {
     if (navigationType === 'POP') {
       setOrder({ order_id: '', guest_name: '' });
     }
-  }, [navigationType]);
+  }, [navigationType, setOrder]);
 
   const dateFilters = [
     { value: 'today', label: 'Hoy' },
@@ -51,10 +64,12 @@ function Orders() {
     { value: 'older', label: 'Últimos días' },
   ];
 
+  const totalPages = orders?.data?.metadata?.pagination?.totalPages ?? 0;
+
   return (
     <section className="min-h-screen flex flex-col bg-[#F1F5F9]">
       <TopAppBar
-        subtitle={<p className="text-xs truncate max-w-45">Panel de Pedidos</p>}
+        subtitle="Panel de Pedidos"
         itemHeader={
           <Button
             variant="outline"
@@ -75,7 +90,7 @@ function Orders() {
           <div>
             <h2
               className="text-2xl font-bold tracking-tight text-[#0F2A4A]"
-              style={{ fontFamily: "'DM Sans', sans-serif" }}
+              style={DM_SANS_STYLE}
             >
               Pedidos
             </h2>
@@ -177,24 +192,10 @@ function Orders() {
 
           {!orders.isLoading && orders.data?.data.length === 0 && (
             <div className="text-center py-16">
-              <div className="mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-[20px] bg-[#E0E7FF]">
-                <svg
-                  className="h-10 w-10 text-[#3B5BDB]"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={1.5}
-                    d="M19 14c.5 0 .9.4.9.9v2.2c0 .5-.4.9-.9.9H5c-.5 0-.9-.4-.9-.9v-2.2c0-.5.4-.9.9-.9m3.5-3.5L12 15l3.5-4.5M12 15V5"
-                  />
-                </svg>
-              </div>
+              <EmptyOrdersSVG />
               <p
                 className="text-lg font-semibold text-[#0F2A4A]"
-                style={{ fontFamily: "'DM Sans', sans-serif" }}
+                style={DM_SANS_STYLE}
               >
                 No hay pedidos aquí
               </p>
@@ -205,72 +206,12 @@ function Orders() {
           )}
         </div>
 
-        <Pagination
-          className={`my-6 ${
-            (orders?.data?.metadata?.pagination?.totalPages ?? 1) <= 1
-              ? 'hidden'
-              : ''
-          }`}
-        >
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious
-                text="Anterior"
-                aria-disabled={page === 1}
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (page > 1) {
-                    setPage(page - 1);
-                  }
-                }}
-                className="text-[#475569]"
-              />
-            </PaginationItem>
-
-            {Array.from(
-              {
-                length: orders?.data?.metadata?.pagination?.totalPages ?? 0,
-              },
-              (_, i) => (
-                <PaginationItem key={i + 1}>
-                  <PaginationLink
-                    isActive={page === i + 1}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setPage(i + 1);
-                    }}
-                    className={`${
-                      page === i + 1
-                        ? 'bg-[#0F2A4A]! text-white! border-[#0F2A4A]!'
-                        : 'text-[#475569]'
-                    }`}
-                  >
-                    {i + 1}
-                  </PaginationLink>
-                </PaginationItem>
-              )
-            )}
-
-            <PaginationItem>
-              <PaginationNext
-                text="Siguiente"
-                aria-disabled={
-                  page === orders?.data?.metadata?.pagination?.totalPages
-                }
-                onClick={(e) => {
-                  e.preventDefault();
-
-                  if (
-                    page < (orders?.data?.metadata?.pagination?.totalPages ?? 1)
-                  ) {
-                    setPage(page + 1);
-                  }
-                }}
-                className="text-[#475569]"
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
+        <PaginationBar
+          page={page}
+          totalPages={totalPages}
+          onPageChange={setPage}
+          linkClassName="text-[#475569]"
+        />
       </div>
       <div className="fixed w-full mx-auto bottom-0">
         <BottomAppBar />

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { InputField } from '@/components/InputField';
 import { useBusinessStore } from '@/stores/business.store';
 import { User } from 'lucide-react';
@@ -20,9 +20,9 @@ export const GuestSelector = ({
   const [isTakeaway, setIsTakeaway] = useState(false);
 
   const tableCount = useBusinessStore((s) => s.table_count);
-  const tableNumbers = Array.from(
-    { length: tableCount ?? 10 },
-    (_, i) => i + 1
+  const tableNumbers = useMemo(
+    () => Array.from({ length: tableCount ?? 10 }, (_, i) => i + 1),
+    [tableCount]
   );
 
   const selectTable = (table: number) => {

@@ -1,21 +1,25 @@
 import type { SupplyResponse } from '@/interfaces/supplies.interface';
 import { useCartStore } from '@/stores/cart.store';
 import { Plus, Check } from 'lucide-react';
-import { useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
-type props = {
-  data: SupplyResponse;
-};
-
-export const SupplyCard = ({ data }: props) => {
-  const { addItem } = useCartStore();
+export const SupplyCard = ({ data }: { data: SupplyResponse }) => {
+  const addItem = useCartStore((s) => s.addItem);
   const [isAdded, setIsAdded] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const handleAdd = () => {
+  const handleAdd = useCallback(() => {
     addItem(data);
     setIsAdded(true);
-    setTimeout(() => setIsAdded(false), 1000);
-  };
+    if (timerRef.current) clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => setIsAdded(false), 1000);
+  }, [addItem, data]);
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, []);
 
   return (
     <div

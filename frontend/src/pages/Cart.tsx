@@ -16,13 +16,15 @@ import type {
 import { defaultNewOrder } from '@/lib/default';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useBusinessStore } from '@/stores/business.store';
+import { DM_SANS_STYLE } from '@/lib/constants';
 import { useEffect, useState } from 'react';
 
 function Cart() {
   const navigate = useNavigate();
   const { slug } = useParams<{ slug: string }>();
   const { items, totalPrice } = useCartStore();
-  const { order_id, guest_name } = useBusinessStore();
+  const order_id = useBusinessStore((s) => s.order_id);
+  const guest_name = useBusinessStore((s) => s.guest_name);
   const createOrder = useCreateOrder(slug!);
   const [isTakeaway, setIsTakeaway] = useState(false);
   const {
@@ -84,7 +86,7 @@ function Cart() {
       <div className="flex-1 flex flex-col p-3">
         <h2
           className="text-2xl font-bold text-[#0F2A4A] tracking-tighter"
-          style={{ fontFamily: "'DM Sans', sans-serif" }}
+          style={DM_SANS_STYLE}
         >
           {order_id ? 'Agregar al pedido' : 'Resumen del Pedido'}
         </h2>

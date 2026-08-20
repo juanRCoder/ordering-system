@@ -4,6 +4,7 @@ import { Switch } from '@/components/ui/switch';
 import { useState } from 'react';
 import { useUpdateSupplyStatus } from '@/hooks/useSupplies';
 import { Button } from '../ui/button';
+import { DM_SANS_STYLE } from '@/lib/constants';
 import { Pencil } from 'lucide-react';
 
 type props = {
@@ -47,7 +48,7 @@ export const SupplyCard = ({ data, handlerEvents }: props) => {
       <div className="flex min-h-0 flex-1 flex-col p-3">
         <h3
           className="truncate text-base font-bold leading-snug text-[#0F2A4A]"
-          style={{ fontFamily: "'DM Sans', sans-serif" }}
+          style={DM_SANS_STYLE}
         >
           {data.name}
         </h3>

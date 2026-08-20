@@ -8,18 +8,16 @@ import { SupplyCardAdminSkeleton } from '@/skeletons/SupplyCardSkeleton';
 import type { SupplyResponse } from '@/interfaces/supplies.interface';
 import { SupplyCard } from '@/components/admin/SupplyCard';
 import type { CategoryResponse } from '@/interfaces/categories.interface';
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from '@/components/ui/pagination';
 import { InputSearch } from '@/components/InputSearch';
 import { Package, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useParams } from 'react-router-dom';
+import { DM_SANS_STYLE } from '@/lib/constants';
+import { PaginationBar } from '@/components/PaginationBar';
+
+function firstLetterUpper(name: string) {
+  return name.charAt(0).toUpperCase() + name.slice(1);
+}
 
 function Supplies() {
   const { slug } = useParams<{ slug: string }>();
@@ -57,22 +55,20 @@ function Supplies() {
     (category: CategoryResponse) => category.id === activeCategoryId
   );
 
-  const firstLetterUpper = (name: string) => {
-    return name.charAt(0).toUpperCase() + name.slice(1);
-  };
-
   const resultCount = suppliesByType.data?.data?.length ?? 0;
+
+  const totalPages =
+    suppliesByType?.data?.metadata?.pagination?.totalPages ?? 0;
+
   return (
     <section className="bg-[#F1F5F9] min-h-screen flex flex-col">
-      <TopAppBar
-        subtitle={<p className="text-xs truncate max-w-45">Panel de Insumos</p>}
-      />
+      <TopAppBar subtitle="Panel de Insumos" />
       <div className="flex-1 flex flex-col p-3 pb-24">
         <div className="flex flex-col gap-3">
           <div>
             <h2
               className="text-2xl font-bold tracking-tight text-[#0F2A4A]"
-              style={{ fontFamily: "'DM Sans', sans-serif" }}
+              style={DM_SANS_STYLE}
             >
               Insumos
             </h2>
@@ -179,7 +175,7 @@ function Supplies() {
                 </div>
                 <p
                   className="text-lg font-semibold text-[#0F2A4A]"
-                  style={{ fontFamily: "'DM Sans', sans-serif" }}
+                  style={DM_SANS_STYLE}
                 >
                   No hay insumos aquí
                 </p>
@@ -190,76 +186,12 @@ function Supplies() {
             )}
         </div>
 
-        <Pagination
-          className={`my-6 ${
-            (suppliesByType?.data?.metadata?.pagination?.totalPages ?? 1) <= 1
-              ? 'hidden'
-              : ''
-          }`}
-        >
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious
-                text="Anterior"
-                aria-disabled={page === 1}
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (page > 1) {
-                    setPage(page - 1);
-                  }
-                }}
-                className="text-[#475569]"
-              />
-            </PaginationItem>
-
-            {Array.from(
-              {
-                length:
-                  suppliesByType?.data?.metadata?.pagination?.totalPages ?? 0,
-              },
-              (_, i) => (
-                <PaginationItem key={i + 1}>
-                  <PaginationLink
-                    isActive={page === i + 1}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setPage(i + 1);
-                    }}
-                    className={`${
-                      page === i + 1
-                        ? 'bg-[#0F2A4A]! text-white! border-[#0F2A4A]!'
-                        : 'text-[#475569]'
-                    }`}
-                  >
-                    {i + 1}
-                  </PaginationLink>
-                </PaginationItem>
-              )
-            )}
-
-            <PaginationItem>
-              <PaginationNext
-                text="Siguiente"
-                aria-disabled={
-                  page ===
-                  suppliesByType?.data?.metadata?.pagination?.totalPages
-                }
-                onClick={(e) => {
-                  e.preventDefault();
-
-                  if (
-                    page <
-                    (suppliesByType?.data?.metadata?.pagination?.totalPages ??
-                      1)
-                  ) {
-                    setPage(page + 1);
-                  }
-                }}
-                className="text-[#475569]"
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
+        <PaginationBar
+          page={page}
+          totalPages={totalPages}
+          onPageChange={setPage}
+          linkClassName="text-[#475569]"
+        />
       </div>
       <div className="fixed w-full mx-auto bottom-0">
         <BottomAppBar />

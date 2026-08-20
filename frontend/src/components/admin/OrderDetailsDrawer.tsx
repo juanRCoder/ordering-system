@@ -21,6 +21,7 @@ import { OrderDetailSkeleton } from '@/skeletons/OrderDetailSkeleton';
 import type { OrderDetailSupply } from '@/interfaces/orders.interface';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { dayTime, relativeTime } from '@/lib/time';
+import { DM_SANS_STYLE } from '@/lib/constants';
 
 type props = {
   externalTrigger?: boolean;
@@ -52,7 +53,7 @@ export const OrderDetailsDrawer = ({
       setSelectedOrderStatus([orderDetail.data.status]);
       setSelectedOrderType(orderDetail.data.order_type);
     }
-  }, [externalTrigger, orderDetail.data?.payment_type]);
+  }, [externalTrigger, orderDetail.data]);
 
   const updateOrderHandler = () => {
     updateOrder.mutate(
@@ -121,7 +122,7 @@ export const OrderDetailsDrawer = ({
                       </p>
                       <h2
                         className="text-xl font-bold leading-snug text-[#0F2A4A]"
-                        style={{ fontFamily: "'DM Sans', sans-serif" }}
+                        style={DM_SANS_STYLE}
                       >
                         {detail?.guest_name}
                       </h2>

@@ -3,6 +3,7 @@ import { Button } from '../ui/button';
 import { Card } from '../ui/card';
 import type { OrderListResponseType } from '@/interfaces/orders.interface';
 import { dayTime, relativeTime } from '@/lib/time';
+import { DM_SANS_STYLE } from '@/lib/constants';
 import { useNavigate } from 'react-router-dom';
 import { useBusinessStore } from '@/stores/business.store';
 import { useConfirmOrder, useDeleteOrder } from '@/hooks/useOrders';
@@ -14,7 +15,8 @@ type props = {
 
 export const OrderCard = ({ data, handlerEvents }: props) => {
   const navigate = useNavigate();
-  const { slug, setOrder } = useBusinessStore();
+  const slug = useBusinessStore((s) => s.slug);
+  const setOrder = useBusinessStore((s) => s.setOrder);
   const deleteOrder = useDeleteOrder();
   const confirmOrder = useConfirmOrder();
 
@@ -63,7 +65,7 @@ export const OrderCard = ({ data, handlerEvents }: props) => {
         <div className="flex items-center justify-between gap-2">
           <h3
             className="truncate text-base font-bold leading-snug text-[#0F2A4A]"
-            style={{ fontFamily: "'DM Sans', sans-serif" }}
+            style={DM_SANS_STYLE}
           >
             {data.guest_name}
           </h3>

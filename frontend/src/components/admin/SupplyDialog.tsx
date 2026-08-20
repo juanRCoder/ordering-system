@@ -33,6 +33,7 @@ import { supplyFormValues } from '@/lib/default';
 import type { CategoryResponse } from '@/interfaces/categories.interface';
 import { Image, Pencil, Plus, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { DM_SANS_STYLE } from '@/lib/constants';
 
 type props = {
   externalTrigger?: boolean;
@@ -107,11 +108,17 @@ export const SupplyDialog = ({
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    if (imagePreview && imagePreview.startsWith('blob:')) {
+      URL.revokeObjectURL(imagePreview);
+    }
     setImagePreview(URL.createObjectURL(file));
     setImageFile(file);
   };
 
   const handleRemoveImage = () => {
+    if (imagePreview && imagePreview.startsWith('blob:')) {
+      URL.revokeObjectURL(imagePreview);
+    }
     setImagePreview('');
     setImageFile(null);
     if (fileRef.current) {
@@ -207,7 +214,7 @@ export const SupplyDialog = ({
             </p>
             <p
               className="text-base leading-tight font-bold"
-              style={{ fontFamily: "'DM Sans', sans-serif" }}
+              style={DM_SANS_STYLE}
             >
               S/ {Number(priceValue || 0).toFixed(2)}
             </p>
@@ -240,7 +247,7 @@ export const SupplyDialog = ({
             </div>
             <DialogTitle
               className="text-xl font-bold tracking-tight text-[#0F2A4A]"
-              style={{ fontFamily: "'DM Sans', sans-serif" }}
+              style={DM_SANS_STYLE}
             >
               {isEditMode ? 'Editar' : 'Nuevo'} insumo
             </DialogTitle>
