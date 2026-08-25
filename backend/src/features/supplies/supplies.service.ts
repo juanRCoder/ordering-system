@@ -297,6 +297,7 @@ export class SuppliesService {
 
     const supply = await this.prisma.adminSupplies.findUnique({
       where: { id, admin_id: adminId },
+      include: { supply: { select: { origin: true } } },
     });
 
     if (!supply) {
@@ -306,8 +307,18 @@ export class SuppliesService {
       });
     }
 
+    const isPlatform = supply.supply.origin === 'PLATFORM';
+
     const { name, price, image_url, image_public_id, category_id } =
       updateSupplyDto;
+
+    if (isPlatform && (category_id || file)) {
+      throw new BadRequestException({
+        code: 'PLATFORM_SUPPLY_EDIT_FORBIDDEN',
+        message:
+          'Solo se permite editar el nombre y el precio de los insumos de plataforma',
+      });
+    }
 
     let imageUrl: string | null | undefined = image_url;
     let imagePublicId: string | null | undefined = image_public_id;
@@ -336,13 +347,16 @@ export class SuppliesService {
     }
 
     const updateAdminSupply = await this.prisma.$transaction(async (tx) => {
-      await tx.supplies.update({
-        where: { id: supply.supply_id },
-        data: {
-          image_url: imageUrl,
-          image_public_id: imagePublicId,
-        },
-      });
+      if (!isPlatform) {
+        await tx.supplies.update({
+          where: { id: supply.supply_id },
+          data: {
+            image_url: imageUrl,
+            image_public_id: imagePublicId,
+            ...(category_id ? { category_id } : {}),
+          },
+        });
+      }
 
       return tx.adminSupplies.update({
         where: { id },

@@ -1,9 +1,10 @@
-# Tareas: Gestión de Órdenes
+# Tasks: 001-gestion-ordenes
 
-**Feature Directory**: `specs/001-gestion-ordenes`
-**Basado en**: `plan.md`
-**Estado**: Las tareas reflejan el desarrollo ya completado; la columna
-_Verificación_ confirma si cada una coincide con el código actual.
+- **Plan**: `specs/001-gestion-ordenes/plan.md`
+- **Date**: 2026-08-24
+- **Status**: [Completed]
+
+Las tareas reflejan el desarrollo ya completado; la columna _Verificación_ confirma si cada una coincide con el código actual.
 
 > Plantilla `tasks-template.md` no encontrada en el repo; se usa la estructura
 > estándar (Tareas / Dependencias / Verificación).

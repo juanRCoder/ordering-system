@@ -135,7 +135,9 @@ export const SupplyDialog = ({
       if (key === 'image_url') continue;
       formData.append(key, value as string);
     }
-    formData.append('category_id', selectedCategoryId);
+    if (!isPlatformEdit) {
+      formData.append('category_id', selectedCategoryId);
+    }
 
     if (imageFile) {
       formData.append('image_url', imageFile);

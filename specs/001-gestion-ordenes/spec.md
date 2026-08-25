@@ -1,10 +1,7 @@
-# Feature Specification: Gestión de Órdenes
+# Specification: 001-gestion-de-ordenes
 
-**Feature Branch**: `[001-gestion-ordenes]`
-
-**Created**: 2026-08-24
-
-**Status**: Completado
+- **Date**: 2026-08-24
+- **Status**: [Completed]
 
 ## Resumen
 

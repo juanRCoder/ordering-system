@@ -1,8 +1,7 @@
-# Plan de Implementación: Gestión de Órdenes
+# Implementation Plan: 001-gestion-ordenes
 
-**Feature Directory**: `specs/001-gestion-ordenes`
-**Backend**: `backend/src/features/orders`
-**Frontend**: `frontend/src` (`services/orders.service.ts`, `interfaces/orders.interface.ts`, `schemas/orders.schema.ts`, `hooks/useOrders.ts`)
+- **Date**: 2026-08-24
+- **Status**: [Completed]
 
 > Este plan documenta la arquitectura y los contratos de la feature "Gestión de
 > Órdenes" tal como está implementada en el código actual (spec status: _Completado
@@ -48,23 +47,15 @@
 
 ## 2. Contratos de API (usados / modificados)
 
-| Método   | Endpoint                   | Auth       | Propósito                                                      | Cuerpo / Query                    |
-| -------- | -------------------------- | ---------- | -------------------------------------------------------------- | --------------------------------- |
-| `GET`    | `/api/orders`              | AdminGuard | Listar órdenes paginadas por `status` y `dateFilter`           | `?page`, `?status`, `?dateFilter` |
-| `GET`    | `/api/orders/:id`          | AdminGuard | Detalle de orden con suministros                               | —                                 |
-| `POST`   | `/api/orders/:slug`        | Público    | Crear **o** agregar suministros a orden existente (`order_id`) | `CreateOrderDto`                  |
-| `PATCH`  | `/api/orders/:id`          | AdminGuard | Cambiar `status`, `payment_type`, `order_type`                 | `UpdateOrderDto`                  |
-| `PATCH`  | `/api/orders/:id/confirm`  | AdminGuard | Marcar/desmarcar `is_confirmed`                                | `{ is_confirmed: boolean }`       |
-| `DELETE` | `/api/orders/:id`          | AdminGuard | **Eliminar** orden (ver US-5)                                  | —                                 |
-| `SSE`    | `/api/orders/stream/:slug` | Público    | Notificar nuevas órdenes/cambios                               | —                                 |
-
-- **Respuesta `create`**: `{ status: 201, data: { order_id } }`. Al enviar
-  `order_id` se hace `update` con `total.increment` y se suman cantidades de
-  suministros existentes (idempotente).
-- **Respuesta `findAll`**: `{ data[], counts: { pending }, metadata: { pagination } }`.
-  Filtro de fecha solo aplica a `FINISHED` vía `getDateRange(dateFilter)`.
-- **Validaciones de suministros** (en `validateSupplies`): `SUPPLY_NOT_FOUND`,
-  `SUPPLY_NOT_AVAILABLE`, `SUPPLY_PRICE_MISMATCH`.
+| Método   | Endpoint                   | Auth       | Propósito                                                      |
+| -------- | -------------------------- | ---------- | -------------------------------------------------------------- |
+| `GET`    | `/api/orders`              | AdminGuard | Listar órdenes paginadas por `status` y `dateFilter`           |
+| `GET`    | `/api/orders/:id`          | AdminGuard | Detalle de orden con suministros                               |
+| `POST`   | `/api/orders/:slug`        | Público    | Crear **o** agregar suministros a orden existente (`order_id`) |
+| `PATCH`  | `/api/orders/:id`          | AdminGuard | Cambiar `status`, `payment_type`, `order_type`                 |
+| `PATCH`  | `/api/orders/:id/confirm`  | AdminGuard | Marcar/desmarcar `is_confirmed`                                |
+| `DELETE` | `/api/orders/:id`          | AdminGuard | **Eliminar** orden (ver US-5)                                  |
+| `SSE`    | `/api/orders/stream/:slug` | Público    | Notificar nuevas órdenes/cambios                               |
 
 ## 3. Archivos nuevos / modificados y su propósito
 

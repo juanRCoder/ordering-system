@@ -1,7 +1,8 @@
-# Implementación: Gestión de Órdenes
+# Implementation Log: Gestión de Órdenes
 
-**Feature Directory**: `specs/001-gestion-ordenes`
-**Basado en**: `plan.md`, `tasks.md`
+**Branch**: `001-gestion-ordenes` | **Plan**: `specs/001-gestion-ordenes/plan.md` | **Tasks**: `specs/001-gestion-ordenes/tasks.md`
+
+**Date**: 2026-08-24 · **Status**: [Completed]
 
 > La feature ya estaba implementada (spec status: _Completado_). Esta fase **verifica** que cada tarea de `tasks.md` coincide con el
 > código y ejecuta la batería de tests. No se escribió código nuevo: todas las
