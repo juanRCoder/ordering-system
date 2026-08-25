@@ -422,7 +422,7 @@ describe('OrdersService', () => {
             status: 'PENDING',
             guest_name: 'Maria',
             order_type: 'TAKEAWAY',
-            created_at: new Date('2025-01-02'),
+            created_at: new Date('2025-01-03'),
             is_confirmed: true,
             total: 15,
             supplies: [{ quantity: 1, name: 'Papas Fritas' }],

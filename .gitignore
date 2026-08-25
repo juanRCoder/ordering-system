@@ -30,4 +30,6 @@ backend/prisma/generated
 .env
 .opencode/
 .agents/
+.specify/
+.active-feature
 skills-lock.json
