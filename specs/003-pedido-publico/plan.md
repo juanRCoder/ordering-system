@@ -85,8 +85,8 @@
   login; la creación de órdenes ya es pública.
 - **Gestión admin de insumos/categorías** (`supplies/`, `categories/`) — se consumen pero
   no se modifican en esta feature.
-- **Confirmación administrativa** (`is_confirmed`, `PATCH /api/orders/:id/confirm`) —
-  responsabilidad del admin, ya cubierta en spec 001; aquí solo se crea la orden PENDING.
+- **Flag administrativo** (`is_confirmed`, `PATCH /api/orders/:id/confirm`) —
+  existe en el backend sin UI; aquí solo se crea la orden PENDING.
 - **Pagos reales (YAPE/CASH)** — solo se registra el tipo en la orden; la cobranza queda
   fuera de alcance.
 - **Suscripciones / facturación** (`Subscriptions`) — no relacionado.

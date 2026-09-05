@@ -158,5 +158,6 @@ reflejada como `guest_name = "Mesa N"`), nombre y monto total antes de confirmar
 - El carrito se mantiene en el estado del frontend (store) hasta la confirmación.
 - La "mesa" no es una entidad del backend: la selección de mesa es una experiencia de
   usuario que fija `guest_name = "Mesa N"`; para TAKEAWAY el cliente ingresa su nombre.
-- La confirmación crea una orden en estado PENDING; la confirmación administrativa
-  (`is_confirmed`) es responsabilidad del backend/admin (ver spec 001).
+- La confirmación crea una orden en estado PENDING; el flag administrativo
+  (`is_confirmed`, endpoint `PATCH /api/orders/:id/confirm`) existe en el
+  backend pero no tiene UI (retirado del flujo).

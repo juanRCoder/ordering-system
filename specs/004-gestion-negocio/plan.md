@@ -77,7 +77,8 @@
   teléfono): US1 solo requiere **visualizarlos**; la edición es otra iteración.
 - **Módulos de otras features**: `supplies/`, `categories/`, `orders/`, `cloudinary/`.
 - **Pagos (YAPE/CASH) y `Subscriptions`** — no relacionados con la gestión del negocio.
-- **Confirmación administrativa de órdenes** (`is_confirmed`) — responsabilidad de spec
-  001; aquí solo se controla la apertura del negocio que habilita/inhabilita el menú.
+- **Flag administrativo de órdenes** (`is_confirmed`, endpoint
+  `PATCH /api/orders/:id/confirm`) — existe en el backend sin UI; aquí solo
+  se controla la apertura del negocio que habilita/inhabilita el menú.
 - **Horarios de apertura automáticos** — fuera de alcance; US2 es apertura/cierre manual.
 - **Multi-negocio por cuenta** — cada cuenta admin = un negocio (modelo actual).
