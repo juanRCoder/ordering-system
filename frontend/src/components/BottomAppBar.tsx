@@ -1,35 +1,40 @@
 import { useBusinessStore } from '@/stores/business.store';
+import { DEFAULT_SLUG } from '@/lib/constants';
 import { type LucideIcon, ScrollText, Box, User, Utensils } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
 export const BottomAppBar = () => {
   const location = useLocation();
   const { slug } = useBusinessStore();
+  const resolvedSlug =
+    slug?.trim() && slug !== 'null' && slug !== 'undefined'
+      ? slug
+      : DEFAULT_SLUG;
 
   const items = [];
   items.push({
     id: 'menu',
     label: 'Menu',
     icon: Utensils,
-    to: `/${slug}/menu`,
+    to: `/${resolvedSlug}/menu`,
   });
   items.push({
     id: 'pedidos',
     label: 'Pedidos',
     icon: ScrollText,
-    to: `/${slug}/orders`,
+    to: `/${resolvedSlug}/orders`,
   });
   items.push({
     id: 'insumos',
     label: 'Insumos',
     icon: Box,
-    to: `/${slug}/supplies`,
+    to: `/${resolvedSlug}/supplies`,
   });
   items.push({
     id: 'perfil',
     label: 'Perfil',
     icon: User,
-    to: `/${slug}/settings`,
+    to: `/${resolvedSlug}/settings`,
   });
 
   const renderItem = (item: {

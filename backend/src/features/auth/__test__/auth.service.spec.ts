@@ -15,7 +15,11 @@ describe('AuthService', () => {
   const prisma = {
     $transaction: jest.fn(),
     users: { findUnique: jest.fn(), create: jest.fn(), update: jest.fn() },
-    sessions: { create: jest.fn(), delete: jest.fn() },
+    sessions: {
+      create: jest.fn(),
+      delete: jest.fn(),
+      deleteMany: jest.fn(),
+    },
   };
 
   const userMock = {
@@ -73,6 +77,20 @@ describe('AuthService', () => {
       await expect(authService.register(userMock)).rejects.toThrow(
         ConflictException
       );
+    });
+
+    it('debe lanzar EMAIL_ALREADY_IN_USE si el email ya está en uso', async () => {
+      prisma.users.findUnique.mockResolvedValueOnce({
+        id: 'existing',
+        email: userMock.email,
+      });
+
+      const error = await authService.register(userMock).catch((e) => e);
+
+      expect(error).toBeInstanceOf(ConflictException);
+      expect(error.getResponse()).toMatchObject({
+        code: 'EMAIL_ALREADY_IN_USE',
+      });
     });
   });
 
@@ -156,6 +174,18 @@ describe('AuthService', () => {
         where: { id: 's1' },
       });
       expect(result).toHaveProperty('data.access_token', 'new-access');
+    });
+  });
+
+  describe('POST/ logout', () => {
+    it('debe borrar la sesión por refresh_token', async () => {
+      prisma.sessions.deleteMany.mockResolvedValue({ count: 1 });
+
+      await authService.logout('refresh-token-1');
+
+      expect(prisma.sessions.deleteMany).toHaveBeenCalledWith({
+        where: { refresh_token: 'refresh-token-1' },
+      });
     });
   });
 

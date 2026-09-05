@@ -10,7 +10,9 @@ import { SuppliesKeys, UsersKeys } from '@/lib/querykeys';
 import { toast } from 'sonner';
 import { toastStyles } from '@/lib/toast';
 import { useBusinessStore } from '@/stores/business.store';
+import { DEFAULT_SLUG } from '@/lib/constants';
 import { useSSEStream } from './useSSEStream';
+import { useCartStore } from '@/stores/cart.store';
 
 export function useLogin() {
   const queryClient = useQueryClient();
@@ -21,14 +23,18 @@ export function useLogin() {
     mutationFn: (data: LoginFormType) => authService.login(data),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: UsersKeys.me });
+      const resolvedSlug =
+        data.slug?.trim?.() && data.slug !== 'null' && data.slug !== 'undefined'
+          ? data.slug
+          : DEFAULT_SLUG;
       setBusiness({
         business_name: data.business_name,
-        slug: data.slug,
+        slug: resolvedSlug,
         owner_name: data.name,
         is_business_open: data.is_business_open,
         phone: data.phone,
       });
-      navigate(`/${data.slug}/menu`);
+      navigate(`/${resolvedSlug}/menu`);
     },
     onError: (error: ErrorResponse) => {
       if (
@@ -74,6 +80,7 @@ export function useLogout() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: UsersKeys.me });
       useBusinessStore.getState().clearBusiness();
+      useCartStore.getState().ensureSlug(null);
       navigate('/auth', { replace: true });
     },
     onError: () => {

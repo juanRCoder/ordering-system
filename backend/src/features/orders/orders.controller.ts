@@ -81,7 +81,10 @@ export class OrdersController {
 
   @UseGuards(AdminGuard)
   @Delete(':id')
-  async remove(@Param('id') id: string) {
-    return this.ordersService.delete(id);
+  async remove(
+    @Param('id') id: string,
+    @CurrentAdmin() admin: { sub: string }
+  ) {
+    return this.ordersService.delete(id, admin.sub);
   }
 }

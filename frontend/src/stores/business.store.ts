@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { DEFAULT_SLUG } from '@/lib/constants';
 
 interface BusinessState {
   business_name: string | null;
@@ -58,7 +59,21 @@ export const useBusinessStore = create<BusinessState>()(
     }),
     {
       name: 'business-storage',
-      version: 1,
+      version: 2,
+      // Sanea sesiones viejas persistidas con slug null/"null"/vacío.
+      migrate: (persisted: unknown) => {
+        const state = (persisted ?? {}) as Record<string, unknown>;
+        const slug = state['slug'];
+        if (
+          typeof slug !== 'string' ||
+          !slug.trim() ||
+          slug === 'null' ||
+          slug === 'undefined'
+        ) {
+          state['slug'] = DEFAULT_SLUG;
+        }
+        return state;
+      },
     }
   )
 );

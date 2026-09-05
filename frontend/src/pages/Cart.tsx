@@ -16,16 +16,20 @@ import type {
 import { defaultNewOrder } from '@/lib/default';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useBusinessStore } from '@/stores/business.store';
-import { DM_SANS_STYLE } from '@/lib/constants';
+import { DM_SANS_STYLE, DEFAULT_SLUG } from '@/lib/constants';
 import { useEffect, useState } from 'react';
 
 function Cart() {
   const navigate = useNavigate();
   const { slug } = useParams<{ slug: string }>();
-  const { items, totalPrice } = useCartStore();
+  const resolvedSlug =
+    slug?.trim() && slug !== 'null' && slug !== 'undefined'
+      ? slug
+      : DEFAULT_SLUG;
+  const { items, totalPrice, ensureSlug } = useCartStore();
   const order_id = useBusinessStore((s) => s.order_id);
   const guest_name = useBusinessStore((s) => s.guest_name);
-  const createOrder = useCreateOrder(slug!);
+  const createOrder = useCreateOrder(resolvedSlug);
   const [isTakeaway, setIsTakeaway] = useState(false);
   const {
     handleSubmit,
@@ -38,6 +42,10 @@ function Cart() {
   });
 
   const guestNameValue = watch('guest_name');
+
+  useEffect(() => {
+    ensureSlug(resolvedSlug);
+  }, [resolvedSlug, ensureSlug]);
 
   useEffect(() => {
     if (!order_id || !guest_name) return;
@@ -63,7 +71,7 @@ function Cart() {
       onSuccess: (response) => {
         if (order_id) return;
         useCartStore.getState().clear();
-        navigate(`/${slug}/order-received/${response.data.order_id}`);
+        navigate(`/${resolvedSlug}/order-received/${response.data.order_id}`);
       },
     });
   };
@@ -79,7 +87,7 @@ function Cart() {
     <section className="bg-[#F1F5F9] min-h-screen flex flex-col">
       <TopAppBar
         leftArrowEnable
-        leftPath={`/${slug}/menu`}
+        leftPath={`/${resolvedSlug}/menu`}
         itemHeader={<CartBadget />}
       />
       <div className="flex-1 flex flex-col p-3">

@@ -19,8 +19,7 @@ export class OrdersService {
   constructor(private prisma: PrismaService) {}
 
   async create(slug: string, createOrderDto: CreateOrderDto) {
-    const { guest_name, total, supplies, order_id, order_type } =
-      createOrderDto;
+    const { guest_name, supplies, order_id, order_type } = createOrderDto;
 
     const admin = await this.prisma.users.findUnique({
       where: { slug },
@@ -38,7 +37,17 @@ export class OrdersService {
 
       const supplyIds = [...new Set(supplies.map((s) => s.id))];
 
-      await this.validateSupplies(tx, admin.id, supplies, supplyIds);
+      const priceMap = await this.validateSupplies(
+        tx,
+        admin.id,
+        supplies,
+        supplyIds
+      );
+
+      const serverTotal = supplies.reduce(
+        (acc, s) => acc + priceMap.get(s.id)! * s.quantity,
+        0
+      );
 
       if (order_id) {
         const findOrder = await tx.orders.findUnique({
@@ -55,14 +64,14 @@ export class OrdersService {
         currentOrder = await tx.orders.update({
           where: { id: order_id },
           data: {
-            total: { increment: total },
+            total: { increment: serverTotal },
           },
         });
       } else {
         currentOrder = await tx.orders.create({
           data: {
             guest_name,
-            total,
+            total: serverTotal,
             admin_id: admin.id,
             order_type: order_type ?? 'LOCAL',
           },
@@ -121,6 +130,7 @@ export class OrdersService {
       },
     };
   }
+
   getOrdersStream(slug: string) {
     return this.orderChannel.stream(slug);
   }
@@ -130,7 +140,7 @@ export class OrdersService {
     adminId: string,
     supplies: CreateOrderDto['supplies'],
     supplyIds: string[]
-  ) {
+  ): Promise<Map<string, number>> {
     const suppliesInDb = await tx.adminSupplies.findMany({
       where: {
         id: { in: supplyIds },
@@ -169,6 +179,8 @@ export class OrdersService {
         });
       }
     }
+
+    return new Map(suppliesInDb.map((s) => [s.id, s.price.toNumber()]));
   }
 
   async findById(id: string) {
@@ -354,9 +366,9 @@ export class OrdersService {
     };
   }
 
-  async delete(id: string) {
+  async delete(id: string, adminId: string) {
     const existingOrder = await this.prisma.orders.findUnique({
-      where: { id },
+      where: { id, admin_id: adminId },
     });
 
     if (!existingOrder) {

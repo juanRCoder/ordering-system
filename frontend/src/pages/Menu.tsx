@@ -17,8 +17,9 @@ import { useParams } from 'react-router-dom';
 import { useBusinessStatusStream } from '@/hooks/useAuth';
 import { BottomAppBar } from '@/components/BottomAppBar';
 import { PaginationBar } from '@/components/PaginationBar';
-import { DM_SANS_STYLE } from '@/lib/constants';
+import { DM_SANS_STYLE, DEFAULT_SLUG } from '@/lib/constants';
 import { firstLetterUpper } from '@/lib/string';
+import { useCartStore } from '@/stores/cart.store';
 
 const BusinessClosedSVG = () => (
   <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-3xl bg-[#E0E7FF]">
@@ -58,6 +59,11 @@ const EmptySearchSVG = () => (
 
 function Menu() {
   const { slug } = useParams<{ slug: string }>();
+  const resolvedSlug =
+    slug?.trim() && slug !== 'null' && slug !== 'undefined'
+      ? slug
+      : DEFAULT_SLUG;
+  const ensureSlug = useCartStore((s) => s.ensureSlug);
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(
     null
   );
@@ -70,6 +76,10 @@ function Menu() {
   const activeCategoryId = selectedCategoryId ?? categories.data?.[0]?.id ?? '';
 
   useEffect(() => {
+    ensureSlug(resolvedSlug);
+  }, [resolvedSlug, ensureSlug]);
+
+  useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedLetters(letters);
       setPage(1);
@@ -79,17 +89,19 @@ function Menu() {
   }, [letters]);
 
   const suppliesByType = useSuppliesBySlug(
-    slug || '',
+    resolvedSlug,
     activeCategoryId,
     debouncedLetters,
     page
   );
 
-  useBusinessStatusStream(slug || '');
-  useSuppliesStream(slug || '');
-  useUpdateSupplyPriceStream(slug || '');
+  useBusinessStatusStream(resolvedSlug);
+  useSuppliesStream(resolvedSlug);
+  useUpdateSupplyPriceStream(resolvedSlug);
 
-  const isBusinessOpen = suppliesByType.data?.is_business_open;
+  // La tienda empieza abierta: mientras carga o si el backend no envía
+  // el flag, se muestra el menú (no la pantalla de "descansando").
+  const isBusinessOpen = suppliesByType.data?.is_business_open ?? true;
 
   const availableSupplies = useMemo(() => {
     return (
@@ -106,10 +118,10 @@ function Menu() {
     <section className="min-h-screen flex flex-col bg-[#F1F5F9]">
       <TopAppBar
         subtitle="Panel de Menu"
-        itemHeader={isBusinessOpen ? null : <CartBadget />}
+        itemHeader={isBusinessOpen ? <CartBadget /> : null}
       />
 
-      {isBusinessOpen ? (
+      {!isBusinessOpen ? (
         <div className="max-w-md mx-auto mt-20 p-8 text-center">
           <BusinessClosedSVG />
           <h2
@@ -207,7 +219,7 @@ function Menu() {
               page={page}
               totalPages={totalPages}
               onPageChange={setPage}
-              className={`mb-6 ${isBusinessOpen || totalPages <= 1 ? 'hidden' : ''}`}
+              className={`mb-6 ${!isBusinessOpen || totalPages <= 1 ? 'hidden' : ''}`}
             />
           )}
         </div>

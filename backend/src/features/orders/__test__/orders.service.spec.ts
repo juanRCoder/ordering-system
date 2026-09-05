@@ -506,9 +506,12 @@ describe('OrdersService', () => {
     it('debería lanzar NotFoundException cuando la orden no exista', async () => {
       prisma.orders.findUnique.mockResolvedValue(null);
 
-      await expect(ordersService.delete('non-existent')).rejects.toThrow(
-        NotFoundException
-      );
+      await expect(
+        ordersService.delete('non-existent', 'admin-1')
+      ).rejects.toThrow(NotFoundException);
+      expect(prisma.orders.findUnique).toHaveBeenCalledWith({
+        where: { id: 'non-existent', admin_id: 'admin-1' },
+      });
     });
 
     it('debería eliminar la orden con sus supplies en una transacción', async () => {
@@ -531,8 +534,11 @@ describe('OrdersService', () => {
         cb(mockTx as unknown as Prisma.TransactionClient)
       );
 
-      const result = await ordersService.delete('order-1');
+      const result = await ordersService.delete('order-1', 'admin-1');
 
+      expect(prisma.orders.findUnique).toHaveBeenCalledWith({
+        where: { id: 'order-1', admin_id: 'admin-1' },
+      });
       expect(mockTx.suppliesOrders.deleteMany).toHaveBeenCalledWith({
         where: { order_id: 'order-1' },
       });

@@ -24,7 +24,7 @@ export function useCreateOrder(slug: string) {
       if (order_id) {
         useCartStore.getState().clear();
         toast.success('Pedido actualizado', toastStyles.success);
-        navigate('/admin/orders');
+        navigate(`/${slug}/orders`);
       }
     },
     onError: () => {

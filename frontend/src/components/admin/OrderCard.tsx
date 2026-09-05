@@ -1,4 +1,4 @@
-import { ListPlus, Trash2, Check, Clock } from 'lucide-react';
+import { ListPlus, Check, Clock } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
 import type { OrderListResponseType } from '@/interfaces/orders.interface';
@@ -6,7 +6,7 @@ import { dayTime, relativeTime } from '@/lib/time';
 import { DM_SANS_STYLE } from '@/lib/constants';
 import { useNavigate } from 'react-router-dom';
 import { useBusinessStore } from '@/stores/business.store';
-import { useConfirmOrder, useDeleteOrder } from '@/hooks/useOrders';
+// import { useDeleteOrder } from '@/hooks/useOrders';
 
 type props = {
   data: OrderListResponseType;
@@ -17,17 +17,11 @@ export const OrderCard = ({ data, handlerEvents }: props) => {
   const navigate = useNavigate();
   const slug = useBusinessStore((s) => s.slug);
   const setOrder = useBusinessStore((s) => s.setOrder);
-  const deleteOrder = useDeleteOrder();
-  const confirmOrder = useConfirmOrder();
+  // const deleteOrder = useDeleteOrder();
 
   const isOrderCompleted = data.status === 'FINISHED';
   const isTakeawayOrder = data.order_type === 'TAKEAWAY';
-  const showTakeawayActions =
-    isTakeawayOrder && !data.is_confirmed && !isOrderCompleted;
-
-  const handlerConfirm = () => {
-    confirmOrder.mutate({ id: data.id!, is_confirmed: true });
-  };
+  // const showTakeawayDelete = isTakeawayOrder && !isOrderCompleted;
 
   const handlerAddNewSupply = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -69,15 +63,13 @@ export const OrderCard = ({ data, handlerEvents }: props) => {
           >
             {data.guest_name}
           </h3>
-          {!showTakeawayActions && (
-            <Button
-              onClick={handlerAddNewSupply}
-              size="icon-sm"
-              className="shrink-0 cursor-pointer rounded-md bg-[#0F2A4A] hover:bg-[#164069]"
-            >
-              <ListPlus strokeWidth={2} />
-            </Button>
-          )}
+          <Button
+            onClick={handlerAddNewSupply}
+            size="icon-sm"
+            className="shrink-0 cursor-pointer rounded-md bg-[#0F2A4A] hover:bg-[#164069]"
+          >
+            <ListPlus strokeWidth={2} />
+          </Button>
         </div>
 
         <div className="flex items-center gap-1.5 text-[11px] text-[#64748B]">
@@ -131,30 +123,20 @@ export const OrderCard = ({ data, handlerEvents }: props) => {
         </div>
       </div>
 
-      {showTakeawayActions && (
+      {/* {showTakeawayDelete && (
         <div className="flex gap-2 px-3 pb-3">
-          <Button
-            variant="outline"
-            onClick={(e) => {
-              e.stopPropagation();
-              handlerConfirm();
-            }}
-            className="flex-1 cursor-pointer rounded-md border-[#0F2A4A]/20 text-[#0F2A4A] hover:bg-[#0F2A4A] hover:text-white"
-          >
-            Confirmar pedido
-          </Button>
           <Button
             variant="outline"
             onClick={(e) => {
               e.stopPropagation();
               deleteOrder.mutate(data.id!);
             }}
-            className="cursor-pointer rounded-md px-3 text-red-500 hover:bg-red-50"
+            className="flex-1 cursor-pointer rounded-md px-3 text-red-500 hover:bg-red-50"
           >
             <Trash2 className="h-4.5 w-4.5" strokeWidth={1.5} />
           </Button>
         </div>
-      )}
+      )} */}
     </Card>
   );
 };

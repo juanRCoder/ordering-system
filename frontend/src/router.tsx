@@ -1,5 +1,6 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
+import { ProtectedRoute } from './components/auth/ProtectedRoute';
 
 //const App = lazy(() => import('./App.tsx'));
 const Auth = lazy(() => import('./pages/Auth.tsx'));
@@ -27,9 +28,14 @@ export const router = createBrowserRouter([
       { path: 'menu', element: <Menu /> },
       { path: 'cart', element: <Cart /> },
       { path: 'order-received/:orderId', element: <OrderReceived /> },
-      { path: 'orders', element: <Orders /> },
-      { path: 'supplies', element: <Supplies /> },
-      { path: 'settings', element: <Setting /> },
+      {
+        element: <ProtectedRoute />,
+        children: [
+          { path: 'orders', element: <Orders /> },
+          { path: 'supplies', element: <Supplies /> },
+          { path: 'settings', element: <Setting /> },
+        ],
+      },
     ],
   },
   { path: '*', element: <Navigate to="/" replace /> },

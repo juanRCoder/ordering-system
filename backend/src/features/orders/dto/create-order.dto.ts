@@ -1,13 +1,17 @@
 import {
+  ArrayMinSize,
   IsArray,
+  IsInt,
   IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
   IsUUID,
+  Min,
+  MinLength,
   ValidateNested,
 } from 'class-validator';
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 
 export class SupplyItemDto {
   @IsNotEmpty()
@@ -16,26 +20,31 @@ export class SupplyItemDto {
 
   @IsNotEmpty()
   @IsNumber()
+  @Min(0.01)
   price!: number;
 
   @IsNotEmpty()
-  @IsNumber()
+  @IsInt()
+  @Min(1)
   quantity!: number;
 }
 
 export class CreateOrderDto {
   @IsArray()
+  @ArrayMinSize(1)
   @ValidateNested({ each: true })
   @Type(() => SupplyItemDto)
   supplies!: SupplyItemDto[];
 
   @IsNotEmpty()
   @IsString()
+  @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))
+  @MinLength(1)
   guest_name!: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsNumber()
-  total!: number;
+  total?: number;
 
   @IsOptional()
   @IsString()
