@@ -77,7 +77,7 @@ describe('relativeTime', () => {
     const threeDaysAgo = new Date(
       now.getTime() - 3 * 24 * 60 * 60000
     ).toISOString();
-    expect(relativeTime(threeDaysAgo)).toBe('3 dias');
+    expect(relativeTime(threeDaysAgo)).toBe('3 días');
   });
 });
 

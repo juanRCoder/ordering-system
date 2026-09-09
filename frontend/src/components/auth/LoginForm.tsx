@@ -25,7 +25,7 @@ export const LoginForm = () => {
   return (
     <div className="flex flex-col gap-8">
       <HeaderForm
-        title="Bienvenido TESTEO"
+        title="Bienvenido"
         subtitle="Inicia sesión para empezar con el sistema"
       />
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
