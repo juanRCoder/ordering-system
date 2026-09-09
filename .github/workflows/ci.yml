@@ -1,4 +1,5 @@
 name: Monorepo Quality Check
+description: Run quality checks for the monorepo
 
 on:
   push:
