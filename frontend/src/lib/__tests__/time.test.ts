@@ -83,13 +83,11 @@ describe('relativeTime', () => {
 
 describe('dayTime', () => {
   it('formatea hora correctamente (AM)', () => {
-    const result = dayTime('2024-01-15T09:30:00');
-    expect(result).toMatch(/\d{1,2}:\d{2}\s?a\.m\./);
+    expect(dayTime('2024-01-15T09:30:00')).toBe('09:30 am');
   });
 
   it('formatea hora correctamente (PM)', () => {
-    const result = dayTime('2024-01-15T14:30:00');
-    expect(result).toMatch(/\d{1,2}:\d{2}\s?p\.m\./);
+    expect(dayTime('2024-01-15T14:30:00')).toBe('02:30 pm');
   });
 
   it('retorna string en minúsculas', () => {

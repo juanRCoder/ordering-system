@@ -26,10 +26,13 @@ export const relativeTime = (fechaISO: string) => {
 export const dayTime = (datetime: string) => {
   const date = new Date(datetime);
   return date
-    .toLocaleTimeString(undefined, {
+    .toLocaleTimeString('en-US', {
       hour: '2-digit',
       minute: '2-digit',
       hour12: true,
     })
-    .toLowerCase();
+    .toLowerCase()
+    .replace(/\./g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
 };
