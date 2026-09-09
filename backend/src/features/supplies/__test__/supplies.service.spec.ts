@@ -248,6 +248,7 @@ describe('SuppliesService', () => {
       prisma.adminSupplies.findUnique.mockResolvedValue({
         id: 'as-1',
         supply_id: 'supply-1',
+        supply: { origin: 'ADMIN' },
       });
       prisma.supplies.update.mockResolvedValue({});
       prisma.adminSupplies.update.mockResolvedValue({
@@ -279,6 +280,7 @@ describe('SuppliesService', () => {
       prisma.adminSupplies.findUnique.mockResolvedValue({
         id: 'as-1',
         supply_id: 'supply-1',
+        supply: { origin: 'ADMIN' },
       });
       prisma.categories.findUnique.mockResolvedValue(null);
 

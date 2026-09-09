@@ -3,14 +3,6 @@ name: Monorepo Quality Check
 on:
   push:
     branches: [main]
-    paths:
-      - 'backend/**'
-      - 'frontend/**'
-  pull_request:
-    branches: [main]
-    paths:
-      - 'backend/**'
-      - 'frontend/**'
 
 jobs:
   changes:
@@ -33,33 +25,25 @@ jobs:
     needs: changes
     if: ${{ needs.changes.outputs.backend == 'true' }}
     runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: postgresql://ci:ci@localhost:5432/dummy
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: '10'
+      - name: Setup toolchain
+        uses: ./.github/actions/setup
 
-      - name: Use Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm install
+      - name: Check formatting
+        run: pnpm --filter backend format:check
 
       - name: Generate Prisma Client
         run: pnpm --filter backend exec prisma generate
-        env:
-          DATABASE_URL: postgresql://ci:ci@localhost:5432/dummy
 
       - name: Lint
         run: pnpm --filter backend lint
 
-      - name: Check formatting
-        run: pnpm format:check
+      - name: Test
+        run: pnpm --filter backend test
 
       - name: Build
         run: pnpm --filter backend build
@@ -71,25 +55,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: '10'
+      - name: Setup toolchain
+        uses: ./.github/actions/setup
 
-      - name: Use Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm install
+      - name: Check formatting
+        run: pnpm exec prettier --check frontend
 
       - name: Lint
         run: pnpm --filter frontend lint
 
-      - name: Check formatting
-        run: pnpm format:check
+      - name: Test
+        run: pnpm --filter frontend test
 
       - name: Build
         run: pnpm --filter frontend build

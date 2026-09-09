@@ -6,11 +6,6 @@ on:
     paths:
       - 'backend/**'
       - 'frontend/**'
-  pull_request:
-    branches: [main]
-    paths:
-      - 'backend/**'
-      - 'frontend/**'
 
 jobs:
   changes:
@@ -28,14 +23,6 @@ jobs:
               - 'backend/**'
             frontend:
               - 'frontend/**'
-
-  cd-backend:
-    needs: changes
-    if: ${{ needs.changes.outputs.backend == 'true' }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Trigger Render deploy
-        run: curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_NODE }}
 
   cd-frontend:
     needs: changes
